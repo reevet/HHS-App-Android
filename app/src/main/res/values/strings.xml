@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Holliston High</string>
+    <string name="action_settings">Refresh data</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="drawer_open">Slider Menu Opened</string>
+    <string name="drawer_close">Slider Menu Closed</string>
+    <string name="loading_splash">Updating data</string>
+
+    <!-- Nav Drawer Menu Items -->
+    <string-array name="nav_drawer_items">
+        <item>Schedules</item>
+        <item>News</item>
+        <item>Daily Announcements</item>
+        <item>Events</item>
+        <item>Refresh</item>
+    </string-array>
+
+    <!-- Nav Drawer List Item Icons -->
+    <!-- Keep them in order as the titles are in -->
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_schedules</item>
+        <item>@drawable/ic_news</item>
+        <item>@drawable/ic_announcements</item>
+        <item>@drawable/ic_events</item>
+        <item>@drawable/ic_refresh</item>
+    </array>
+
+    <!-- Content Description -->
+    <string name="desc_list_item_icon">Item Icon</string>
+    <string name="connection_error">Network connection not found</string>
+    <string name="xml_error">Error with data download</string>
+    <string name="page_title">Title</string>
+    <string name="updated">Updated</string>
+    <string name="menu_refresh">Refresh data</string>
+    <string name="all_day">All day</string>
+
+    <!-- Feed URLs -->
+    <string name="schedules_url">http://www.google.com/calendar/feeds/sulsp2f8e4npqtmdp469o8tmro%40group.calendar.google.com/private-fe49e26b4b5bd4579c74fd9c94e2d445/full?futureevents=true&amp;orderby=starttime&amp;sortorder=a&amp;singleevents=true&amp;max-results=25</string>
+    <string name="news_url">https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/general-info/news/posts.xml</string>
+    <string name="events_url">https://www.google.com/calendar/feeds/holliston.k12.ma.us_gsfpbqnefkm59ul6gbofte1s2k%40group.calendar.google.com/private-641b39b01a46e77af57592990d225fac/full?futureevents=true&amp;orderby=starttime&amp;sortorder=a&amp;singleevents=true&amp;max-results=30</string>
+    <string name="dailyann_url">https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/general-info/daily-announcements/posts.xml</string>
+
+    <!-- Parser element names -->
+    <string-array name="schedules_parser_names">
+        <item>entry</item>
+        <item>title</item>
+        <item>link</item>
+        <item>gd:when</item>
+        <item>startTime</item>
+        <item>content</item>
+    </string-array>
+    <string-array name="events_parser_names">
+        <item>entry</item>
+        <item>title</item>
+        <item>link</item>
+        <item>gd:when</item>
+        <item>startTime</item>
+        <item>content</item>
+    </string-array>
+    <string-array name="news_parser_names">
+        <item>entry</item>
+        <item>title</item>
+        <item>link</item>
+        <item>updated</item>
+        <item></item>
+        <item>content</item>
+    </string-array>
+    <string-array name="dailyann_parser_names">
+        <item>entry</item>
+        <item>title</item>
+        <item>link</item>
+        <item>published</item>
+        <item/>
+        <item>content</item>
+    </string-array>
+
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+
+</resources>
