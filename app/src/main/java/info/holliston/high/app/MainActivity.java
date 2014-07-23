@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,7 +54,7 @@ public class MainActivity extends Activity {
 
 
     private int currentView = -1;
-    private int defaultView = 1;
+    private int defaultView = 0;
     Boolean newNewsAvailable = false;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -102,19 +103,23 @@ public class MainActivity extends Activity {
 
         navDrawerItems = new ArrayList<NavDrawerItem>();
 
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
+        // Home
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
+        fragmentData.add("");
+        // Schedules
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         fragmentData.add(schedulesString);
 		// News
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
         fragmentData.add(newsString);
         // Daily Announcements
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
         fragmentData.add(dailyAnnString);
         // Events
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
         fragmentData.add(eventsString);
         // Refresh
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
         fragmentData.add("");
 
 		// Recycle the typed array
@@ -255,23 +260,27 @@ public class MainActivity extends Activity {
 
 
 		switch (position) {
-		case 0:
+         case 0:
+                fragment = new HomeFragment();
+                currentView = position;
+                break;
+         case 1:
             fragment = new SchedulesListFragment();
             currentView = position;
 			break;
-		case 1:
+		case 2:
 			fragment = new NewsListFragment();
             currentView = position;
             break;
-		case 2:
+		case 3:
 			fragment = new DailyAnnListFragment();
             currentView = position;
             break;
-		case 3:
+		case 4:
 			fragment = new EventsListFragment();
             currentView = position;
             break;
-        case 4:
+        case 5:
             refresh = true;
             break;
         default:

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/detail_background">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Next Schedule"
+            android:id="@+id/textView2"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@android:color/black"
+            android:textStyle="italic" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/schedule_box"
+            android:background="@android:color/white"
+            android:padding="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="@dimen/schedule_icon_large"
+                android:layout_height="@dimen/schedule_icon_large"
+                android:id="@+id/sched_icon"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/star_50" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/sched_icon"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/imageView">>
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+                    android:text="Medium Text"
+                    android:id="@+id/sched_date"
+                    android:textColor="@android:color/darker_gray"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@android:style/TextAppearance.Large"
+                        android:text="Medium Text"
+                        android:id="@+id/sched_title"
+                        android:layout_below="@+id/sched_date"
+                        android:textColor="@android:color/black"
+                    android:gravity="center_horizontal" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="@dimen/disclosure_indicator"
+                android:layout_height="@dimen/disclosure_indicator"
+                android:id="@+id/imageView"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/disclosure" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Latest News"
+            android:id="@+id/textView3"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@android:color/black"
+            android:textStyle="italic" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:id="@+id/news_box"
+            android:background="@android:color/white"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="@dimen/news_home_height"
+                android:layout_height="@dimen/news_home_height"
+                android:id="@+id/news_image"
+                android:visibility="invisible"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="News"
+                android:id="@+id/news_title"
+                android:gravity="bottom|left"
+                android:textColor="@android:color/black"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/news_image" />
+
+            <ProgressBar
+                android:layout_width="@dimen/news_home_height"
+                android:layout_height="@dimen/news_home_height"
+                android:id="@+id/news_pbar"
+                android:padding="30dp"
+                android:layout_alignTop="@+id/news_image"
+                android:layout_alignLeft="@+id/news_image" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Daily Announcements"
+            android:id="@+id/textView4"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@android:color/black"
+            android:textStyle="italic" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/dailyann_box"
+            android:background="@android:color/white"
+            android:padding="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:text="Medium Text"
+                android:id="@+id/dailyann_date"
+                android:layout_centerHorizontal="true"
+                android:layout_toLeftOf="@+id/imageView2"
+                android:layout_alignParentStart="true"
+                android:gravity="center_horizontal" />
+
+            <ImageView
+                android:layout_width="@dimen/disclosure_indicator"
+                android:layout_height="@dimen/disclosure_indicator"
+                android:id="@+id/imageView2"
+                android:src="@drawable/disclosure"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Upcoming Events"
+            android:id="@+id/textView5"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@android:color/black"
+            android:textStyle="italic" />
+
+        <TableLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/events_box"
+            android:background="@android:color/white"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"></TableLayout>
+
+    </LinearLayout>
+</ScrollView>

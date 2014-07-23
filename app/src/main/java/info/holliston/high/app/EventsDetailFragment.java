@@ -29,7 +29,7 @@ public class EventsDetailFragment extends Fragment {
         TextView titleTextView = (TextView) rootView.findViewById(R.id.detail_title);
         titleTextView.setText(article.title);
 
-        SimpleDateFormat df = new SimpleDateFormat("EEE, MMM d");
+        SimpleDateFormat df = new SimpleDateFormat("EEE, MMM d, h:mm a");
         String dateString = df.format(article.date);
         TextView dateTextView = (TextView) rootView.findViewById(R.id.detail_date);
         dateTextView.setText(dateString);

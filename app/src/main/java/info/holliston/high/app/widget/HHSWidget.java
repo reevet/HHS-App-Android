@@ -42,15 +42,7 @@ public class HHSWidget extends AppWidgetProvider {
             updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
         }
 
-        //onClickListener
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.setAction(NOTIFICATION);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,0, intent, 0);
-
-        RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-        view.setOnClickPendingIntent(R.id.widget_all, pendingIntent);
-
-        appWidgetManager.updateAppWidget(appWidgetIds, view);
+        //appWidgetManager.updateAppWidget(appWidgetIds, view);
 
         //Intent intent2 = new Intent(context, ArticleDownloaderService.class);
         //intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, allWidgetIds );
@@ -147,6 +139,15 @@ public class HHSWidget extends AppWidgetProvider {
                     views.setImageViewResource(R.id.widget_sched_icon, R.drawable.star_50);
                     break;
             }
+
+            //onClickListener
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.setAction(NOTIFICATION);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, intent, 0);
+
+            views.setOnClickPendingIntent(R.id.widget_all, pendingIntent);
+
+
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
 

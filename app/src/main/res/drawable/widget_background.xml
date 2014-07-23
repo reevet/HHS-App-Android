@@ -7,7 +7,7 @@
     >
 
     <solid
-        android:color="@color/splash_background"
+        android:color="@color/hhs_red"
         />
 
     <corners

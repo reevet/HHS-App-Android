@@ -6,7 +6,8 @@
     <color name="list_divider">#272727</color>
     <color name="counter_text_bg">#626262</color>
     <color name="counter_text_color">#c5c4c4</color>
-    <color name="splash_background">#B51E12</color>
-    <color name="detail_background">#eeeeee</color>
-    <color name="group_background">#ffdddddd</color>
+    <color name="hhs_red">#B51E12</color>
+    <color name="detail_background">#ffdddddd</color>
+    <color name="group_background">#88dddddd</color>
+    <color name="text_trans_bg">#88888888</color>
 </resources>
