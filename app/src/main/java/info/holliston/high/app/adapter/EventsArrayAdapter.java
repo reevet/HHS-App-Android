@@ -49,7 +49,7 @@ public class EventsArrayAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.events_row, null);
+            convertView = inflater.inflate(R.layout.events_row, parent, false);
         }
 
         TextView txtListChild = (TextView) convertView

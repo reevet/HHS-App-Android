@@ -3,22 +3,17 @@ package info.holliston.high.app.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.widget.ImageView;
+import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import info.holliston.high.app.ArticleDataSource;
 import info.holliston.high.app.ArticleDataSourceOptions;
-import info.holliston.high.app.ArticleDownloaderService;
 import info.holliston.high.app.ArticleSQLiteHelper;
 import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
@@ -34,12 +29,13 @@ public class HHSWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-        ComponentName thisWidget = new ComponentName(context, HHSWidget.class);
-        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+        //ComponentName thisWidget = new ComponentName(context, HHSWidget.class);
+        //int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-        final int N = appWidgetIds.length;
-        for (int i=0; i<N; i++) {
-            updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
+        //final int N = appWidgetIds.length;
+        //for (int i=0; i<N; i++) {
+        for (int appWidgetId :appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId);
         }
 
         //appWidgetManager.updateAppWidget(appWidgetIds, view);
@@ -50,7 +46,7 @@ public class HHSWidget extends AppWidgetProvider {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
 
         super.onReceive(context, intent);
 /*

@@ -29,7 +29,9 @@ private final List<Article> articleList;
         LayoutInflater inflater;
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.dailyann_row, parent, false);
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.dailyann_row, parent, false);
+        }
 
         String titleString = articleList.get(position).title;
 

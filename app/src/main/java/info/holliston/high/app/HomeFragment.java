@@ -1,23 +1,17 @@
 package info.holliston.high.app;
 
-import android.app.Application;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.ListFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -28,21 +22,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import info.holliston.high.app.adapter.EventsArrayAdapter;
 import info.holliston.high.app.adapter.ImageAsyncLoader;
 import info.holliston.high.app.model.Article;
 import info.holliston.high.app.xmlparser.ArticleParser;
 
-/**
- * Created by Tomoose on 7/23/2014.
- */
 public class HomeFragment extends Fragment {
-
 
     private ArticleDataSource newsSource;
     private ArticleDataSource schedulesSource;
     private ArticleDataSource dailyAnnSource;
-    private ArticleDataSource eventsSource;
+
 
     List<String> eventHeaders = new ArrayList<String>();
     HashMap<String, List<Article>> events = new HashMap<String, List<Article>>();
@@ -61,6 +50,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        ArticleDataSource eventsSource;
 
         ArticleDataSourceOptions options;
         List<Article> tempArticles;
@@ -102,10 +93,6 @@ public class HomeFragment extends Fragment {
             scheduleArticle = tempArticles.get(0);
             assignSchedule(scheduleArticle);
         }
-
-        int weekOfYear = -1;
-        String currentHeader = "";
-        List<Article> eventsInDay = new ArrayList<Article>();
 
         /*Get the most recent daily announcements */
         options = new ArticleDataSourceOptions(
@@ -180,7 +167,7 @@ public class HomeFragment extends Fragment {
 
         }
 
-        View box = (View) v.findViewById(R.id.news_box);
+        View box = v.findViewById(R.id.news_box);
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -227,7 +214,7 @@ public class HomeFragment extends Fragment {
                 break;
         }
 
-        View box = (View) v.findViewById(R.id.schedule_box);
+        View box = v.findViewById(R.id.schedule_box);
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -265,7 +252,7 @@ public class HomeFragment extends Fragment {
         TextView titleTextView = (TextView) v.findViewById(R.id.dailyann_date);
         titleTextView.setText(formattedDateString);
 
-        View box = (View) v.findViewById(R.id.dailyann_box);
+        View box =  v.findViewById(R.id.dailyann_box);
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -320,7 +307,7 @@ public class HomeFragment extends Fragment {
         TableLayout eventsBox = (TableLayout) v.findViewById(R.id.events_box);
         eventsBox.removeAllViews();
         for (String header: eventHeaders) {
-            View headerRow = inflater.inflate(R.layout.events_list_header, null);
+            View headerRow = inflater.inflate(R.layout.events_list_header, eventsBox, false);
 
             TextView lblListHeader = (TextView) headerRow
                     .findViewById(R.id.header_title);
@@ -330,9 +317,8 @@ public class HomeFragment extends Fragment {
             eventsBox.addView(headerRow);
 
             List<Article> theseArticles = events.get(header);
-            for (int i=0; i<theseArticles.size(); i++) {
-                final Article article = theseArticles.get(i);
-                View row = inflater.inflate(R.layout.events_row, null);
+            for (final Article article :theseArticles) {
+                View row = inflater.inflate(R.layout.events_row, eventsBox, false);
                 eventsBox.addView(row);
 
                 TextView txtListChild = (TextView) row
@@ -380,5 +366,4 @@ public class HomeFragment extends Fragment {
             transaction.commit();
         }
     }
-
 }

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Window;
-import android.widget.Toast;
 
 import info.holliston.high.app.xmlparser.ArticleParser;
 

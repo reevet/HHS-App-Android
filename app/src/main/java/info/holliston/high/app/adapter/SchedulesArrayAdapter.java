@@ -50,7 +50,7 @@ private final Context context;
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.schedules_row, null);
+            convertView = inflater.inflate(R.layout.schedules_row, parent, false);
         }
 
         TextView txtListChild = (TextView) convertView
@@ -116,7 +116,7 @@ private final Context context;
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.schedules_list_header, null);
+            convertView = infalInflater.inflate(R.layout.schedules_list_header, parent, false);
         }
 
         TextView lblListHeader = (TextView) convertView

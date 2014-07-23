@@ -50,10 +50,10 @@ public class DailyAnnDetailFragment extends Fragment {
         titleTextView.setText(formattedDateString);
 
         String detailString = article.details;
-        detailString = titleString.replace("</div>","\n" );
-        detailString = titleString.replace("\n\n","\n" );
+        detailString = detailString.replace("</div>","\n" );
+        detailString = detailString.replace("\n\n","\n" );
         TextView detailTextView = (TextView) rootView.findViewById(R.id.detail_details);
-        detailTextView.setText(article.details);
+        detailTextView.setText(detailString);
 
         return rootView;
     }

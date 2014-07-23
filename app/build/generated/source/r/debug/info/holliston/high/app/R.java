@@ -17,247 +17,31 @@ public final class R {
         public static final int schedules_parser_names=0x7f050005;
     }
     public static final class attr {
-        /**  A drawable to use as the background of the Header View 
-         <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
-"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
-         */
-        public static final int ptrHeaderBackground=0x7f010001;
-        /**  The height of the Header View 
-         <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
-Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
-in (inches), mm (millimeters).
-         */
-        public static final int ptrHeaderHeight=0x7f010002;
-        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-         */
-        public static final int ptrHeaderStyle=0x7f010000;
-        /**  The Text Appearance of the Header View's Title text 
-         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-         */
-        public static final int ptrHeaderTitleTextAppearance=0x7f010003;
-        /**  The color that the Progress Bar should be tinted with 
-         <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
-"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
-         */
-        public static final int ptrProgressBarColor=0x7f010004;
-        /**  The height of the Progress Bar 
-         <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
-Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
-in (inches), mm (millimeters).
-         */
-        public static final int ptrProgressBarHeight=0x7f010006;
-        /**  The style of the Progress Bar 
-         <p>Must be one or more (separated by '|') of the following constant values.</p>
-<table>
-<colgroup align="left" />
-<colgroup align="left" />
-<colgroup align="left" />
-<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
-<tr><td><code>inside</code></td><td>0x0</td><td></td></tr>
-<tr><td><code>outside</code></td><td>0x1</td><td></td></tr>
-</table>
-         */
-        public static final int ptrProgressBarStyle=0x7f010005;
-        /**  Text to show to prompt the user is pull (or keep pulling) 
-         <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
-         */
-        public static final int ptrPullText=0x7f010007;
-        /**  Text to show to tell the user that a refresh is currently in progress 
-         <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
-         */
-        public static final int ptrRefreshingText=0x7f010008;
-        /**  Text to show to tell the user has scrolled enough to refresh 
-         <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
-         */
-        public static final int ptrReleaseText=0x7f010009;
-        /**  indeterminate progressbar style 
-         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-         */
-        public static final int ptrSmoothProgressBarStyle=0x7f01000a;
-        /**  The class to use as a View's View Delegate. Can be relative path from app's package name 
-         <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
-         */
-        public static final int ptrViewDelegateClass=0x7f01000b;
-        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-         */
-        public static final int spbStyle=0x7f01000c;
-        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-         */
-        public static final int spb_background=0x7f010019;
-        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
-"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int spb_color=0x7f01000d;
-        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-         */
-        public static final int spb_colors=0x7f010017;
-        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int spb_generate_background_with_colors=0x7f01001a;
-        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int spb_gradients=0x7f01001b;
-        /** <p>Must be one of the following constant values.</p>
-<table>
-<colgroup align="left" />
-<colgroup align="left" />
-<colgroup align="left" />
-<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
-<tr><td><code>spb_interpolator_accelerate</code></td><td>0</td><td></td></tr>
-<tr><td><code>spb_interpolator_linear</code></td><td>1</td><td></td></tr>
-<tr><td><code>spb_interpolator_acceleratedecelerate</code></td><td>2</td><td></td></tr>
-<tr><td><code>spb_interpolator_decelerate</code></td><td>3</td><td></td></tr>
-</table>
-         */
-        public static final int spb_interpolator=0x7f010014;
-        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int spb_mirror_mode=0x7f010016;
-        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int spb_progressiveStart_activated=0x7f010018;
-        /** <p>Must be a floating point value, such as "<code>1.2</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int spb_progressiveStart_speed=0x7f010012;
-        /** <p>Must be a floating point value, such as "<code>1.2</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int spb_progressiveStop_speed=0x7f010013;
-        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int spb_reversed=0x7f010015;
-        /** <p>Must be an integer value, such as "<code>100</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int spb_sections_count=0x7f010010;
-        /** <p>Must be a floating point value, such as "<code>1.2</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int spb_speed=0x7f010011;
-        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
-Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
-in (inches), mm (millimeters).
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int spb_stroke_separator_length=0x7f01000f;
-        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
-Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
-in (inches), mm (millimeters).
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int spb_stroke_width=0x7f01000e;
-    }
-    public static final class bool {
-        public static final int spb_default_mirror_mode=0x7f060000;
-        public static final int spb_default_progressiveStart_activated=0x7f060001;
-        public static final int spb_default_reversed=0x7f060002;
     }
     public static final class color {
-        public static final int counter_text_bg=0x7f070000;
-        public static final int counter_text_color=0x7f070001;
-        public static final int default_progress_bar_color=0x7f070002;
-        public static final int detail_background=0x7f070003;
-        public static final int group_background=0x7f070004;
-        public static final int hhs_red=0x7f070005;
-        public static final int list_background=0x7f070006;
-        public static final int list_background_pressed=0x7f070007;
-        public static final int list_divider=0x7f070008;
-        public static final int list_item_title=0x7f070009;
-        public static final int spb_default_color=0x7f07000a;
-        public static final int text_trans_bg=0x7f07000b;
+        public static final int counter_text_bg=0x7f060000;
+        public static final int counter_text_color=0x7f060001;
+        public static final int detail_background=0x7f060002;
+        public static final int group_background=0x7f060003;
+        public static final int hhs_red=0x7f060004;
+        public static final int list_background=0x7f060005;
+        public static final int list_background_pressed=0x7f060006;
+        public static final int list_divider=0x7f060007;
+        public static final int list_item_title=0x7f060008;
+        public static final int text_trans_bg=0x7f060009;
     }
     public static final class dimen {
-        public static final int activity_horizontal_margin=0x7f090000;
-        public static final int activity_vertical_margin=0x7f090001;
-        public static final int disclosure_indicator=0x7f090002;
-        public static final int news_home_height=0x7f090003;
-        public static final int news_pbar=0x7f090004;
-        public static final int news_thumbnail=0x7f090005;
-        public static final int ptr_progress_bar_stroke_width=0x7f090006;
-        public static final int row_normal_text_size=0x7f090007;
-        public static final int row_smaller_text_size=0x7f090008;
-        public static final int schedule_icon=0x7f090009;
-        public static final int schedule_icon_large=0x7f09000a;
-        public static final int spb_default_stroke_separator_length=0x7f09000b;
-        public static final int spb_default_stroke_width=0x7f09000c;
-        public static final int widget_margin=0x7f09000d;
+        public static final int activity_horizontal_margin=0x7f070000;
+        public static final int activity_vertical_margin=0x7f070001;
+        public static final int disclosure_indicator=0x7f070002;
+        public static final int news_home_height=0x7f070003;
+        public static final int news_pbar=0x7f070004;
+        public static final int news_thumbnail=0x7f070005;
+        public static final int row_normal_text_size=0x7f070006;
+        public static final int row_smaller_text_size=0x7f070007;
+        public static final int schedule_icon=0x7f070008;
+        public static final int schedule_icon_large=0x7f070009;
+        public static final int widget_margin=0x7f07000a;
     }
     public static final class drawable {
         public static final int a=0x7f020000;
@@ -299,137 +83,120 @@ containing a value of this type.
         public static final int widget_preview=0x7f020024;
     }
     public static final class id {
-        public static final int action_settings=0x7f080043;
-        public static final int counter=0x7f080019;
-        public static final int dailyann_box=0x7f08002f;
-        public static final int dailyann_date=0x7f080030;
-        public static final int dailyann_layout=0x7f080011;
-        public static final int detail_date=0x7f08000f;
-        public static final int detail_details=0x7f080010;
-        public static final int detail_icon=0x7f080038;
-        public static final int detail_title=0x7f08001a;
-        public static final int detail_webview=0x7f080034;
-        public static final int drawer_layout=0x7f080009;
-        public static final int drawer_new_available_icon=0x7f080016;
-        public static final int events_box=0x7f080033;
-        public static final int events_exlistview=0x7f08001b;
-        public static final int frame_container=0x7f08000a;
-        public static final int frame_detail_container=0x7f08000d;
-        public static final int frame_list_container=0x7f08000c;
-        public static final int header_title=0x7f08001c;
-        public static final int icon=0x7f080014;
-        public static final int icon_orig=0x7f080017;
-        public static final int imageView=0x7f080026;
-        public static final int imageView2=0x7f080031;
-        public static final int imgLogo=0x7f08003b;
-        public static final int inside=0x7f080000;
-        public static final int list_slidermenu=0x7f08000b;
-        public static final int news_box=0x7f08002a;
-        public static final int news_image=0x7f08002b;
-        public static final int news_pbar=0x7f08002d;
-        public static final int news_title=0x7f08002c;
-        public static final int outside=0x7f080001;
-        public static final int progressBar=0x7f08003c;
-        public static final int ptr_content=0x7f080006;
-        public static final int ptr_progress=0x7f080007;
-        public static final int ptr_text=0x7f080008;
-        public static final int row_date=0x7f080037;
-        public static final int row_disc_icon=0x7f080013;
-        public static final int row_icon=0x7f080035;
-        public static final int row_progress=0x7f080036;
-        public static final int row_time=0x7f08001d;
-        public static final int row_title=0x7f080012;
-        public static final int sched_date=0x7f080027;
-        public static final int sched_icon=0x7f080025;
-        public static final int sched_title=0x7f080028;
-        public static final int schedule_box=0x7f080024;
-        public static final int schedules_exlistview=0x7f080039;
-        public static final int schedules_listview=0x7f08003a;
-        public static final int scrollView=0x7f08000e;
-        public static final int spb_interpolator_accelerate=0x7f080002;
-        public static final int spb_interpolator_acceleratedecelerate=0x7f080004;
-        public static final int spb_interpolator_decelerate=0x7f080005;
-        public static final int spb_interpolator_linear=0x7f080003;
-        public static final int textView=0x7f080041;
-        public static final int textView2=0x7f080023;
-        public static final int textView3=0x7f080029;
-        public static final int textView4=0x7f08002e;
-        public static final int textView5=0x7f080032;
-        public static final int title=0x7f080015;
-        public static final int title_orig=0x7f080018;
-        public static final int txtLabel=0x7f080020;
-        public static final int webview=0x7f080022;
-        public static final int webview_daily_ann=0x7f08001e;
-        public static final int webview_events=0x7f08001f;
-        public static final int webview_news=0x7f080021;
-        public static final int widget_all=0x7f08003d;
-        public static final int widget_date=0x7f080040;
-        public static final int widget_label=0x7f08003f;
-        public static final int widget_sched_icon=0x7f08003e;
-        public static final int widget_title=0x7f080042;
-    }
-    public static final class integer {
-        public static final int spb_default_interpolator=0x7f0a0000;
-        public static final int spb_default_sections_count=0x7f0a0001;
+        public static final int action_settings=0x7f0b003b;
+        public static final int counter=0x7f0b0010;
+        public static final int dailyann_box=0x7f0b0027;
+        public static final int dailyann_date=0x7f0b0028;
+        public static final int dailyann_layout=0x7f0b0008;
+        public static final int detail_date=0x7f0b0006;
+        public static final int detail_details=0x7f0b0007;
+        public static final int detail_icon=0x7f0b0030;
+        public static final int detail_title=0x7f0b0011;
+        public static final int detail_webview=0x7f0b002c;
+        public static final int drawer_layout=0x7f0b0000;
+        public static final int drawer_new_available_icon=0x7f0b000d;
+        public static final int events_box=0x7f0b002b;
+        public static final int events_exlistview=0x7f0b0012;
+        public static final int frame_container=0x7f0b0001;
+        public static final int frame_detail_container=0x7f0b0004;
+        public static final int frame_list_container=0x7f0b0003;
+        public static final int header_title=0x7f0b0013;
+        public static final int home_layout=0x7f0b001a;
+        public static final int icon=0x7f0b000b;
+        public static final int icon_orig=0x7f0b000e;
+        public static final int imageView=0x7f0b001e;
+        public static final int imageView2=0x7f0b0029;
+        public static final int imgLogo=0x7f0b0033;
+        public static final int list_slidermenu=0x7f0b0002;
+        public static final int news_box=0x7f0b0022;
+        public static final int news_image=0x7f0b0023;
+        public static final int news_pbar=0x7f0b0025;
+        public static final int news_title=0x7f0b0024;
+        public static final int progressBar=0x7f0b0034;
+        public static final int row_date=0x7f0b002f;
+        public static final int row_disc_icon=0x7f0b000a;
+        public static final int row_icon=0x7f0b002d;
+        public static final int row_progress=0x7f0b002e;
+        public static final int row_time=0x7f0b0014;
+        public static final int row_title=0x7f0b0009;
+        public static final int sched_date=0x7f0b001f;
+        public static final int sched_icon=0x7f0b001d;
+        public static final int sched_title=0x7f0b0020;
+        public static final int schedule_box=0x7f0b001c;
+        public static final int schedules_exlistview=0x7f0b0031;
+        public static final int schedules_listview=0x7f0b0032;
+        public static final int scrollView=0x7f0b0005;
+        public static final int textView=0x7f0b0039;
+        public static final int textView2=0x7f0b001b;
+        public static final int textView3=0x7f0b0021;
+        public static final int textView4=0x7f0b0026;
+        public static final int textView5=0x7f0b002a;
+        public static final int title=0x7f0b000c;
+        public static final int title_orig=0x7f0b000f;
+        public static final int txtLabel=0x7f0b0017;
+        public static final int webview=0x7f0b0019;
+        public static final int webview_daily_ann=0x7f0b0015;
+        public static final int webview_events=0x7f0b0016;
+        public static final int webview_news=0x7f0b0018;
+        public static final int widget_all=0x7f0b0035;
+        public static final int widget_date=0x7f0b0038;
+        public static final int widget_label=0x7f0b0037;
+        public static final int widget_sched_icon=0x7f0b0036;
+        public static final int widget_title=0x7f0b003a;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int dailyann_detail=0x7f030001;
         public static final int dailyann_listview=0x7f030002;
         public static final int dailyann_row=0x7f030003;
-        public static final int default_header=0x7f030004;
-        public static final int drawer_list_item=0x7f030005;
-        public static final int drawer_list_item_orig=0x7f030006;
-        public static final int events_detail=0x7f030007;
-        public static final int events_exlistview=0x7f030008;
-        public static final int events_list_header=0x7f030009;
-        public static final int events_row=0x7f03000a;
-        public static final int fragment_daily_ann=0x7f03000b;
-        public static final int fragment_events=0x7f03000c;
-        public static final int fragment_home=0x7f03000d;
-        public static final int fragment_news=0x7f03000e;
-        public static final int fragment_schedules=0x7f03000f;
-        public static final int fragment_whats_hot=0x7f030010;
-        public static final int home_fragment=0x7f030011;
-        public static final int news_detail=0x7f030012;
-        public static final int news_listview=0x7f030013;
-        public static final int news_row=0x7f030014;
-        public static final int schedule_detail=0x7f030015;
-        public static final int schedules_exlistview=0x7f030016;
-        public static final int schedules_list_header=0x7f030017;
-        public static final int schedules_listview=0x7f030018;
-        public static final int schedules_row=0x7f030019;
-        public static final int splash=0x7f03001a;
-        public static final int widget_layout=0x7f03001b;
+        public static final int drawer_list_item=0x7f030004;
+        public static final int drawer_list_item_orig=0x7f030005;
+        public static final int events_detail=0x7f030006;
+        public static final int events_exlistview=0x7f030007;
+        public static final int events_list_header=0x7f030008;
+        public static final int events_row=0x7f030009;
+        public static final int fragment_daily_ann=0x7f03000a;
+        public static final int fragment_events=0x7f03000b;
+        public static final int fragment_home=0x7f03000c;
+        public static final int fragment_news=0x7f03000d;
+        public static final int fragment_schedules=0x7f03000e;
+        public static final int fragment_whats_hot=0x7f03000f;
+        public static final int home_fragment=0x7f030010;
+        public static final int news_detail=0x7f030011;
+        public static final int news_listview=0x7f030012;
+        public static final int news_row=0x7f030013;
+        public static final int schedule_detail=0x7f030014;
+        public static final int schedules_exlistview=0x7f030015;
+        public static final int schedules_list_header=0x7f030016;
+        public static final int schedules_listview=0x7f030017;
+        public static final int schedules_row=0x7f030018;
+        public static final int splash=0x7f030019;
+        public static final int widget_layout=0x7f03001a;
     }
     public static final class menu {
-        public static final int main=0x7f0d0000;
+        public static final int main=0x7f0a0000;
     }
     public static final class string {
-        public static final int action_settings=0x7f0b0000;
-        public static final int add_widget=0x7f0b0001;
-        public static final int all_day=0x7f0b0002;
-        public static final int app_name=0x7f0b0003;
-        public static final int appwidget_text=0x7f0b0004;
-        public static final int connection_error=0x7f0b0005;
-        public static final int daily_ann_title=0x7f0b0006;
-        public static final int dailyann_url=0x7f0b0007;
-        public static final int desc_list_item_icon=0x7f0b0008;
-        public static final int drawer_close=0x7f0b0009;
-        public static final int drawer_open=0x7f0b000a;
-        public static final int events_url=0x7f0b000b;
-        public static final int hello_world=0x7f0b000c;
-        public static final int loading_splash=0x7f0b000d;
-        public static final int menu_refresh=0x7f0b000e;
-        public static final int news_url=0x7f0b000f;
-        public static final int page_title=0x7f0b0010;
-        public static final int pull_to_refresh_pull_label=0x7f0b0011;
-        public static final int pull_to_refresh_refreshing_label=0x7f0b0012;
-        public static final int pull_to_refresh_release_label=0x7f0b0013;
-        public static final int schedules_url=0x7f0b0014;
-        public static final int spb_default_speed=0x7f0b0015;
-        public static final int updated=0x7f0b0016;
-        public static final int xml_error=0x7f0b0017;
+        public static final int action_settings=0x7f080000;
+        public static final int add_widget=0x7f080001;
+        public static final int all_day=0x7f080002;
+        public static final int app_name=0x7f080003;
+        public static final int appwidget_text=0x7f080004;
+        public static final int connection_error=0x7f080005;
+        public static final int daily_ann_title=0x7f080006;
+        public static final int dailyann_url=0x7f080007;
+        public static final int desc_list_item_icon=0x7f080008;
+        public static final int drawer_close=0x7f080009;
+        public static final int drawer_open=0x7f08000a;
+        public static final int events_url=0x7f08000b;
+        public static final int hello_world=0x7f08000c;
+        public static final int loading_splash=0x7f08000d;
+        public static final int menu_refresh=0x7f08000e;
+        public static final int news_url=0x7f08000f;
+        public static final int page_title=0x7f080010;
+        public static final int schedules_url=0x7f080011;
+        public static final int updated=0x7f080012;
+        public static final int xml_error=0x7f080013;
     }
     public static final class style {
         /** 
@@ -440,482 +207,11 @@ containing a value of this type.
  API 11 theme customizations can go here. 
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f0c0000;
-        public static final int AppTheme=0x7f0c0001;
-        public static final int MyActionBar=0x7f0c0002;
-        public static final int SmoothProgressBar=0x7f0c0003;
-        public static final int Theme_SmoothProgressBarDefaults=0x7f0c0004;
+        public static final int AppBaseTheme=0x7f090000;
+        public static final int AppTheme=0x7f090001;
+        public static final int MyActionBar=0x7f090002;
     }
     public static final class xml {
         public static final int hhswidget_info=0x7f040000;
     }
-    public static final class styleable {
-        /** Attributes that can be used with a PullToRefreshHeader.
-           <p>Includes the following attributes:</p>
-           <table>
-           <colgroup align="left" />
-           <colgroup align="left" />
-           <tr><th>Attribute</th><th>Description</th></tr>
-           <tr><td><code>{@link #PullToRefreshHeader_ptrHeaderBackground info.holliston.high.app:ptrHeaderBackground}</code></td><td> A drawable to use as the background of the Header View </td></tr>
-           <tr><td><code>{@link #PullToRefreshHeader_ptrHeaderHeight info.holliston.high.app:ptrHeaderHeight}</code></td><td> The height of the Header View </td></tr>
-           <tr><td><code>{@link #PullToRefreshHeader_ptrHeaderTitleTextAppearance info.holliston.high.app:ptrHeaderTitleTextAppearance}</code></td><td> The Text Appearance of the Header View's Title text </td></tr>
-           <tr><td><code>{@link #PullToRefreshHeader_ptrProgressBarColor info.holliston.high.app:ptrProgressBarColor}</code></td><td> The color that the Progress Bar should be tinted with </td></tr>
-           <tr><td><code>{@link #PullToRefreshHeader_ptrProgressBarHeight info.holliston.high.app:ptrProgressBarHeight}</code></td><td> The height of the Progress Bar </td></tr>
-           <tr><td><code>{@link #PullToRefreshHeader_ptrProgressBarStyle info.holliston.high.app:ptrProgressBarStyle}</code></td><td> The style of the Progress Bar </td></tr>
-           <tr><td><code>{@link #PullToRefreshHeader_ptrPullText info.holliston.high.app:ptrPullText}</code></td><td> Text to show to prompt the user is pull (or keep pulling) </td></tr>
-           <tr><td><code>{@link #PullToRefreshHeader_ptrRefreshingText info.holliston.high.app:ptrRefreshingText}</code></td><td> Text to show to tell the user that a refresh is currently in progress </td></tr>
-           <tr><td><code>{@link #PullToRefreshHeader_ptrReleaseText info.holliston.high.app:ptrReleaseText}</code></td><td> Text to show to tell the user has scrolled enough to refresh </td></tr>
-           <tr><td><code>{@link #PullToRefreshHeader_ptrSmoothProgressBarStyle info.holliston.high.app:ptrSmoothProgressBarStyle}</code></td><td> indeterminate progressbar style </td></tr>
-           </table>
-           @see #PullToRefreshHeader_ptrHeaderBackground
-           @see #PullToRefreshHeader_ptrHeaderHeight
-           @see #PullToRefreshHeader_ptrHeaderTitleTextAppearance
-           @see #PullToRefreshHeader_ptrProgressBarColor
-           @see #PullToRefreshHeader_ptrProgressBarHeight
-           @see #PullToRefreshHeader_ptrProgressBarStyle
-           @see #PullToRefreshHeader_ptrPullText
-           @see #PullToRefreshHeader_ptrRefreshingText
-           @see #PullToRefreshHeader_ptrReleaseText
-           @see #PullToRefreshHeader_ptrSmoothProgressBarStyle
-         */
-        public static final int[] PullToRefreshHeader = {
-            0x7f010001, 0x7f010002, 0x7f010003, 0x7f010004,
-            0x7f010005, 0x7f010006, 0x7f010007, 0x7f010008,
-            0x7f010009, 0x7f01000a
-        };
-        /**
-          <p>
-          @attr description
-           A drawable to use as the background of the Header View 
-
-
-          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
-"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
-          <p>This is a private symbol.
-          @attr name info.holliston.high.app:ptrHeaderBackground
-        */
-        public static final int PullToRefreshHeader_ptrHeaderBackground = 0;
-        /**
-          <p>
-          @attr description
-           The height of the Header View 
-
-
-          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
-Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
-in (inches), mm (millimeters).
-          <p>This is a private symbol.
-          @attr name info.holliston.high.app:ptrHeaderHeight
-        */
-        public static final int PullToRefreshHeader_ptrHeaderHeight = 1;
-        /**
-          <p>
-          @attr description
-           The Text Appearance of the Header View's Title text 
-
-
-          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          <p>This is a private symbol.
-          @attr name info.holliston.high.app:ptrHeaderTitleTextAppearance
-        */
-        public static final int PullToRefreshHeader_ptrHeaderTitleTextAppearance = 2;
-        /**
-          <p>
-          @attr description
-           The color that the Progress Bar should be tinted with 
-
-
-          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
-"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
-          <p>This is a private symbol.
-          @attr name info.holliston.high.app:ptrProgressBarColor
-        */
-        public static final int PullToRefreshHeader_ptrProgressBarColor = 3;
-        /**
-          <p>
-          @attr description
-           The height of the Progress Bar 
-
-
-          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
-Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
-in (inches), mm (millimeters).
-          <p>This is a private symbol.
-          @attr name info.holliston.high.app:ptrProgressBarHeight
-        */
-        public static final int PullToRefreshHeader_ptrProgressBarHeight = 5;
-        /**
-          <p>
-          @attr description
-           The style of the Progress Bar 
-
-
-          <p>Must be one or more (separated by '|') of the following constant values.</p>
-<table>
-<colgroup align="left" />
-<colgroup align="left" />
-<colgroup align="left" />
-<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
-<tr><td><code>inside</code></td><td>0x0</td><td></td></tr>
-<tr><td><code>outside</code></td><td>0x1</td><td></td></tr>
-</table>
-          <p>This is a private symbol.
-          @attr name info.holliston.high.app:ptrProgressBarStyle
-        */
-        public static final int PullToRefreshHeader_ptrProgressBarStyle = 4;
-        /**
-          <p>
-          @attr description
-           Text to show to prompt the user is pull (or keep pulling) 
-
-
-          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
-          <p>This is a private symbol.
-          @attr name info.holliston.high.app:ptrPullText
-        */
-        public static final int PullToRefreshHeader_ptrPullText = 6;
-        /**
-          <p>
-          @attr description
-           Text to show to tell the user that a refresh is currently in progress 
-
-
-          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
-          <p>This is a private symbol.
-          @attr name info.holliston.high.app:ptrRefreshingText
-        */
-        public static final int PullToRefreshHeader_ptrRefreshingText = 7;
-        /**
-          <p>
-          @attr description
-           Text to show to tell the user has scrolled enough to refresh 
-
-
-          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
-          <p>This is a private symbol.
-          @attr name info.holliston.high.app:ptrReleaseText
-        */
-        public static final int PullToRefreshHeader_ptrReleaseText = 8;
-        /**
-          <p>
-          @attr description
-           indeterminate progressbar style 
-
-
-          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          <p>This is a private symbol.
-          @attr name info.holliston.high.app:ptrSmoothProgressBarStyle
-        */
-        public static final int PullToRefreshHeader_ptrSmoothProgressBarStyle = 9;
-        /** Attributes that can be used with a PullToRefreshView.
-           <p>Includes the following attributes:</p>
-           <table>
-           <colgroup align="left" />
-           <colgroup align="left" />
-           <tr><th>Attribute</th><th>Description</th></tr>
-           <tr><td><code>{@link #PullToRefreshView_ptrViewDelegateClass info.holliston.high.app:ptrViewDelegateClass}</code></td><td> The class to use as a View's View Delegate.</td></tr>
-           </table>
-           @see #PullToRefreshView_ptrViewDelegateClass
-         */
-        public static final int[] PullToRefreshView = {
-            0x7f01000b
-        };
-        /**
-          <p>
-          @attr description
-           The class to use as a View's View Delegate. Can be relative path from app's package name 
-
-
-          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-<p>May be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
-          <p>This is a private symbol.
-          @attr name info.holliston.high.app:ptrViewDelegateClass
-        */
-        public static final int PullToRefreshView_ptrViewDelegateClass = 0;
-        /** Attributes that can be used with a SmoothProgressBar.
-           <p>Includes the following attributes:</p>
-           <table>
-           <colgroup align="left" />
-           <colgroup align="left" />
-           <tr><th>Attribute</th><th>Description</th></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spbStyle info.holliston.high.app:spbStyle}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_background info.holliston.high.app:spb_background}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_color info.holliston.high.app:spb_color}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_colors info.holliston.high.app:spb_colors}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_generate_background_with_colors info.holliston.high.app:spb_generate_background_with_colors}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_gradients info.holliston.high.app:spb_gradients}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_interpolator info.holliston.high.app:spb_interpolator}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_mirror_mode info.holliston.high.app:spb_mirror_mode}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_progressiveStart_activated info.holliston.high.app:spb_progressiveStart_activated}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_progressiveStart_speed info.holliston.high.app:spb_progressiveStart_speed}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_progressiveStop_speed info.holliston.high.app:spb_progressiveStop_speed}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_reversed info.holliston.high.app:spb_reversed}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_sections_count info.holliston.high.app:spb_sections_count}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_speed info.holliston.high.app:spb_speed}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_stroke_separator_length info.holliston.high.app:spb_stroke_separator_length}</code></td><td></td></tr>
-           <tr><td><code>{@link #SmoothProgressBar_spb_stroke_width info.holliston.high.app:spb_stroke_width}</code></td><td></td></tr>
-           </table>
-           @see #SmoothProgressBar_spbStyle
-           @see #SmoothProgressBar_spb_background
-           @see #SmoothProgressBar_spb_color
-           @see #SmoothProgressBar_spb_colors
-           @see #SmoothProgressBar_spb_generate_background_with_colors
-           @see #SmoothProgressBar_spb_gradients
-           @see #SmoothProgressBar_spb_interpolator
-           @see #SmoothProgressBar_spb_mirror_mode
-           @see #SmoothProgressBar_spb_progressiveStart_activated
-           @see #SmoothProgressBar_spb_progressiveStart_speed
-           @see #SmoothProgressBar_spb_progressiveStop_speed
-           @see #SmoothProgressBar_spb_reversed
-           @see #SmoothProgressBar_spb_sections_count
-           @see #SmoothProgressBar_spb_speed
-           @see #SmoothProgressBar_spb_stroke_separator_length
-           @see #SmoothProgressBar_spb_stroke_width
-         */
-        public static final int[] SmoothProgressBar = {
-            0x7f01000c, 0x7f01000d, 0x7f01000e, 0x7f01000f,
-            0x7f010010, 0x7f010011, 0x7f010012, 0x7f010013,
-            0x7f010014, 0x7f010015, 0x7f010016, 0x7f010017,
-            0x7f010018, 0x7f010019, 0x7f01001a, 0x7f01001b
-        };
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spbStyle}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name info.holliston.high.app:spbStyle
-        */
-        public static final int SmoothProgressBar_spbStyle = 0;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_background}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name info.holliston.high.app:spb_background
-        */
-        public static final int SmoothProgressBar_spb_background = 13;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_color}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
-"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name info.holliston.high.app:spb_color
-        */
-        public static final int SmoothProgressBar_spb_color = 1;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_colors}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name info.holliston.high.app:spb_colors
-        */
-        public static final int SmoothProgressBar_spb_colors = 11;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_generate_background_with_colors}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name info.holliston.high.app:spb_generate_background_with_colors
-        */
-        public static final int SmoothProgressBar_spb_generate_background_with_colors = 14;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_gradients}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name info.holliston.high.app:spb_gradients
-        */
-        public static final int SmoothProgressBar_spb_gradients = 15;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_interpolator}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be one of the following constant values.</p>
-<table>
-<colgroup align="left" />
-<colgroup align="left" />
-<colgroup align="left" />
-<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
-<tr><td><code>spb_interpolator_accelerate</code></td><td>0</td><td></td></tr>
-<tr><td><code>spb_interpolator_linear</code></td><td>1</td><td></td></tr>
-<tr><td><code>spb_interpolator_acceleratedecelerate</code></td><td>2</td><td></td></tr>
-<tr><td><code>spb_interpolator_decelerate</code></td><td>3</td><td></td></tr>
-</table>
-          @attr name info.holliston.high.app:spb_interpolator
-        */
-        public static final int SmoothProgressBar_spb_interpolator = 8;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_mirror_mode}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name info.holliston.high.app:spb_mirror_mode
-        */
-        public static final int SmoothProgressBar_spb_mirror_mode = 10;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_progressiveStart_activated}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name info.holliston.high.app:spb_progressiveStart_activated
-        */
-        public static final int SmoothProgressBar_spb_progressiveStart_activated = 12;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_progressiveStart_speed}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a floating point value, such as "<code>1.2</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name info.holliston.high.app:spb_progressiveStart_speed
-        */
-        public static final int SmoothProgressBar_spb_progressiveStart_speed = 6;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_progressiveStop_speed}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a floating point value, such as "<code>1.2</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name info.holliston.high.app:spb_progressiveStop_speed
-        */
-        public static final int SmoothProgressBar_spb_progressiveStop_speed = 7;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_reversed}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name info.holliston.high.app:spb_reversed
-        */
-        public static final int SmoothProgressBar_spb_reversed = 9;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_sections_count}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be an integer value, such as "<code>100</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name info.holliston.high.app:spb_sections_count
-        */
-        public static final int SmoothProgressBar_spb_sections_count = 4;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_speed}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a floating point value, such as "<code>1.2</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name info.holliston.high.app:spb_speed
-        */
-        public static final int SmoothProgressBar_spb_speed = 5;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_stroke_separator_length}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
-Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
-in (inches), mm (millimeters).
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name info.holliston.high.app:spb_stroke_separator_length
-        */
-        public static final int SmoothProgressBar_spb_stroke_separator_length = 3;
-        /**
-          <p>This symbol is the offset where the {@link info.holliston.high.app.R.attr#spb_stroke_width}
-          attribute's value can be found in the {@link #SmoothProgressBar} array.
-
-
-          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
-Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
-in (inches), mm (millimeters).
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name info.holliston.high.app:spb_stroke_width
-        */
-        public static final int SmoothProgressBar_spb_stroke_width = 2;
-    };
 }

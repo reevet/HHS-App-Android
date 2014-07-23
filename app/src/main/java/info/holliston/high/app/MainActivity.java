@@ -11,10 +11,10 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
 	// nav drawer title
 	private CharSequence mDrawerTitle;
     private int mDrawerIcon;
-    private ArrayList<NavDrawerItem> navDrawerItems;
+    //private ArrayList<NavDrawerItem> navDrawerItems;
 
     // used to store app title
 	private CharSequence mTitle;
@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
 
     private int currentView = -1;
     private int defaultView = 0;
-    Boolean newNewsAvailable = false;
+    //Boolean newNewsAvailable = false;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -189,7 +189,7 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
 
         //refreshData();
         super.onRestoreInstanceState(savedInstanceState);
@@ -312,7 +312,11 @@ public class MainActivity extends Activity {
            // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
-            setTitle(navMenuTitles[position]);
+            if (position == 0) {
+                setTitle("Holliston High");
+            } else {
+                setTitle(navMenuTitles[position]);
+            }
             //setIcon(navDrawerItems.get(position).getIcon());
             mDrawerLayout.closeDrawer(mDrawerList);
 
@@ -367,7 +371,7 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("currentView", currentView);
 
