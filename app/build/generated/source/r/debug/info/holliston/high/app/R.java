@@ -77,10 +77,11 @@ public final class R {
         public static final int list_item_bg_normal=0x7f02001e;
         public static final int list_item_bg_pressed=0x7f02001f;
         public static final int list_selector=0x7f020020;
-        public static final int star=0x7f020021;
-        public static final int star_50=0x7f020022;
-        public static final int widget_background=0x7f020023;
-        public static final int widget_preview=0x7f020024;
+        public static final int panther=0x7f020021;
+        public static final int star=0x7f020022;
+        public static final int star_50=0x7f020023;
+        public static final int widget_background=0x7f020024;
+        public static final int widget_preview=0x7f020025;
     }
     public static final class id {
         public static final int action_settings=0x7f0b003b;

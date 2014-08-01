@@ -15,6 +15,7 @@
         <item>News</item>
         <item>Daily Announcements</item>
         <item>Events</item>
+        <item>HHS Website</item>
         <item>Refresh</item>
     </string-array>
 
@@ -26,6 +27,7 @@
         <item>@drawable/ic_news</item>
         <item>@drawable/ic_announcements</item>
         <item>@drawable/ic_events</item>
+        <item>@drawable/panther</item>
         <item>@drawable/ic_refresh</item>
     </array>
 

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -118,8 +119,11 @@ public class MainActivity extends Activity {
         // Events
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
         fragmentData.add(eventsString);
-        // Refresh
+        // Events
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
+        fragmentData.add(eventsString);
+        // Refresh
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(6, -1)));
         fragmentData.add("");
 
 		// Recycle the typed array
@@ -281,6 +285,11 @@ public class MainActivity extends Activity {
             currentView = position;
             break;
         case 5:
+            Uri uriUrl = Uri.parse("https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/");
+            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+            startActivity(launchBrowser);
+            return;
+        case 6:
             refresh = true;
             break;
         default:
