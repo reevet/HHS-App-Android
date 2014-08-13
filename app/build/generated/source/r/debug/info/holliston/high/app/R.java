@@ -191,13 +191,14 @@ public final class R {
         public static final int drawer_open=0x7f08000a;
         public static final int events_url=0x7f08000b;
         public static final int hello_world=0x7f08000c;
-        public static final int loading_splash=0x7f08000d;
-        public static final int menu_refresh=0x7f08000e;
-        public static final int news_url=0x7f08000f;
-        public static final int page_title=0x7f080010;
-        public static final int schedules_url=0x7f080011;
-        public static final int updated=0x7f080012;
-        public static final int xml_error=0x7f080013;
+        public static final int hhs_home_page=0x7f08000d;
+        public static final int loading_splash=0x7f08000e;
+        public static final int menu_refresh=0x7f08000f;
+        public static final int news_url=0x7f080010;
+        public static final int page_title=0x7f080011;
+        public static final int schedules_url=0x7f080012;
+        public static final int updated=0x7f080013;
+        public static final int xml_error=0x7f080014;
     }
     public static final class style {
         /** 

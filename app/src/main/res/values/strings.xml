@@ -46,6 +46,9 @@
     <string name="events_url">https://www.google.com/calendar/feeds/holliston.k12.ma.us_gsfpbqnefkm59ul6gbofte1s2k%40group.calendar.google.com/private-641b39b01a46e77af57592990d225fac/full?futureevents=true&amp;orderby=starttime&amp;sortorder=a&amp;singleevents=true&amp;max-results=30</string>
     <string name="dailyann_url">https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/general-info/daily-announcements/posts.xml</string>
 
+    <!-- Home page URL  -->
+    <string name="hhs_home_page">http://hhs.holliston.k12.ma.us</string>
+
     <!-- Parser element names -->
     <string-array name="schedules_parser_names">
         <item>entry</item>

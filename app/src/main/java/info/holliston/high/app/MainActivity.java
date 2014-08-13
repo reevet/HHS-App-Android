@@ -285,7 +285,7 @@ public class MainActivity extends Activity {
             currentView = position;
             break;
         case 5:
-            Uri uriUrl = Uri.parse("https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/");
+            Uri uriUrl = Uri.parse(getResources().getString(R.string.hhs_home_page));
             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
             startActivity(launchBrowser);
             return;
