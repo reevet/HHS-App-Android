@@ -66,16 +66,16 @@ public class ArticleDataSource {
             ContentValues values = new ContentValues();
             values.put(ArticleSQLiteHelper.COLUMN_TITLE, title);
             SimpleDateFormat dateSdf = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat timeSdf = new SimpleDateFormat("hh:mm a");
+            SimpleDateFormat timeSdf = new SimpleDateFormat("kk:mm a");
         String dateString = dateSdf.format(date);
             String timeString = timeSdf.format(date);
-            if (timeString.charAt(6) == 'P'){
+            /*if (timeString.charAt(6) == 'P'){
                 int hour = Integer.parseInt(timeString.substring(0,2));
                 hour = hour+12;
                 timeString = String.valueOf(hour)+timeString.substring(2,5);
             } else {
                 timeString = timeString.substring(0,5);
-            }
+            }*/
             String fullDateString = dateString+" "+timeString;
         values.put(ArticleSQLiteHelper.COLUMN_URL, url.toString());
             values.put(ArticleSQLiteHelper.COLUMN_DATE, fullDateString);

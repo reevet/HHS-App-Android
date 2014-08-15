@@ -139,11 +139,11 @@ public class ArticleParser {
             Log.d("parser", "Error making URL");
         }
         Date dateDate ;
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss.SSSZ");
 
         if (date != null) {
             if (date.length() == 24) {
-                format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                format = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss.SSS'Z'");
             } else if (date.length() == 10) {
                 format = new SimpleDateFormat("yyyy-MM-dd");
             }
