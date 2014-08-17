@@ -177,7 +177,7 @@ public class ArticleDataSource {
         String where;
 
         Date now = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
         String nowString;
         Calendar cal = Calendar.getInstance();
         cal.setTime(now);
@@ -217,7 +217,7 @@ public class ArticleDataSource {
         String where;
 
         Date now = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
         String nowString;
         Calendar cal = Calendar.getInstance();
         cal.setTime(now);
@@ -269,7 +269,7 @@ public class ArticleDataSource {
             article.url = null;
         }
         String dateString = cursor.getString(3);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
         try {
             article.date = sdf.parse(dateString);
         } catch (Exception e) {
