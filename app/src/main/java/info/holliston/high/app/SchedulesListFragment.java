@@ -61,6 +61,27 @@ public class SchedulesListFragment extends Fragment {
         String currentHeader = "";
         List<Article> eventsInDay = new ArrayList<Article>();
 
+        //check if now is after school - if so, skip today's schedule
+        if(articles.size() >=2) {
+            Date todayDate = new Date();
+            Calendar todayCal = Calendar.getInstance();
+            todayCal.setTime(todayDate);
+            int todayMonth = todayCal.get(Calendar.MONTH);
+            int todayDay = todayCal.get(Calendar.DATE);
+            int todayHour = todayCal.get(Calendar.HOUR_OF_DAY);
+
+            if (todayHour >=14) {
+                Date firstDate = articles.get(0).date;
+                Calendar firstCal = Calendar.getInstance();
+                firstCal.setTime(firstDate);
+                int firstMonth = firstCal.get(Calendar.MONTH);
+                int firstDay = firstCal.get(Calendar.DATE);
+
+                if ((todayMonth == firstMonth) && (todayDay == firstDay)) {
+                    articles.remove(0);
+                }
+            }
+        }
 
         for (Article article : articles) {
             Date date = article.date;

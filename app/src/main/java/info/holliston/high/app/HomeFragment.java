@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
                 ArticleSQLiteHelper.TABLE_SCHEDULES, getString(R.string.schedules_url),
                 getResources().getStringArray(R.array.schedules_parser_names),
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS, ArticleDataSource.SortOrder.GET_FUTURE,
-                "1");
+                "2");
         schedulesSource = new ArticleDataSource(getActivity().getApplicationContext(),options);
         schedulesSource.open();
 
@@ -91,8 +91,30 @@ public class HomeFragment extends Fragment {
 
         if (tempArticles.size() >0) {
             scheduleArticle = tempArticles.get(0);
+
+            if(tempArticles.size() >=2) {
+                Date todayDate = new Date();
+                Calendar todayCal = Calendar.getInstance();
+                todayCal.setTime(todayDate);
+                int todayMonth = todayCal.get(Calendar.MONTH);
+                int todayDay = todayCal.get(Calendar.DATE);
+                int todayHour = todayCal.get(Calendar.HOUR_OF_DAY);
+
+                if (todayHour >=14) {
+                    Date firstDate = tempArticles.get(0).date;
+                    Calendar firstCal = Calendar.getInstance();
+                    firstCal.setTime(firstDate);
+                    int firstMonth = firstCal.get(Calendar.MONTH);
+                    int firstDay = firstCal.get(Calendar.DATE);
+
+                    if ((todayMonth == firstMonth) && (todayDay == firstDay)) {
+                        scheduleArticle = tempArticles.get(1);
+                    }
+                }
+            }
             assignSchedule(scheduleArticle);
         }
+
 
         /*Get the most recent daily announcements */
         options = new ArticleDataSourceOptions(
@@ -325,6 +347,7 @@ public class HomeFragment extends Fragment {
                         .findViewById(R.id.row_title);
                 TextView dateListChild = (TextView) row
                         .findViewById(R.id.row_time);
+                ImageView disc_icon = (ImageView) row.findViewById(R.id.row_disc_icon);
 
                 SimpleDateFormat df = new SimpleDateFormat("h:mm a");
                 String dateString = df.format(article.date);

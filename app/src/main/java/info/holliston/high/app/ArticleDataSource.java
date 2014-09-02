@@ -177,7 +177,7 @@ public class ArticleDataSource {
         String where;
 
         Date now = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");// kk:mm");
         String nowString;
         Calendar cal = Calendar.getInstance();
         cal.setTime(now);
