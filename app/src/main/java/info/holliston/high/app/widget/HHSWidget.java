@@ -10,6 +10,7 @@ import android.widget.RemoteViews;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import info.holliston.high.app.ArticleDataSource;
@@ -91,22 +92,25 @@ public class HHSWidget extends AppWidgetProvider {
         {
             Article article = articles.get(0);
 
-            Calendar now = Calendar.getInstance();
-            int nowMonth = now.get(Calendar.MONTH);
-            int nowDate = now.get(Calendar.DATE);
-            int nowHour = now.get(Calendar.HOUR_OF_DAY);
-            int nowMinute = now.get(Calendar.MINUTE);
-            Boolean after1330 = (nowHour>13) || ((nowHour == 13) && (nowMinute >30));
+            if(articles.size() >=2) {
+                Date todayDate = new Date();
+                Calendar todayCal = Calendar.getInstance();
+                todayCal.setTime(todayDate);
+                int todayMonth = todayCal.get(Calendar.MONTH);
+                int todayDay = todayCal.get(Calendar.DATE);
+                int todayHour = todayCal.get(Calendar.HOUR_OF_DAY);
 
-            Calendar firstArtCal = Calendar.getInstance();
-            firstArtCal.setTime(article.date);
-            int firstArtMonth = firstArtCal.get(Calendar.MONTH);
-            int firstArtDate = firstArtCal.get(Calendar.DATE);
+                if (todayHour >=14) {
+                    Date firstDate = articles.get(0).date;
+                    Calendar firstCal = Calendar.getInstance();
+                    firstCal.setTime(firstDate);
+                    int firstMonth = firstCal.get(Calendar.MONTH);
+                    int firstDay = firstCal.get(Calendar.DATE);
 
-            if ((nowDate == firstArtDate) && (nowMonth == firstArtMonth) && (after1330)) {
-               if (articles.size() >=2) {
-                   article = articles.get(1);
-               }
+                    if ((todayMonth == firstMonth) && (todayDay == firstDay)) {
+                        article = articles.get(1);
+                    }
+                }
             }
 
             SimpleDateFormat df = new SimpleDateFormat("EEEE, MMM d");
