@@ -1,5 +1,12 @@
 package info.holliston.high.app;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -10,13 +17,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import info.holliston.high.app.model.Article;
 import info.holliston.high.app.xmlparser.ArticleParser;
@@ -66,16 +66,16 @@ public class ArticleDataSource {
             ContentValues values = new ContentValues();
             values.put(ArticleSQLiteHelper.COLUMN_TITLE, title);
             SimpleDateFormat dateSdf = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat timeSdf = new SimpleDateFormat("hh:mm a");
+            SimpleDateFormat timeSdf = new SimpleDateFormat("kk:mm a");
         String dateString = dateSdf.format(date);
             String timeString = timeSdf.format(date);
-            if (timeString.charAt(6) == 'P'){
+            /*if (timeString.charAt(6) == 'P'){
                 int hour = Integer.parseInt(timeString.substring(0,2));
                 hour = hour+12;
                 timeString = String.valueOf(hour)+timeString.substring(2,5);
             } else {
                 timeString = timeString.substring(0,5);
-            }
+            }*/
             String fullDateString = dateString+" "+timeString;
         values.put(ArticleSQLiteHelper.COLUMN_URL, url.toString());
             values.put(ArticleSQLiteHelper.COLUMN_DATE, fullDateString);
@@ -99,6 +99,7 @@ public class ArticleDataSource {
             int update = database.update(dbHelper.getName(),
                     values, ArticleSQLiteHelper.COLUMN_URL+"='"+url.toString()+"'", null
                     );
+            Log.d("ArticleDataSource", update+" records updated");
             Cursor cursor = database.query(dbHelper.getName(),
                     allColumns, ArticleSQLiteHelper.COLUMN_URL+"='"+url.toString()+"'", null,
                     null, null, null);
@@ -115,7 +116,7 @@ public class ArticleDataSource {
         }
     }
 
-    public void deleteArticle(Article article) {
+    /*public void deleteArticle(Article article) {
         long id = article.id;
         System.out.println("Comment deleted with id: " + id);
         database.delete(ArticleSQLiteHelper.TABLE_SCHEDULES,
@@ -139,7 +140,7 @@ public class ArticleDataSource {
         // make sure to close the cursor
         cursor.close();
         return article;
-    }
+    }*/
 
     public Article articleFromUrl(URL url) {
         Cursor cursor;
@@ -176,7 +177,7 @@ public class ArticleDataSource {
         String where;
 
         Date now = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");// kk:mm");
         String nowString;
         Calendar cal = Calendar.getInstance();
         cal.setTime(now);
@@ -216,7 +217,7 @@ public class ArticleDataSource {
         String where;
 
         Date now = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
         String nowString;
         Calendar cal = Calendar.getInstance();
         cal.setTime(now);
@@ -268,7 +269,7 @@ public class ArticleDataSource {
             article.url = null;
         }
         String dateString = cursor.getString(3);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
         try {
             article.date = sdf.parse(dateString);
         } catch (Exception e) {
@@ -292,7 +293,7 @@ public class ArticleDataSource {
                 // Instantiate the parser
                 ArticleParser xmlParser = new ArticleParser(this, parserNames, this.conversionType, Integer.parseInt(this.limit));
                 stream = downloadUrl(this.urlString);
-                List<Article> backup = this.getAllArticles();
+                //List<Article> backup = this.getAllArticles();
                 String parseResult = xmlParser.parse(stream);
                 result = "Downloaded: "+parseResult;
 
@@ -306,10 +307,14 @@ public class ArticleDataSource {
             } catch (Exception e) {
                 result = "Downloading error: "+e.toString();
             }
-            try {
-                stream.close();
-            } catch (Exception e) {
-                //Ignore
+            finally  {
+                try {
+                    if (stream !=null){
+                        stream.close();
+                    }
+                } catch (Exception e) {
+                    //ignore
+                }
             }
         } else {
             result = "Download skipped: "+articlesCount+" articles in cache (good enough)";

@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -41,7 +43,7 @@ public class MainActivity extends Activity {
 	// nav drawer title
 	private CharSequence mDrawerTitle;
     private int mDrawerIcon;
-    private ArrayList<NavDrawerItem> navDrawerItems;
+    //private ArrayList<NavDrawerItem> navDrawerItems;
 
     // used to store app title
 	private CharSequence mTitle;
@@ -53,8 +55,8 @@ public class MainActivity extends Activity {
 
 
     private int currentView = -1;
-    private int defaultView = 1;
-    Boolean newNewsAvailable = false;
+    private int defaultView = 0;
+    //Boolean newNewsAvailable = false;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -102,19 +104,26 @@ public class MainActivity extends Activity {
 
         navDrawerItems = new ArrayList<NavDrawerItem>();
 
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
+        // Home
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
+        fragmentData.add("");
+        // Schedules
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         fragmentData.add(schedulesString);
 		// News
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
         fragmentData.add(newsString);
         // Daily Announcements
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
         fragmentData.add(dailyAnnString);
         // Events
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
+        fragmentData.add(eventsString);
+        // Events
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
         fragmentData.add(eventsString);
         // Refresh
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(6, -1)));
         fragmentData.add("");
 
 		// Recycle the typed array
@@ -184,7 +193,7 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
 
         //refreshData();
         super.onRestoreInstanceState(savedInstanceState);
@@ -255,23 +264,32 @@ public class MainActivity extends Activity {
 
 
 		switch (position) {
-		case 0:
+         case 0:
+                fragment = new HomeFragment();
+                currentView = position;
+                break;
+         case 1:
             fragment = new SchedulesListFragment();
             currentView = position;
 			break;
-		case 1:
+		case 2:
 			fragment = new NewsListFragment();
             currentView = position;
             break;
-		case 2:
+		case 3:
 			fragment = new DailyAnnListFragment();
             currentView = position;
             break;
-		case 3:
+		case 4:
 			fragment = new EventsListFragment();
             currentView = position;
             break;
-        case 4:
+        case 5:
+            Uri uriUrl = Uri.parse(getResources().getString(R.string.hhs_home_page));
+            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+            startActivity(launchBrowser);
+            return;
+        case 6:
             refresh = true;
             break;
         default:
@@ -303,7 +321,11 @@ public class MainActivity extends Activity {
            // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
-            setTitle(navMenuTitles[position]);
+            if (position == 0) {
+                setTitle("Holliston High");
+            } else {
+                setTitle(navMenuTitles[position]);
+            }
             //setIcon(navDrawerItems.get(position).getIcon());
             mDrawerLayout.closeDrawer(mDrawerList);
 
@@ -358,7 +380,7 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("currentView", currentView);
 

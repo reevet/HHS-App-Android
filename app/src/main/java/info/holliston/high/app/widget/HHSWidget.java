@@ -3,22 +3,18 @@ package info.holliston.high.app.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.widget.ImageView;
+import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import info.holliston.high.app.ArticleDataSource;
 import info.holliston.high.app.ArticleDataSourceOptions;
-import info.holliston.high.app.ArticleDownloaderService;
 import info.holliston.high.app.ArticleSQLiteHelper;
 import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
@@ -34,23 +30,16 @@ public class HHSWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-        ComponentName thisWidget = new ComponentName(context, HHSWidget.class);
-        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+        //ComponentName thisWidget = new ComponentName(context, HHSWidget.class);
+        //int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-        final int N = appWidgetIds.length;
-        for (int i=0; i<N; i++) {
-            updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
+        //final int N = appWidgetIds.length;
+        //for (int i=0; i<N; i++) {
+        for (int appWidgetId :appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId);
         }
 
-        //onClickListener
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.setAction(NOTIFICATION);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,0, intent, 0);
-
-        RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-        view.setOnClickPendingIntent(R.id.widget_all, pendingIntent);
-
-        appWidgetManager.updateAppWidget(appWidgetIds, view);
+        //appWidgetManager.updateAppWidget(appWidgetIds, view);
 
         //Intent intent2 = new Intent(context, ArticleDownloaderService.class);
         //intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, allWidgetIds );
@@ -58,7 +47,7 @@ public class HHSWidget extends AppWidgetProvider {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
 
         super.onReceive(context, intent);
 /*
@@ -103,22 +92,25 @@ public class HHSWidget extends AppWidgetProvider {
         {
             Article article = articles.get(0);
 
-            Calendar now = Calendar.getInstance();
-            int nowMonth = now.get(Calendar.MONTH);
-            int nowDate = now.get(Calendar.DATE);
-            int nowHour = now.get(Calendar.HOUR_OF_DAY);
-            int nowMinute = now.get(Calendar.MINUTE);
-            Boolean after1330 = (nowHour>13) || ((nowHour == 13) && (nowMinute >30));
+            if(articles.size() >=2) {
+                Date todayDate = new Date();
+                Calendar todayCal = Calendar.getInstance();
+                todayCal.setTime(todayDate);
+                int todayMonth = todayCal.get(Calendar.MONTH);
+                int todayDay = todayCal.get(Calendar.DATE);
+                int todayHour = todayCal.get(Calendar.HOUR_OF_DAY);
 
-            Calendar firstArtCal = Calendar.getInstance();
-            firstArtCal.setTime(article.date);
-            int firstArtMonth = firstArtCal.get(Calendar.MONTH);
-            int firstArtDate = firstArtCal.get(Calendar.DATE);
+                if (todayHour >=14) {
+                    Date firstDate = articles.get(0).date;
+                    Calendar firstCal = Calendar.getInstance();
+                    firstCal.setTime(firstDate);
+                    int firstMonth = firstCal.get(Calendar.MONTH);
+                    int firstDay = firstCal.get(Calendar.DATE);
 
-            if ((nowDate == firstArtDate) && (nowMonth == firstArtMonth) && (after1330)) {
-               if (articles.size() >=2) {
-                   article = articles.get(1);
-               }
+                    if ((todayMonth == firstMonth) && (todayDay == firstDay)) {
+                        article = articles.get(1);
+                    }
+                }
             }
 
             SimpleDateFormat df = new SimpleDateFormat("EEEE, MMM d");
@@ -147,6 +139,15 @@ public class HHSWidget extends AppWidgetProvider {
                     views.setImageViewResource(R.id.widget_sched_icon, R.drawable.star_50);
                     break;
             }
+
+            //onClickListener
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.setAction(NOTIFICATION);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, intent, 0);
+
+            views.setOnClickPendingIntent(R.id.widget_all, pendingIntent);
+
+
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
 

@@ -10,20 +10,24 @@
 
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
+        <item>Home</item>
         <item>Schedules</item>
         <item>News</item>
         <item>Daily Announcements</item>
         <item>Events</item>
+        <item>HHS Website</item>
         <item>Refresh</item>
     </string-array>
 
     <!-- Nav Drawer List Item Icons -->
     <!-- Keep them in order as the titles are in -->
     <array name="nav_drawer_icons">
+        <item>@drawable/ic_hhs</item>
         <item>@drawable/ic_schedules</item>
         <item>@drawable/ic_news</item>
         <item>@drawable/ic_announcements</item>
         <item>@drawable/ic_events</item>
+        <item>@drawable/panther</item>
         <item>@drawable/ic_refresh</item>
     </array>
 
@@ -41,6 +45,9 @@
     <string name="news_url">https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/general-info/news/posts.xml</string>
     <string name="events_url">https://www.google.com/calendar/feeds/holliston.k12.ma.us_gsfpbqnefkm59ul6gbofte1s2k%40group.calendar.google.com/private-641b39b01a46e77af57592990d225fac/full?futureevents=true&amp;orderby=starttime&amp;sortorder=a&amp;singleevents=true&amp;max-results=30</string>
     <string name="dailyann_url">https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/general-info/daily-announcements/posts.xml</string>
+
+    <!-- Home page URL  -->
+    <string name="hhs_home_page">http://hhs.holliston.k12.ma.us</string>
 
     <!-- Parser element names -->
     <string-array name="schedules_parser_names">
@@ -78,5 +85,6 @@
 
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="daily_ann_title">Daily Announcements</string>
 
 </resources>

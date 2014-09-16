@@ -44,12 +44,12 @@ public class NavDrawerListAdapter extends BaseAdapter {
 		if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater)
                     context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            convertView = mInflater.inflate(R.layout.drawer_list_item, null);
+            convertView = mInflater.inflate(R.layout.drawer_list_item, parent, false);
         }
          
         ImageView imgIcon = (ImageView) convertView.findViewById(R.id.icon);
         TextView txtTitle = (TextView) convertView.findViewById(R.id.title);
-        ImageView imgNewNews = (ImageView) convertView.findViewById(R.id.drawer_new_available_icon);
+        //ImageView imgNewNews = (ImageView) convertView.findViewById(R.id.drawer_new_available_icon);
 
         //TextView txtCount = (TextView) convertView.findViewById(R.id.counter);
          

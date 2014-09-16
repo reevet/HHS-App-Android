@@ -10,14 +10,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
-import info.holliston.high.app.model.Article;
 import info.holliston.high.app.widget.HHSWidget;
 import info.holliston.high.app.xmlparser.ArticleParser;
 
@@ -36,6 +34,7 @@ public class ArticleDownloaderService extends Service {
         Log.d("ArticleDownloaderService", "Service started due to " +alarmSource);
         if (!(sentMode == null)){
             this.refreshSource = sentMode;
+
         }
         new PrefetchData().execute();
         return Service.START_NOT_STICKY;
@@ -145,13 +144,13 @@ public class ArticleDownloaderService extends Service {
             refreshSource = ArticleParser.SourceMode.ALLOW_BOTH;
         }
 
-        private void nukeDatabaseRecords() {
+        /*private void nukeDatabaseRecords() {
             schedulesDataSource.nukeAllRecords();
             eventsDataSource.nukeAllRecords();
             newsDataSource.nukeAllRecords();
             dailyAnnDataSource.nukeAllRecords();
 
-        }
+        }*/
     }
 
     private void publishResults(String result) {
@@ -177,12 +176,12 @@ public class ArticleDownloaderService extends Service {
         cancelAlarm(10); //for testing only
 
         Random r = new Random();
-        int val = r.nextInt(15 - 0) + 0; //between 14 and 0;
-        int sign = (-1) ^ (r.nextInt(2));
+        int val = r.nextInt(15); //between 14 and 0;
+        int sign = ~(r.nextInt(2));
         int jitter = sign*val;
 
         //Alarm 0 - 4 am
-        setAlarm(0, 4, 0+jitter, AlarmManager.INTERVAL_DAY);
+        setAlarm(0, 4, jitter, AlarmManager.INTERVAL_DAY);
 
         //Alarm 1 - 8:30 am
         setAlarm(1, 8, 30+jitter, AlarmManager.INTERVAL_DAY);
@@ -236,7 +235,7 @@ public class ArticleDownloaderService extends Service {
         alarmMgr.cancel(alarmIntent);
     }
 
-    private void setTestAlarm() {
+    /*private void setTestAlarm() {
         Date now = new Date();
         Calendar nowCal = Calendar.getInstance();
         nowCal.setTime(now);
@@ -257,7 +256,7 @@ public class ArticleDownloaderService extends Service {
         Date setFor = nowCal.getTime();
         String setString = sdf.format(setFor);
         Log.d("ArticleDownloaderService", "TestAlarm(10) set for "+setString);
-    }
+    }*/
 
 
 

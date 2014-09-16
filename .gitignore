@@ -1,0 +1,13 @@
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/app/.gitignore
+/app/app-release.apk
+/app/build.gradle
+/app/proguard-rules.pro
+build.gradle
+gradle.properties
+settings.gradle
