@@ -51,11 +51,13 @@ public class ArticleDownloaderService extends Service {
         ArticleDataSource dailyAnnDataSource;
         ArticleDataSource newsDataSource;
         ArticleDataSource eventsDataSource;
+        ArticleDataSource lunchDataSource;
 
         String schedulesString = "";
         String newsString = "";
         String eventsString = "";
         String dailyAnnString = "";
+        String lunchString = "";
 
         @Override
         protected void onPreExecute() {
@@ -89,6 +91,14 @@ public class ArticleDownloaderService extends Service {
                     "40");
             eventsDataSource = new ArticleDataSource(getApplicationContext(), edso
                     );
+
+            ArticleDataSourceOptions ldso = new ArticleDataSourceOptions(
+                    ArticleSQLiteHelper.TABLE_LUNCH, getString(R.string.lunch_url),
+                    getResources().getStringArray(R.array.lunch_parser_names),
+                    ArticleParser.HtmlTags.IGNORE_HTML_TAGS, ArticleDataSource.SortOrder.GET_FUTURE,
+                    "40");
+            lunchDataSource = new ArticleDataSource(getApplicationContext(), ldso
+            );
 
             // before making http calls
 
@@ -132,6 +142,15 @@ public class ArticleDownloaderService extends Service {
                 Log.d("ArticleDownloaderService", "Daily Announcements: "+result);
             } catch (Exception e) {
                 dailyAnnString = getResources().getString(R.string.xml_error);
+            }
+
+            try {
+                lunchDataSource.open();
+                String result = lunchDataSource.downloadArticlesFromNetwork(refreshSource);
+                lunchDataSource.close();
+                Log.d("ArticleDownloaderService", "Lunch: "+result);
+            } catch (Exception e) {
+                lunchString = getResources().getString(R.string.xml_error);
             }
             return null;
         }

@@ -39,6 +39,7 @@ public class MainActivity extends Activity {
     String eventsString;
     String newsString;
     String dailyAnnString;
+    String lunchString;
 
 	// nav drawer title
 	private CharSequence mDrawerTitle;
@@ -119,11 +120,14 @@ public class MainActivity extends Activity {
         // Events
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
         fragmentData.add(eventsString);
-        // Events
+        // Lunch
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
-        fragmentData.add(eventsString);
-        // Refresh
+        fragmentData.add(lunchString);
+        // Website link
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(6, -1)));
+        fragmentData.add("");
+        // Refresh
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[7], navMenuIcons.getResourceId(7, -1)));
         fragmentData.add("");
 
 		// Recycle the typed array
@@ -285,11 +289,15 @@ public class MainActivity extends Activity {
             currentView = position;
             break;
         case 5:
+            fragment = new LunchListFragment();
+            currentView = position;
+            break;
+        case 6:
             Uri uriUrl = Uri.parse(getResources().getString(R.string.hhs_home_page));
             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
             startActivity(launchBrowser);
             return;
-        case 6:
+        case 7:
             refresh = true;
             break;
         default:

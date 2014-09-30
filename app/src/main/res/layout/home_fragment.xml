@@ -11,17 +11,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Next Schedule"
-            android:id="@+id/textView2"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:textColor="@android:color/black"
-            android:textStyle="italic" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Next Schedule"
+                android:id="@+id/textView2"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:textColor="@android:color/black"
+                android:textStyle="italic" />
+
+            <ImageButton
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/refresh_button"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/ic_refresh"
+                android:layout_alignTop="@+id/textView2"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="3dp" />
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -52,7 +67,7 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
                     android:text="Medium Text"
                     android:id="@+id/sched_date"
                     android:textColor="@android:color/darker_gray"
@@ -67,6 +82,15 @@
                         android:layout_below="@+id/sched_date"
                         android:textColor="@android:color/black"
                     android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="No lunch menu posted"
+                    android:id="@+id/lunch_title"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="10dp" />
             </LinearLayout>
 
             <ImageView
@@ -81,7 +105,7 @@
         </RelativeLayout>
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="322dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Latest News"

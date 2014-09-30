@@ -14,6 +14,7 @@ public class ArticleSQLiteHelper extends SQLiteOpenHelper {
     public static final String TABLE_EVENTS = "events";
     public static final String TABLE_NEWS = "news";
     public static final String TABLE_DAILYANN = "dailyAnn";
+    public static final String TABLE_LUNCH = "lunch";
 
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_URL = "url";
