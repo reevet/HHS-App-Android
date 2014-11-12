@@ -57,97 +57,99 @@ public class SchedulesListFragment extends Fragment {
         articles = datasource.getAllArticles();
         datasource.close();
 
-        int weekOfYear = -1;
-        String currentHeader = "";
-        List<Article> eventsInDay = new ArrayList<Article>();
+        if (headers.size() == 0) {
+            int weekOfYear = -1;
+            String currentHeader = "";
+            List<Article> eventsInDay = new ArrayList<Article>();
 
-        //check if now is after school - if so, skip today's schedule
-        if(articles.size() >=2) {
-            Date todayDate = new Date();
-            Calendar todayCal = Calendar.getInstance();
-            todayCal.setTime(todayDate);
-            int todayMonth = todayCal.get(Calendar.MONTH);
-            int todayDay = todayCal.get(Calendar.DATE);
-            int todayHour = todayCal.get(Calendar.HOUR_OF_DAY);
+            //check if now is after school - if so, skip today's schedule
+            if (articles.size() >= 2) {
+                Date todayDate = new Date();
+                Calendar todayCal = Calendar.getInstance();
+                todayCal.setTime(todayDate);
+                int todayMonth = todayCal.get(Calendar.MONTH);
+                int todayDay = todayCal.get(Calendar.DATE);
+                int todayHour = todayCal.get(Calendar.HOUR_OF_DAY);
 
-            if (todayHour >=14) {
-                Date firstDate = articles.get(0).date;
-                Calendar firstCal = Calendar.getInstance();
-                firstCal.setTime(firstDate);
-                int firstMonth = firstCal.get(Calendar.MONTH);
-                int firstDay = firstCal.get(Calendar.DATE);
+                if (todayHour >= 14) {
+                    Date firstDate = articles.get(0).date;
+                    Calendar firstCal = Calendar.getInstance();
+                    firstCal.setTime(firstDate);
+                    int firstMonth = firstCal.get(Calendar.MONTH);
+                    int firstDay = firstCal.get(Calendar.DATE);
 
-                if ((todayMonth == firstMonth) && (todayDay == firstDay)) {
-                    articles.remove(0);
+                    if ((todayMonth == firstMonth) && (todayDay == firstDay)) {
+                        articles.remove(0);
+                    }
                 }
             }
-        }
 
-        for (Article article : articles) {
-            Date date = article.date;
-            if (date == null) {
-                return;
-            }
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-            int thisWeek = cal.get(Calendar.WEEK_OF_YEAR);
-
-            if (thisWeek != weekOfYear) {
-                weekOfYear = thisWeek;
-                if (!(currentHeader.equals(""))) {
-                    this.schedules.put(currentHeader, eventsInDay);
-                    eventsInDay = new ArrayList<Article>();
+            for (Article article : articles) {
+                Date date = article.date;
+                if (date == null) {
+                    return;
                 }
-                SimpleDateFormat hFormat = new SimpleDateFormat("EEE, MMM d");
-                String headerString = hFormat.format(date);
-                this.headers.add(headerString);
-                currentHeader = headerString;
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                int thisWeek = cal.get(Calendar.WEEK_OF_YEAR);
 
+                if (thisWeek != weekOfYear) {
+                    weekOfYear = thisWeek;
+                    if (!(currentHeader.equals(""))) {
+                        this.schedules.put(currentHeader, eventsInDay);
+                        eventsInDay = new ArrayList<Article>();
+                    }
+                    SimpleDateFormat hFormat = new SimpleDateFormat("EEE, MMM d");
+                    String headerString = hFormat.format(date);
+                    this.headers.add(headerString);
+                    currentHeader = headerString;
+
+                }
+                eventsInDay.add(article);
             }
-            eventsInDay.add(article);
-        }
-        if (eventsInDay.size() > 0) {
-            this.schedules.put(currentHeader, eventsInDay);
-        }
-
-        this.lv = (ExpandableListView) v.findViewById(R.id.schedules_exlistview);
-
-        SchedulesArrayAdapter adapter = new SchedulesArrayAdapter(getActivity(), this.headers, this.schedules);
-        this.lv.setAdapter(adapter);
-
-        if (getActivity().findViewById(R.id.frame_container) == null) {
-            if (articles.size() > 0) {
-                sendToDetailFragment(articles.get(0));
+            if (eventsInDay.size() > 0) {
+                this.schedules.put(currentHeader, eventsInDay);
             }
         }
+            this.lv = (ExpandableListView) v.findViewById(R.id.schedules_exlistview);
 
-        ExpandableListView.OnGroupClickListener gcl = new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                parent.expandGroup(groupPosition);
-                return true;
+            SchedulesArrayAdapter adapter = new SchedulesArrayAdapter(getActivity(), this.headers, this.schedules);
+            this.lv.setAdapter(adapter);
+
+            if (getActivity().findViewById(R.id.frame_container) == null) {
+                if (schedules.size() > 0) {
+                    sendToDetailFragment(articles.get(0));
+                }
             }
-        };
 
-        this.lv.setOnGroupClickListener(gcl);
-
-        // Listview on child click listener
-        this.lv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
+            ExpandableListView.OnGroupClickListener gcl = new ExpandableListView.OnGroupClickListener() {
                 @Override
-                public boolean onChildClick(ExpandableListView parent, View v,
-                                            int groupPosition, int childPosition, long id) {
-                    // Create new fragment and transaction
-                    String header = headers.get(groupPosition);
-                    List<Article> groupArticles = schedules.get(header);
-                    Article sendArticle = groupArticles.get(childPosition);
-
-                    sendToDetailFragment(sendArticle);
-                    return false;
+                public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                    parent.expandGroup(groupPosition);
+                    return true;
                 }
-            }
+            };
 
-        );
+            this.lv.setOnGroupClickListener(gcl);
+
+            // Listview on child click listener
+            this.lv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                                                @Override
+                                                public boolean onChildClick(ExpandableListView parent, View v,
+                                                                            int groupPosition, int childPosition, long id) {
+                                                    // Create new fragment and transaction
+                                                    String header = headers.get(groupPosition);
+                                                    List<Article> groupArticles = schedules.get(header);
+                                                    Article sendArticle = groupArticles.get(childPosition);
+
+                                                    sendToDetailFragment(sendArticle);
+                                                    return false;
+                                                }
+                                            }
+
+            );
+
 
         //SchedulesArrayAdapter adapter = new SchedulesArrayAdapter(getActivity(), articles);
         //setListAdapter(adapter);

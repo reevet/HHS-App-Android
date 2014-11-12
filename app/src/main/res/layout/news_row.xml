@@ -15,6 +15,7 @@
             android:id="@+id/row_icon"
             android:layout_alignParentLeft="true"
             android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="false"
             android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
             android:layout_margin="15dp" />
@@ -73,6 +74,7 @@
             android:id="@+id/row_disc_icon"
             android:src="@drawable/disclosure"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true" />
 
     </RelativeLayout>

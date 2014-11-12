@@ -3,6 +3,7 @@ package info.holliston.high.app;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,7 +32,7 @@ public class HomeFragment extends Fragment {
     private ArticleDataSource newsSource;
     private ArticleDataSource schedulesSource;
     private ArticleDataSource dailyAnnSource;
-
+    private ArticleDataSource lunchSource;
 
     List<String> eventHeaders = new ArrayList<String>();
     HashMap<String, List<Article>> events = new HashMap<String, List<Article>>();
@@ -58,6 +59,8 @@ public class HomeFragment extends Fragment {
         Article scheduleArticle;
         Article newsArticle;
         Article dailyAnnArticle;
+        Article lunchArticle;
+        Date scheduleDate = new Date();
         List<Article> eventsArticles;
 
         /*Get the most recent news item */
@@ -91,6 +94,7 @@ public class HomeFragment extends Fragment {
 
         if (tempArticles.size() >0) {
             scheduleArticle = tempArticles.get(0);
+            int schedNum = 0;
 
             if(tempArticles.size() >=2) {
                 Date todayDate = new Date();
@@ -109,12 +113,37 @@ public class HomeFragment extends Fragment {
 
                     if ((todayMonth == firstMonth) && (todayDay == firstDay)) {
                         scheduleArticle = tempArticles.get(1);
+                        schedNum = 1;
                     }
                 }
             }
-            assignSchedule(scheduleArticle);
+            assignSchedule(scheduleArticle, schedNum);
+            scheduleDate = scheduleArticle.date;
         }
 
+        /*Get the most lunch menu for that date */
+        options = new ArticleDataSourceOptions(
+                ArticleSQLiteHelper.TABLE_LUNCH, getString(R.string.lunch_url),
+                getResources().getStringArray(R.array.lunch_parser_names),
+                ArticleParser.HtmlTags.IGNORE_HTML_TAGS, ArticleDataSource.SortOrder.GET_FUTURE,
+                "5");
+        lunchSource = new ArticleDataSource(getActivity().getApplicationContext(),options);
+        lunchSource.open();
+
+        tempArticles = lunchSource.getAllArticles();
+        lunchSource.close();
+
+        if (tempArticles.size() >0) {
+            lunchArticle = null;
+            int artNum =0;
+            for (int z = 0; z< tempArticles.size(); z++) {
+                if (tempArticles.get(z).date.compareTo(scheduleDate) == 0) {
+                    lunchArticle = tempArticles.get(z);
+                    artNum = z;
+                }
+            }
+            assignLunch(lunchArticle, artNum);
+        }
 
         /*Get the most recent daily announcements */
         options = new ArticleDataSourceOptions(
@@ -138,7 +167,7 @@ public class HomeFragment extends Fragment {
                 ArticleSQLiteHelper.TABLE_EVENTS, getString(R.string.events_url),
                 getResources().getStringArray(R.array.events_parser_names),
                 ArticleParser.HtmlTags.CONVERT_LINE_BREAKS, ArticleDataSource.SortOrder.GET_FUTURE,
-                "12");
+                "3");
         eventsSource = new ArticleDataSource(getActivity().getApplicationContext(),options);
         eventsSource.open();
 
@@ -149,6 +178,19 @@ public class HomeFragment extends Fragment {
         if ((eventsTable.getChildCount() == 0) && (eventsArticles.size() >0)){
             assignEvents(eventsArticles);
         }
+
+        /*Set Refresh button clickable*/
+        View box = v.findViewById(R.id.refresh_button);
+        View.OnClickListener cl = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), SplashActivity.class);
+                i.putExtra("refreshSource", ArticleParser.SourceMode.DOWNLOAD_ONLY);
+                i.putExtra("alarm", "manual refresh");
+                startActivity(i);
+            }
+        };
+        box.setOnClickListener(cl);
 
     }
 
@@ -203,7 +245,7 @@ public class HomeFragment extends Fragment {
         box.setOnClickListener(cl);
     }
 
-    private void assignSchedule(Article article) {
+    private void assignSchedule(Article article, final int z) {
 
         TextView txtListChild = (TextView) v.findViewById(R.id.sched_title);
         TextView dateListChild = (TextView) v.findViewById(R.id.sched_date);
@@ -241,9 +283,29 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 schedulesSource.open();
-                Article article = schedulesSource.getArticle(0);
+                Article article = schedulesSource.getArticle(z);
                 schedulesSource.close();
                 Fragment newFragment = new ScheduleDetailFragment();
+                sendToDetailFragment(article, newFragment);
+            }
+        };
+        box.setOnClickListener(cl);
+    }
+
+    private void assignLunch(Article article, final int z) {
+
+        TextView txtListChild = (TextView) v.findViewById(R.id.lunch_title);
+        String titleString = "Lunch: "+ article.title;
+        txtListChild.setText(titleString);
+
+        View box = v.findViewById(R.id.lunch_title);
+        View.OnClickListener cl = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                lunchSource.open();
+                Article article = lunchSource.getArticle(z);
+                lunchSource.close();
+                Fragment newFragment = new LunchDetailFragment();
                 sendToDetailFragment(article, newFragment);
             }
         };

@@ -29,6 +29,7 @@
             android:layout_gravity="left|center_vertical"
             android:layout_marginRight="10dp"
             android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="true"
             android:layout_toRightOf="@+id/row_icon"
             android:textColor="@android:color/black"
             android:gravity="left"
