@@ -15,7 +15,8 @@
         android:layout_alignParentEnd="false"
         android:layout_centerVertical="true"
         android:src="@drawable/ic_hhs_hollow"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"/>
 
     <LinearLayout
         android:orientation="vertical"
@@ -23,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_toRightOf="@+id/widget_sched_icon"
         android:layout_marginLeft="15dp">
 
