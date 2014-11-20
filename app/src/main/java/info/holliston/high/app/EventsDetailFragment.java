@@ -40,7 +40,12 @@ public class EventsDetailFragment extends Fragment {
         dateTextView.setText(dateString);
 
         TextView detailTextView = (TextView) rootView.findViewById(R.id.detail_details);
-        detailTextView.setText(article.details);
+        String detailsString = article.details;
+        if (detailsString.equals("")) {
+            detailTextView.setText("No additional details posted");
+        } else {
+            detailTextView.setText(detailsString);
+        }
 
         return rootView;
     }

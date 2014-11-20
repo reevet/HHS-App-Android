@@ -121,8 +121,11 @@ public class EventsListFragment extends Fragment {
                 String header = headers.get(groupPosition);
                 List<Article> groupArticles = events.get(header);
                 Article sendArticle = groupArticles.get(childPosition);
-
-                sendToDetailFragment(sendArticle);
+                if (sendArticle.details.equals("")) {
+                    //do nothing
+                } else {
+                    sendToDetailFragment(sendArticle);
+                }
                 return false;
             }
         });

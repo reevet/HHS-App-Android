@@ -110,7 +110,7 @@ public class ArticleDownloaderService extends Service {
             //nukeCache();
             try {
                 schedulesDataSource.open();
-                String result = schedulesDataSource.downloadArticlesFromNetwork(refreshSource);
+                String result = schedulesDataSource.downloadEventsFromNetwork(refreshSource);
                 schedulesDataSource.close();
                 Log.d("ArticleDownloaderService", "Schedules: "+result);
             } catch (Exception e) {
@@ -119,7 +119,7 @@ public class ArticleDownloaderService extends Service {
 
             try {
                 eventsDataSource.open();
-                String result = eventsDataSource.downloadArticlesFromNetwork(refreshSource);
+                String result = eventsDataSource.downloadEventsFromNetwork(refreshSource);
                 eventsDataSource.close();
                 Log.d("ArticleDownloaderService", "Events: "+result);
             } catch (Exception e) {
@@ -146,7 +146,7 @@ public class ArticleDownloaderService extends Service {
 
             try {
                 lunchDataSource.open();
-                String result = lunchDataSource.downloadArticlesFromNetwork(refreshSource);
+                String result = lunchDataSource.downloadEventsFromNetwork(refreshSource);
                 lunchDataSource.close();
                 Log.d("ArticleDownloaderService", "Lunch: "+result);
             } catch (Exception e) {

@@ -277,7 +277,7 @@ public class MainActivity extends Activity {
             currentView = position;
 			break;
 		case 2:
-			fragment = new NewsListFragment();
+			fragment = new NewsRecyclerFragment();
             currentView = position;
             break;
 		case 3:

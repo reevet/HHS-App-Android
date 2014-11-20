@@ -12,7 +12,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/detail_background">
 
-    <TextView
+        <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
@@ -26,12 +26,11 @@
         android:layout_alignParentLeft="true"
         android:textAlignment="gravity"
         android:gravity="center_horizontal"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="5dp" />
+            android:background="@color/hhs_red"
+            android:padding="10dp"
+            android:textColor="@android:color/white" />
 
-    <TextView
+        <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -40,34 +39,27 @@
         android:layout_alignParentTop="false"
         android:layout_centerHorizontal="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="20dp"
-        android:gravity="top|center_horizontal"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_alignParentStart="true"
+            android:gravity="top|center_horizontal"
+            android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentLeft="true"
         android:textSize="18dp"
-        android:layout_below="@+id/detail_title" />
+        android:layout_below="@+id/detail_title"
+            android:padding="10dp"
+            android:background="@color/divider"
+            android:textColor="@android:color/black" />
 
-    <WebView
+        <WebView
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:id="@+id/detail_webview"
         android:layout_centerVertical="true"
-        android:layout_alignRight="@+id/detail_date"
-        android:layout_alignEnd="@+id/detail_date"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/detail_date"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@android:color/white" />
+            android:background="@android:color/white"
+            android:layout_below="@+id/detail_date" />
 
-</RelativeLayout>
+    </RelativeLayout>
     </ScrollView>

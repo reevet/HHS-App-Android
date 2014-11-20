@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -57,17 +58,25 @@ public class EventsArrayAdapter extends BaseExpandableListAdapter {
         TextView dateListChild = (TextView) convertView
                 .findViewById(R.id.row_time);
 
+        ImageView moreIcon = (ImageView) convertView
+                .findViewById(R.id.row_disc_icon);
+
+
+
         SimpleDateFormat df = new SimpleDateFormat("h:mm a");
         String dateString = df.format(article.date);
         if (dateString.equals("12:00 AM")) {
             dateString = "All Day";
         }
-        String titleString = article.title;
-
-
         dateListChild.setText(dateString);
 
+        String titleString = article.title;
         txtListChild.setText(titleString);
+
+        if (article.details.equals("")) {
+            moreIcon.setVisibility(View.INVISIBLE);
+        }
+
         return convertView;
     }
 
