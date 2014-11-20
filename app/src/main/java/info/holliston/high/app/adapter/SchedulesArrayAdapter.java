@@ -55,15 +55,22 @@ private final Context context;
 
         TextView txtListChild = (TextView) convertView
                 .findViewById(R.id.row_title);
-        TextView dateListChild = (TextView) convertView
-                .findViewById(R.id.row_date);
+        TextView dayListChild = (TextView) convertView
+                .findViewById(R.id.row_date_day);
+        TextView fullListChild = (TextView) convertView
+                .findViewById(R.id.row_date_full);
 
-        SimpleDateFormat df = new SimpleDateFormat("EEE, MMM d");
-        String dateString = df.format(article.date);
         String titleString = article.title;
 
-        dateListChild.setText(dateString);
-        txtListChild.setText(titleString);
+        SimpleDateFormat dfDay = new SimpleDateFormat("EEEE");
+        String dayString = dfDay.format(article.date);
+
+        SimpleDateFormat dfFull = new SimpleDateFormat("MMMM d, yyyy");
+        String fullString = dfFull.format(article.date);
+
+        dayListChild.setText(dayString);
+        fullListChild.setText(fullString);
+        //txtListChild.setText(titleString);
 
         char initial = article.title.charAt(0);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.row_icon);

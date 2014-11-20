@@ -7,7 +7,9 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
 
         <ImageView
             android:layout_width="@dimen/schedule_icon"
@@ -20,36 +22,43 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:id="@+id/row_date"
-            android:textSize="@dimen/row_normal_text_size"
-            android:layout_gravity="left|center_vertical"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentEnd="false"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@+id/row_icon"
-            android:textColor="@android:color/black"
-            android:gravity="left"
-            android:layout_centerVertical="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:id="@+id/row_title"
-            android:textSize="@dimen/row_normal_text_size"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="10dp"
-            android:textAlignment="gravity"
-            android:textColor="@color/counter_text_bg"
-            android:layout_toRightOf="@+id/row_date"
-            android:layout_alignParentLeft="false"
-            android:gravity="right"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/row_disc_icon" />
+            android:layout_toRightOf="@+id/row_icon"
+            android:layout_toLeftOf="@+id/row_disc_icon"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/row_date_day"
+                android:textSize="20dp"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentRight="true"
+                android:textColor="@android:color/black"
+                android:gravity="left"
+                android:layout_centerVertical="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/row_date_full"
+                android:textSize="16dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:textAlignment="gravity"
+                android:textColor="@color/counter_text_bg"
+                android:layout_alignParentLeft="false"
+                android:gravity="right"
+                android:layout_centerVertical="true" />
+        </LinearLayout>
 
         <ImageView
             android:layout_width="wrap_content"

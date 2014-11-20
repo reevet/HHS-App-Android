@@ -3,7 +3,6 @@ package info.holliston.high.app;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,17 +35,21 @@ public class HomeFragment extends Fragment {
 
     List<String> eventHeaders = new ArrayList<String>();
     HashMap<String, List<Article>> events = new HashMap<String, List<Article>>();
+    String newsImageSrc = "";
+    UUID newsKey;
 
     View v;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        v= inflater.inflate(R.layout.home_fragment,
-                container, false);
-        return v;
-    }
+                             Bundle savedInstanceState){
+            // Inflate the layout for this fragment
+            v = inflater.inflate(R.layout.home_fragment,
+                    container, false);
+            return v;
+        }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -162,12 +165,12 @@ public class HomeFragment extends Fragment {
             assignDailyAnn(dailyAnnArticle);
         }
 
-        /*Get the most recent daily announcements */
+        /*Get upcoming events */
         options = new ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_EVENTS, getString(R.string.events_url),
                 getResources().getStringArray(R.array.events_parser_names),
                 ArticleParser.HtmlTags.CONVERT_LINE_BREAKS, ArticleDataSource.SortOrder.GET_FUTURE,
-                "3");
+                "20");
         eventsSource = new ArticleDataSource(getActivity().getApplicationContext(),options);
         eventsSource.open();
 
@@ -179,7 +182,7 @@ public class HomeFragment extends Fragment {
             assignEvents(eventsArticles);
         }
 
-        /*Set Refresh button clickable*/
+        /*Set Refresh button clickable*//*
         View box = v.findViewById(R.id.refresh_button);
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
@@ -190,11 +193,18 @@ public class HomeFragment extends Fragment {
                 startActivity(i);
             }
         };
-        box.setOnClickListener(cl);
+        box.setOnClickListener(cl);*/
 
     }
 
     private void assignNews(Article article) {
+
+        TextView titlesTextView = (TextView) v.findViewById(R.id.news_title);
+        titlesTextView.setText(article.title);
+
+        String imgSrc = article.imgSrc;
+        UUID key = article.key;
+
         ImageAsyncLoader.ViewHolder holder;
         ImageView imageView = (ImageView) v.findViewById(R.id.news_image);
 
@@ -210,21 +220,16 @@ public class HomeFragment extends Fragment {
         holder.loading = (ProgressBar) v.findViewById(R.id.news_pbar);
         holder.loading.setVisibility(View.VISIBLE);
 
-        TextView titlesTextView = (TextView) v.findViewById(R.id.news_title);
-        titlesTextView.setText(article.title);
-
-        String imgSrc = article.imgSrc;
         if ((imgSrc != null) && (imgSrc.length() > 0)) {
             //imageDownloader.setMode(ImageDownloader.Mode.NO_DOWNLOADED_DRAWABLE);
             //imageDownloader.download(articleList.get(position).imgSrc, (ImageView) rowView.findViewById(R.id.row_icon));
 
-            int newHeight = (int) v.getResources().getDimension(R.dimen.news_home_height);
-            int newWidth = 600;
+            int newHeight = 250;
+            int newWidth = imageView.getWidth();
 
-            UUID key = article.key;
             ImageAsyncLoader ial = new ImageAsyncLoader(0, holder,
                     newWidth, newHeight,
-                    ImageAsyncLoader.FitMode.FIT, ImageAsyncLoader.SourceMode.ALLOW_BOTH,
+                    ImageAsyncLoader.FitMode.FULL, ImageAsyncLoader.SourceMode.ALLOW_BOTH,
                     key, getActivity().getApplicationContext());
             //DownloadedDrawable downloadedDrawable = new DownloadedDrawable(ial);
             ial.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, imgSrc);
@@ -355,6 +360,8 @@ public class HomeFragment extends Fragment {
         String currentHeader = "";
         List<Article> eventsInDay = new ArrayList<Article>();
         int numOfDays = 0;
+        eventHeaders = new ArrayList<String>();
+        events = new HashMap<String, List<Article>>();
 
         for (Article article : articles) {
             Date date = article.date;
@@ -410,7 +417,9 @@ public class HomeFragment extends Fragment {
                 TextView dateListChild = (TextView) row
                         .findViewById(R.id.row_time);
                 ImageView disc_icon = (ImageView) row.findViewById(R.id.row_disc_icon);
-
+                if (article.details.equals("")) {
+                    disc_icon.setVisibility(ImageView.INVISIBLE);
+                }
                 SimpleDateFormat df = new SimpleDateFormat("h:mm a");
                 String dateString = df.format(article.date);
                 if (dateString.equals("12:00 AM")) {

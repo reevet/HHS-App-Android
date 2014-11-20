@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import info.holliston.high.app.model.Article;
 import info.holliston.high.app.xmlparser.ArticleParser;
+import info.holliston.high.app.xmlparser.EventJsonParser;
 
 public class ArticleDataSource {
 
@@ -318,6 +319,53 @@ public class ArticleDataSource {
             }
         } else {
             result = "Download skipped: "+articlesCount+" articles in cache (good enough)";
+        }
+        return result;
+    }
+
+    public String downloadEventsFromNetwork(ArticleParser.SourceMode refreshSource) {
+        String result;
+
+        int articlesCount = this.getAllArticles().size();
+
+        if ((refreshSource == ArticleParser.SourceMode.DOWNLOAD_ONLY) ||
+                (articlesCount <=0)){
+            InputStream stream = null;
+            try {
+                // Instantiate the parser
+                EventJsonParser jsonParser = new EventJsonParser(this, parserNames, this.conversionType, Integer.parseInt(this.limit));
+
+                Date now = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'00'%3A'00'%3A'00-05'%3A'00");
+                String nowString = sdf.format(now);
+
+                this.urlString = this.urlString+"&timeMin="+nowString;
+                stream = downloadUrl(this.urlString);
+                //List<Article> backup = this.getAllArticles();
+                String parseResult = jsonParser.parse(stream);
+                result = "Downloaded: "+parseResult;
+
+                if (jsonParser.getAllArticles().size() > 0) {
+                    this.nukeAllRecords();
+                    this.createArticles(jsonParser.getAllArticles());
+                }
+                //testStore.privateItems = articles;
+                // Makes sure that the InputStream is closed after the app is
+                // finished using it.
+            } catch (Exception e) {
+                result = "Downloading error: "+e.toString();
+            }
+            finally  {
+                try {
+                    if (stream !=null){
+                        stream.close();
+                    }
+                } catch (Exception e) {
+                    //ignore
+                }
+            }
+        } else {
+            result = "Download skipped: "+articlesCount+" events in cache (good enough)";
         }
         return result;
     }

@@ -32,7 +32,7 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
     private int mPosition;
     private ViewHolder mHolder;
 
-    public static enum FitMode {FIT, FILL, FULL}
+    public static enum FitMode {FIT, FILL, FULL, MATCH}
     public static enum SourceMode {CACHE_ONLY, DOWNLOAD_ONLY, ALLOW_BOTH}
 
     private FitMode fitMode;
@@ -185,12 +185,9 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
     protected void onPostExecute(Bitmap result) {
         //try {
         if ((mPosition == mHolder.position) && (result != null)) {
-            //ImageView bmImageView = bmImage.get();
-            //ProgressBar pbarView = pbar.get();
-            //bmImageView.setImageBitmap(result);
-            //bmImageView.setVisibility(View.VISIBLE);
-            //pbarView.setVisibility(View.INVISIBLE);
-            mHolder.thumbnail.setImageBitmap(getRoundedCornerBitmap(result, 20));
+
+            //mHolder.thumbnail.setImageBitmap(getRoundedCornerBitmap(result, 20));
+            mHolder.thumbnail.setImageBitmap(result);
             mHolder.thumbnail.setVisibility(View.VISIBLE);
             mHolder.loading.setVisibility(View.INVISIBLE);
             //} catch (Exception e) {
