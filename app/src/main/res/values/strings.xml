@@ -43,11 +43,11 @@
     <string name="all_day">All day</string>
 
     <!-- Feed URLs -->
-    <string name="schedules_url">https://www.googleapis.com/calendar/v3/calendars/sulsp2f8e4npqtmdp469o8tmro%40group.calendar.google.com/events?key=AIzaSyBSVr9PfmPGtzUj97psgb5OJldaG4uB8mo&amp;maxResults=30&amp;orderBy=startTime&amp;singleEvents=true</string>
+    <string name="schedules_url">https://www.googleapis.com/calendar/v3/calendars/sulsp2f8e4npqtmdp469o8tmro%40group.calendar.google.com/events?key=AIzaSyAQa5V8a141kmmGrcb2LgpmyTvocrVPiDI&amp;maxResults=30&amp;orderBy=startTime&amp;singleEvents=true</string>
     <string name="news_url">https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/general-info/news/posts.xml</string>
-    <string name="events_url">https://www.googleapis.com/calendar/v3/calendars/holliston.k12.ma.us_gsfpbqnefkm59ul6gbofte1s2k%40group.calendar.google.com/events?key=AIzaSyBSVr9PfmPGtzUj97psgb5OJldaG4uB8mo&amp;maxResults=30&amp;orderBy=startTime&amp;singleEvents=true</string>
+    <string name="events_url">https://www.googleapis.com/calendar/v3/calendars/holliston.k12.ma.us_gsfpbqnefkm59ul6gbofte1s2k%40group.calendar.google.com/events?key=AIzaSyAQa5V8a141kmmGrcb2LgpmyTvocrVPiDI&amp;maxResults=30&amp;orderBy=startTime&amp;singleEvents=true</string>
     <string name="dailyann_url">https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/general-info/daily-announcements/posts.xml</string>
-    <string name="lunch_url">https://www.googleapis.com/calendar/v3/calendars/holliston.k12.ma.us_c2d4uic3gbsg7r9vv9qo8a949g@group.calendar.google.com/events?key=AIzaSyBSVr9PfmPGtzUj97psgb5OJldaG4uB8mo&amp;maxResults=30&amp;orderBy=startTime&amp;singleEvents=true</string>
+    <string name="lunch_url">https://www.googleapis.com/calendar/v3/calendars/holliston.k12.ma.us_c2d4uic3gbsg7r9vv9qo8a949g@group.calendar.google.com/events?key=AIzaSyAQa5V8a141kmmGrcb2LgpmyTvocrVPiDI&amp;maxResults=30&amp;orderBy=startTime&amp;singleEvents=true</string>
 
     <string name="client_id">175331434418-fuam67euqr6eegii9ho3t229kso2gir9.apps.googleusercontent.com</string>
     <string name="api_key">AIzaSyDXY9OA9csrexFK1WFCeTd4jNIjCgyO_Nw</string>

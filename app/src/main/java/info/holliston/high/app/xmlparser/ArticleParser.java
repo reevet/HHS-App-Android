@@ -226,9 +226,10 @@ public class ArticleParser {
                         }
                         sb.append(">");
                     }
-                    if (parser.getName().equals("img")) {
+                    if (parser.getName().equals("img") && (this.currentImgSrc == null)) {
                         this.currentImgSrc = parser.getAttributeValue(null, "src");
                     }
+
                 } else if (next ==XmlPullParser.END_TAG) {
                     if (htmlTags == HtmlTags.KEEP_HTML_TAGS) {
                         if (!(parser.getName().equals(detailsName))) {

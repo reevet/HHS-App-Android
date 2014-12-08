@@ -53,13 +53,17 @@ public class NewsDetailFragment extends Fragment {
             details = details.replace("display:inline", "display:block");
         }
         details = details.replace("\t", ": ");
-        details = details.replace("\n  ", "<br />&nbsp;&nbsp;");
+        details = details.replace("</br>", "");
+        details = details.replace("<br>", "<br />");
+        details = details.replace("\n  ", "<br />");
         details = details.replace("\n", "<br />");
         details = details.replace("<br /><br />", "<br />");
+        details = details.replace("<br />\n<br />", "<br />");
         details = details.replace("</p><br />", "</p>");
         details = details.replace(" – ", "&#45;");
         details = details.replace("\u00A0", " ");
         details = details.replace("\u2019", "&#39");
+        details = details.replaceFirst("<hr.+>","");
 
         WebView detailWebView = (WebView) rootView.findViewById(R.id.detail_webview);
         detailWebView.loadData(details, "text/html", null);
