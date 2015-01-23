@@ -37,7 +37,7 @@ public class SplashActivity extends Activity {
         Intent i = getIntent();
         refreshSource = (ArticleParser.SourceMode) i.getSerializableExtra("refreshSource");
         if (refreshSource == null) {
-            refreshSource = ArticleParser.SourceMode.ALLOW_BOTH;
+            refreshSource = ArticleParser.SourceMode.PREFER_DOWNLOAD;
         }
 
         Intent intent = new Intent(getApplicationContext(), ArticleDownloaderService.class);

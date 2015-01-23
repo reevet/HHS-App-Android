@@ -35,7 +35,7 @@ public class ArticleParser {
     //private ArticleDataSource dataSource;
 
     public enum HtmlTags {KEEP_HTML_TAGS, CONVERT_LINE_BREAKS, IGNORE_HTML_TAGS}
-    public enum SourceMode {ALLOW_BOTH, DOWNLOAD_ONLY, CACHE_ONLY}
+    public enum SourceMode {ALLOW_BOTH, DOWNLOAD_ONLY, CACHE_ONLY, PREFER_DOWNLOAD}
 
     private HtmlTags htmlTags;
     private int limit;

@@ -79,10 +79,10 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
                 if ((oldHeight > 0) && (oldWidth > 0)) {
                     iFound = "cache";
                 } else {
-                    Log.d("imageCache", "cached image file had dimensions 0x0");
+                    Log.e("imageCache", "cached image file had dimensions 0x0");
                 }
             } catch (Exception e) {
-                Log.d("imageCache", "cached image file had dimensions 0x0");
+                Log.e("imageCache", "cached image file had dimensions 0x0");
             }
         }
         if (mPosition != mHolder.position) {
@@ -102,7 +102,7 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
                 if ((oldHeight > 0) && (oldWidth > 0)) {
                     iFound = "web";
                 } else {
-                    Log.d("imageCache", "web image file had dimensions 0x0");
+                    Log.e("imageCache", "web image file had dimensions 0x0");
                 }
             } catch (Exception ex) {
                 iFound = "";
@@ -137,9 +137,9 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
                     fullImage = BitmapFactory.decodeFile(filein.getAbsolutePath(), options);
                 }
                 Bitmap tempImage = Bitmap.createScaledBitmap(fullImage, scaledWidth, scaledHeight, false);
-                Log.d("imageCacheDim",ox+", "+oy+", "+newWidth+", "+newHeight);
-                Log.d("imageCacheDim", "scaled: "+scaledWidth+", "+scaledHeight);
-                Log.d("imageCacheDim", "----------------");
+                //Log.d("imageCacheDim",ox+", "+oy+", "+newWidth+", "+newHeight);
+                //Log.d("imageCacheDim", "scaled: "+scaledWidth+", "+scaledHeight);
+                //Log.d("imageCacheDim", "----------------");
                 if (fitMode == FitMode.FILL) {
                     fittedImage = Bitmap.createBitmap(tempImage, ox, oy, newWidth, newHeight);
                 } else if (fitMode == FitMode.FIT) {
@@ -148,7 +148,7 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
                     fittedImage = fullImage;
                 }
             } catch (Exception x) {
-                Log.d("imageCache", "Error with bitmaps: " + x.toString());
+                Log.e("imageCache", "Error with bitmaps: " + x.toString());
             }
         }
         if (mPosition != mHolder.position) {
@@ -161,7 +161,7 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
                 os = new FileOutputStream(outfile);
                 fullImage.compress(Bitmap.CompressFormat.PNG, 60, os);
             } catch (Exception ex) {
-                Log.d("imageCache", "Error writing image to cache");
+                Log.e("imageCache", "Error writing image to cache");
             } finally {
                 try {
                     os.close();
@@ -215,7 +215,7 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
                 inSampleSize *= 2;
             }
         }
-        Log.d("imageCache", "inSampleSize =" + inSampleSize);
+        //Log.d("imageCache", "inSampleSize =" + inSampleSize);
         return inSampleSize;
     }
 

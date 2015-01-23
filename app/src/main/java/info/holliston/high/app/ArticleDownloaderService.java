@@ -186,6 +186,7 @@ public class ArticleDownloaderService extends Service {
         intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
         sendBroadcast(intent2);
 
+        Log.d("ArticleDownloaderService", "Results published as intents");
     }
 
     private void scheduleDownloads() {

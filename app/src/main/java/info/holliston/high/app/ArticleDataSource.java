@@ -67,9 +67,14 @@ public class ArticleDataSource {
             ContentValues values = new ContentValues();
             values.put(ArticleSQLiteHelper.COLUMN_TITLE, title);
             SimpleDateFormat dateSdf = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat timeSdf = new SimpleDateFormat("kk:mm a");
+            SimpleDateFormat timeSdf = new SimpleDateFormat("kk:mm");
+            //SimpleDateFormat timeSdf = new SimpleDateFormat("hh:mm a");
         String dateString = dateSdf.format(date);
             String timeString = timeSdf.format(date);
+            int tsio = timeString.indexOf("24");
+            if (tsio == 0) {
+                timeString = timeString.replace("24", "00");
+            }
             /*if (timeString.charAt(6) == 'P'){
                 int hour = Integer.parseInt(timeString.substring(0,2));
                 hour = hour+12;
@@ -200,7 +205,7 @@ public class ArticleDataSource {
         }
 
         Cursor cursor = database.query(dbHelper.getName(),
-                allColumns, where, null, null, null, orderBy, this.limit);
+                allColumns, where, null, null, null, orderBy, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -287,8 +292,9 @@ public class ArticleDataSource {
 
         int articlesCount = this.getAllArticles().size();
 
-        if ((refreshSource == ArticleParser.SourceMode.DOWNLOAD_ONLY) ||
-        (articlesCount <=0)){
+        if ((refreshSource == ArticleParser.SourceMode.DOWNLOAD_ONLY)
+                || (refreshSource == ArticleParser.SourceMode.PREFER_DOWNLOAD)
+                || (articlesCount <=0)){
             InputStream stream = null;
             try {
                 // Instantiate the parser
@@ -306,7 +312,7 @@ public class ArticleDataSource {
                 // Makes sure that the InputStream is closed after the app is
                 // finished using it.
             } catch (Exception e) {
-                result = "Downloading error: "+e.toString();
+                result = "Downloading error: "+e.toString()+". Using cache instead.";
             }
             finally  {
                 try {
@@ -328,8 +334,9 @@ public class ArticleDataSource {
 
         int articlesCount = this.getAllArticles().size();
 
-        if ((refreshSource == ArticleParser.SourceMode.DOWNLOAD_ONLY) ||
-                (articlesCount <=0)){
+        if ((refreshSource == ArticleParser.SourceMode.DOWNLOAD_ONLY)
+                || (refreshSource == ArticleParser.SourceMode.PREFER_DOWNLOAD)
+                || (articlesCount <=0)){
             InputStream stream = null;
             try {
                 // Instantiate the parser
@@ -353,7 +360,7 @@ public class ArticleDataSource {
                 // Makes sure that the InputStream is closed after the app is
                 // finished using it.
             } catch (Exception e) {
-                result = "Downloading error: "+e.toString();
+                result = "Downloading error: "+e.toString()+". Using cache instead.";
             }
             finally  {
                 try {

@@ -1,7 +1,6 @@
 package info.holliston.high.app;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
@@ -14,13 +13,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -29,7 +31,7 @@ import info.holliston.high.app.model.NavDrawerItem;
 import info.holliston.high.app.widget.HHSWidget;
 import info.holliston.high.app.xmlparser.ArticleParser;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
     private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
@@ -59,13 +61,25 @@ public class MainActivity extends Activity {
     private int defaultView = 0;
     //Boolean newNewsAvailable = false;
 
+    ArticleParser.SourceMode refreshSource;
+
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
-                //Toast.makeText(MainActivity.this, "Data sync complete", Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, "Download complete", Toast.LENGTH_LONG).show();
+                //Toast.makeText(SplashActivity.this, "Data sync complete", Toast.LENGTH_LONG).show();
+                String result = bundle.getString("result");
+                if (result != null) {
+                    SwipeRefreshLayout swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_container);
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setRefreshing(false);
+                        Toast.makeText(MainActivity.this, "Download complete", Toast.LENGTH_LONG).show();
+                    }
+                }
+
                 if (currentView >=0) {
                     displayView(currentView);
                 } else {
@@ -82,7 +96,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-
+        //layout
         mTitle = mDrawerTitle = getTitle();
         mIcon = mDrawerIcon = R.drawable.ic_hhs_hollow;
 
@@ -181,7 +195,36 @@ public class MainActivity extends Activity {
             currentView = savedInstanceState.getInt("currentView");
             displayView(currentView);
         }
-	}
+
+//SwipeRefresher Listener
+        final SwipeRefreshLayout swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_container);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override
+            public void onRefresh()
+            {
+                refreshData();
+            }
+        });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Start download
+        Toast.makeText(MainActivity.this, "Loading data", Toast.LENGTH_LONG).show();
+
+        Intent i = getIntent();
+        refreshSource = (ArticleParser.SourceMode) i.getSerializableExtra("refreshSource");
+        if (refreshSource == null) {
+            refreshSource = ArticleParser.SourceMode.PREFER_DOWNLOAD;
+        }
+
+        Intent intent = new Intent(getApplicationContext(), ArticleDownloaderService.class);
+        intent.putExtra("refreshSource", refreshSource);
+        startService(intent);
+    }
 
     @Override
     protected void onResume() {
@@ -380,11 +423,27 @@ public class MainActivity extends Activity {
 
     public void refreshData() {
         //destroyFragments();
+        Log.d("MainActivity", "Refresh called");
 
-        Intent i = new Intent(MainActivity.this, SplashActivity.class);
+        Toast.makeText(MainActivity.this, "Loading data", Toast.LENGTH_LONG).show();
+
+        Intent i = getIntent();
+        refreshSource = (ArticleParser.SourceMode) i.getSerializableExtra("refreshSource");
+        if (refreshSource == null) {
+            refreshSource = ArticleParser.SourceMode.PREFER_DOWNLOAD;
+        }
+
+        Intent intent = new Intent(getApplicationContext(), ArticleDownloaderService.class);
+        intent.putExtra("refreshSource", refreshSource);
+        startService(intent);
+
+        Log.d("MainActivity", "Refresh intent sent to ArticleDownloaderService");
+
+        /*Intent i = new Intent(MainActivity.this, SplashActivity.class);
         i.putExtra("refreshSource", ArticleParser.SourceMode.DOWNLOAD_ONLY);
         i.putExtra("alarm", "manual refresh");
         startActivity(i);
+        */
     }
 
     @Override

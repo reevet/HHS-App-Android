@@ -6,11 +6,14 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -44,10 +47,24 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
-            // Inflate the layout for this fragment
-            v = inflater.inflate(R.layout.home_fragment,
-                    container, false);
-            return v;
+        // Inflate the layout for this fragment
+        v = inflater.inflate(R.layout.home_fragment,
+                container, false);
+
+        final SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
+        final ScrollView scrollView = (ScrollView) v.findViewById(R.id.scrollView);
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = scrollView.getScrollY();
+                if(scrollY == 0) swipeLayout.setEnabled(true);
+                else swipeLayout.setEnabled(false);
+
+            }
+        });
+
+
+        return v;
         }
 
 
