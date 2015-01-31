@@ -37,5 +37,10 @@
         <item name="android:textColor">#757575</item>
     </style>
 
+    <style name="HeaderElevated">
+        <item name="android:shadowColor">#88222222</item>
+        <item name="android:shadowDy">5</item>
+    </style>
+
 
 </resources>

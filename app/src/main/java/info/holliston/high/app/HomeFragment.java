@@ -1,11 +1,12 @@
 package info.holliston.high.app;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,9 +28,14 @@ import java.util.UUID;
 
 import info.holliston.high.app.adapter.ImageAsyncLoader;
 import info.holliston.high.app.model.Article;
+import info.holliston.high.app.pager.DailyAnnPager;
+import info.holliston.high.app.pager.EventPager;
+import info.holliston.high.app.pager.LunchPager;
+import info.holliston.high.app.pager.NewsPager;
+import info.holliston.high.app.pager.SchedulePager;
 import info.holliston.high.app.xmlparser.ArticleParser;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends android.support.v4.app.Fragment {
 
     private ArticleDataSource newsSource;
     private ArticleDataSource schedulesSource;
@@ -62,8 +68,6 @@ public class HomeFragment extends Fragment {
 
             }
         });
-
-
         return v;
         }
 
@@ -77,11 +81,16 @@ public class HomeFragment extends Fragment {
         ArticleDataSourceOptions options;
         List<Article> tempArticles;
         Article scheduleArticle;
+        int schedIndex = -1;
         Article newsArticle;
+        int newsIndex = -1;
         Article dailyAnnArticle;
+        int dailyAnnIndex = -1;
         Article lunchArticle;
+        int lunchIndex = -1;
         Date scheduleDate = new Date();
         List<Article> eventsArticles;
+        int eventIndex = -1;
 
         /*Get the most recent news item */
         options = new ArticleDataSourceOptions(
@@ -114,7 +123,7 @@ public class HomeFragment extends Fragment {
 
         if (tempArticles.size() >0) {
             scheduleArticle = tempArticles.get(0);
-            int schedNum = 0;
+            schedIndex = 0;
 
             if(tempArticles.size() >=2) {
                 Date todayDate = new Date();
@@ -133,11 +142,11 @@ public class HomeFragment extends Fragment {
 
                     if ((todayMonth == firstMonth) && (todayDay == firstDay)) {
                         scheduleArticle = tempArticles.get(1);
-                        schedNum = 1;
+                        schedIndex = 1;
                     }
                 }
             }
-            assignSchedule(scheduleArticle, schedNum);
+            assignSchedule(scheduleArticle, schedIndex);
             scheduleDate = scheduleArticle.date;
         }
 
@@ -155,14 +164,15 @@ public class HomeFragment extends Fragment {
 
         if (tempArticles.size() >0) {
             lunchArticle = null;
-            int artNum =0;
+            lunchArticle = tempArticles.get(0);
+            lunchIndex =0;
             for (int z = 0; z< tempArticles.size(); z++) {
                 if (tempArticles.get(z).date.compareTo(scheduleDate) == 0) {
                     lunchArticle = tempArticles.get(z);
-                    artNum = z;
+                    lunchIndex = z;
                 }
             }
-            assignLunch(lunchArticle, artNum);
+            assignLunch(lunchArticle, lunchIndex);
         }
 
         /*Get the most recent daily announcements */
@@ -198,20 +208,6 @@ public class HomeFragment extends Fragment {
         if ((eventsTable.getChildCount() == 0) && (eventsArticles.size() >0)){
             assignEvents(eventsArticles);
         }
-
-        /*Set Refresh button clickable*//*
-        View box = v.findViewById(R.id.refresh_button);
-        View.OnClickListener cl = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(), SplashActivity.class);
-                i.putExtra("refreshSource", ArticleParser.SourceMode.DOWNLOAD_ONLY);
-                i.putExtra("alarm", "manual refresh");
-                startActivity(i);
-            }
-        };
-        box.setOnClickListener(cl);*/
-
     }
 
     private void assignNews(Article article) {
@@ -257,11 +253,8 @@ public class HomeFragment extends Fragment {
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                newsSource.open();
-                Article article = newsSource.getArticle(0);
-                newsSource.close();
-                Fragment newFragment = new NewsDetailFragment();
-                sendToDetailFragment(article, newFragment);
+                Fragment newFragment = new NewsPager();
+                sendToDetailFragment(0, newFragment, R.id.frame_container);
             }
         };
         box.setOnClickListener(cl);
@@ -304,11 +297,9 @@ public class HomeFragment extends Fragment {
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                schedulesSource.open();
-                Article article = schedulesSource.getArticle(z);
-                schedulesSource.close();
-                Fragment newFragment = new ScheduleDetailFragment();
-                sendToDetailFragment(article, newFragment);
+                MainActivity ma = (MainActivity) getActivity();
+                Fragment newFragment = new SchedulePager();
+                sendToDetailFragment(z, newFragment, R.id.frame_container);
             }
         };
         box.setOnClickListener(cl);
@@ -324,11 +315,8 @@ public class HomeFragment extends Fragment {
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                lunchSource.open();
-                Article article = lunchSource.getArticle(z);
-                lunchSource.close();
-                Fragment newFragment = new LunchDetailFragment();
-                sendToDetailFragment(article, newFragment);
+                Fragment newFragment = new LunchPager();
+                sendToDetailFragment(z, newFragment, R.id.frame_container);
             }
         };
         box.setOnClickListener(cl);
@@ -362,11 +350,8 @@ public class HomeFragment extends Fragment {
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dailyAnnSource.open();
-                Article article = dailyAnnSource.getArticle(0);
-                dailyAnnSource.close();
-                Fragment newFragment = new DailyAnnDetailFragment();
-                sendToDetailFragment(article, newFragment);
+                Fragment newFragment = new DailyAnnPager();
+                sendToDetailFragment(0, newFragment, R.id.frame_container);
             }
         };
         box.setOnClickListener(cl);
@@ -425,7 +410,9 @@ public class HomeFragment extends Fragment {
             eventsBox.addView(headerRow);
 
             List<Article> theseArticles = events.get(header);
-            for (final Article article :theseArticles) {
+
+            for (int i=0; i<theseArticles.size(); i++) { //(final Article article :theseArticles) {
+                Article article = theseArticles.get(i);
                 View row = inflater.inflate(R.layout.events_row, eventsBox, false);
                 eventsBox.addView(row);
 
@@ -447,25 +434,29 @@ public class HomeFragment extends Fragment {
                 dateListChild.setText(dateString);
                 txtListChild.setText(titleString);
 
+                final int j = i;
+
                 View.OnClickListener cl = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Fragment newFragment = new EventsDetailFragment();
-                        sendToDetailFragment(article, newFragment);
+                        Fragment newFragment = new EventPager();
+                        sendToDetailFragment(j, newFragment, R.id.frame_container);
                     }
                 };
                 row.setOnClickListener(cl);
+
             }
         }
 
     }
 
-    private void sendToDetailFragment(Article sendArticle, Fragment newFragment) {
+    private void sendToDetailFragment(int i, Fragment newFragment, int frame) {
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable("detail_article", sendArticle);
+        bundle.putInt("position", i);
         newFragment.setArguments(bundle);
-        if (getActivity().findViewById(R.id.frame_container) != null) {
+
+        if (getActivity().findViewById(frame) != null) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_container, newFragment);
             transaction.addToBackStack(null);

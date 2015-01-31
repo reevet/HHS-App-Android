@@ -8,7 +8,18 @@
 
     <LinearLayout android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#ffffffff">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:background="@drawable/shadow_black"
+            android:paddingBottom="5dp"
+            android:paddingLeft="0dp"
+            android:paddingTop="0dp"
+            android:paddingRight="0dp">
 
         <RelativeLayout
         android:layout_width="fill_parent"
@@ -67,6 +78,7 @@
             </LinearLayout>
 
 
+        </RelativeLayout>
         </RelativeLayout>
         <TextView
             android:layout_width="fill_parent"

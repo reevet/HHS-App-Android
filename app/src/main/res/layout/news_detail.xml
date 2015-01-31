@@ -27,8 +27,11 @@
         android:textAlignment="gravity"
         android:gravity="center_horizontal"
             android:background="@color/hhs_red"
-            android:padding="10dp"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:paddingTop="40dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp" />
 
         <TextView
         android:layout_width="wrap_content"

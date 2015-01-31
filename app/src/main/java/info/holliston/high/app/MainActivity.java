@@ -1,26 +1,27 @@
 package info.holliston.high.app;
 
 import android.app.ActionBar;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,12 +29,16 @@ import java.util.ArrayList;
 
 import info.holliston.high.app.adapter.NavDrawerListAdapter;
 import info.holliston.high.app.model.NavDrawerItem;
+import info.holliston.high.app.pager.TabPager;
 import info.holliston.high.app.widget.HHSWidget;
 import info.holliston.high.app.xmlparser.ArticleParser;
 
 public class MainActivity extends FragmentActivity {
 
+    TabPager tabPager;
+
     private DrawerLayout mDrawerLayout;
+    private LinearLayout mDrawerLinLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
 
@@ -52,12 +57,15 @@ public class MainActivity extends FragmentActivity {
 	private CharSequence mTitle;
     private int mIcon;
 
+    private CharSequence mLastTitle;
+    private int mLastIcon;
+
 	// slide menu items
 	private String[] navMenuTitles;
 	private ArrayList<String> fragmentData;
 
 
-    private int currentView = -1;
+    public int currentView = -1;
     private int defaultView = 0;
     //Boolean newNewsAvailable = false;
 
@@ -80,6 +88,7 @@ public class MainActivity extends FragmentActivity {
                     }
                 }
 
+
                 if (currentView >=0) {
                     displayView(currentView);
                 } else {
@@ -94,7 +103,7 @@ public class MainActivity extends FragmentActivity {
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
         //layout
         mTitle = mDrawerTitle = getTitle();
@@ -109,6 +118,7 @@ public class MainActivity extends FragmentActivity {
 				.obtainTypedArray(R.array.nav_drawer_icons);
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLinLayout = (LinearLayout) findViewById(R.id.drawer_lin_layout);
 		mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
 
         ArrayList<NavDrawerItem> navDrawerItems;
@@ -163,20 +173,22 @@ public class MainActivity extends FragmentActivity {
             bar.setIcon(R.drawable.ic_hhs_hollow);
         }
 		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-				R.drawable.ic_drawer, //nav menu toggle icon
+				//R.drawable.ic_drawer, //nav menu toggle icon
 				R.string.app_name, // nav drawer open - description for accessibility
 				R.string.app_name // nav drawer close - description for accessibility
 		) {
 			public void onDrawerClosed(View view) {
-				getActionBar().setTitle(mTitle);
-                getActionBar().setIcon(mIcon);
+				//getActionBar().setTitle(mTitle);
+                //getActionBar().setIcon(mIcon);
                 //getActionBar().setIcon(navDrawerItems.get());
 				// calling onPrepareOptionsMenu() to show action bar icons
 				invalidateOptionsMenu();
 			}
 
 			public void onDrawerOpened(View drawerView) {
-				getActionBar().setTitle(mDrawerTitle);
+				mLastTitle = getActionBar().getTitle();
+                //mLastIcon = getActionBar().
+                getActionBar().setTitle(mDrawerTitle);
                 getActionBar().setIcon(mDrawerIcon);
                 // calling onPrepareOptionsMenu() to hide action bar icons
 				invalidateOptionsMenu();
@@ -190,20 +202,21 @@ public class MainActivity extends FragmentActivity {
         dailyAnnFragment = new DailyAnnListFragment();
         */
         if (savedInstanceState == null) {
-            displayView(defaultView);
-        } else {
-            currentView = savedInstanceState.getInt("currentView");
-            displayView(currentView);
+            //displayView(defaultView);
         }
 
-//SwipeRefresher Listener
+        //SwipeRefresher Listener
         final SwipeRefreshLayout swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override
             public void onRefresh()
             {
-                refreshData();
+
+                if (findViewById(R.id.detail_pager) == null) {
+                    refreshData();
+                } else
+                    swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -213,23 +226,37 @@ public class MainActivity extends FragmentActivity {
     protected void onStart() {
         super.onStart();
         //Start download
-        Toast.makeText(MainActivity.this, "Loading data", Toast.LENGTH_LONG).show();
 
-        Intent i = getIntent();
-        refreshSource = (ArticleParser.SourceMode) i.getSerializableExtra("refreshSource");
-        if (refreshSource == null) {
-            refreshSource = ArticleParser.SourceMode.PREFER_DOWNLOAD;
+        tabPager = new TabPager();
+
+        if (findViewById(R.id.frame_container) != null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame_container, tabPager);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
+        boolean isDebuggable =  ( 0 != ( getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE ) );
 
-        Intent intent = new Intent(getApplicationContext(), ArticleDownloaderService.class);
-        intent.putExtra("refreshSource", refreshSource);
-        startService(intent);
+        if ((currentView<0) && (isDebuggable == false)) {
+            Toast.makeText(MainActivity.this, "Loading data", Toast.LENGTH_LONG).show();
+
+
+            Intent i = getIntent();
+            refreshSource = (ArticleParser.SourceMode) i.getSerializableExtra("refreshSource");
+            if (refreshSource == null) {
+                refreshSource = ArticleParser.SourceMode.PREFER_DOWNLOAD;
+            }
+
+            Intent intent = new Intent(getApplicationContext(), ArticleDownloaderService.class);
+            intent.putExtra("refreshSource", refreshSource);
+            startService(intent);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        displayView(currentView);
+        //displayView(currentView);
         registerReceiver(receiver, new IntentFilter(ArticleDownloaderService.NOTIFICATION));
         registerReceiver(receiver, new IntentFilter(HHSWidget.NOTIFICATION));
     }
@@ -288,7 +315,7 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// if nav drawer is opened, hide the action items
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerLinLayout);
 		menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -297,95 +324,53 @@ public class MainActivity extends FragmentActivity {
 	 * Diplaying fragment view for selected nav drawer list item
 	 * */
 	private void displayView(int position) {
-		/*if (position == currentView) {
-            DrawerLayout mDrawerLayout;
-            mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-            mDrawerLayout.closeDrawers();
-            return;
-        }*/
-
 		// update the main content by replacing fragments
-		Fragment fragment = null;
-        Boolean refresh = false;
-        Bundle bundle = new Bundle();
+		Bundle bundle = new Bundle();
+        bundle.putInt("position", position);
 
 
-		switch (position) {
-         case 0:
-                fragment = new HomeFragment();
-                currentView = position;
-                break;
-         case 1:
-            fragment = new SchedulesListFragment();
-            currentView = position;
-			break;
-		case 2:
-			fragment = new NewsRecyclerFragment();
-            currentView = position;
-            break;
-		case 3:
-			fragment = new DailyAnnListFragment();
-            currentView = position;
-            break;
-		case 4:
-			fragment = new EventsListFragment();
-            currentView = position;
-            break;
-        case 5:
-            fragment = new LunchListFragment();
-            currentView = position;
-            break;
-        case 6:
+        if (position == 6) {
             Uri uriUrl = Uri.parse(getResources().getString(R.string.hhs_home_page));
             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
             startActivity(launchBrowser);
             return;
-        case 7:
-            refresh = true;
-            break;
-        default:
-			break;
-		}
-
-		if (fragment != null) {
-            String data = fragmentData.get(position);
-
-            bundle.putString("data", data);
-            fragment.setArguments(bundle);
-
-            //the first choice puts the fragment in the full-screen container,
-            //for small screens
-            if (findViewById(R.id.frame_container) != null) {
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.frame_container, fragment)
-                        .commit();
-            } //the second choice puts the fragment in the left-frame,
-            //for large screens;
-            else {
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.frame_list_container, fragment)
-                        .commit();
-            }
-
-           // update selected item and title, then close the drawer
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
-            if (position == 0) {
-                setTitle("Holliston High");
-            } else {
-                setTitle(navMenuTitles[position]);
-            }
-            //setIcon(navDrawerItems.get(position).getIcon());
-            mDrawerLayout.closeDrawer(mDrawerList);
-
-		} else if (refresh) {
+        } else if (position == 7) {
             refreshData();
+            return;
+        }
+
+
+        //if in detail mode
+        if (findViewById(R.id.detail_pager) != null) {
+            if (findViewById(R.id.frame_container) != null) {
+                getSupportFragmentManager().popBackStack();
+                tabPager.setPage(position);
+                setActionBar(position);
+                currentView=position;
+            } else {
+                TabPager newFragment = new TabPager();
+                newFragment.setArguments(bundle);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.frame_detail_container, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
         } else {
-			// error in creating fragment
-			Log.e("MainActivity", "Error in creating fragment");
-		}
+            tabPager.setPage(position);
+            setActionBar(position);
+            currentView=position;
+            //currentView = position;
+        }
+        if (position == 0) {
+            SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) findViewById(R.id.swipe_container);
+            swipeLayout.setEnabled(true);
+        }
+
+        DrawerLayout mDrawerLayout;
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawers();
+
+
 	}
 
 	@Override
@@ -396,16 +381,6 @@ public class MainActivity extends FragmentActivity {
             getActionBar().setTitle(mTitle);
         }
 	}
-
-    //public void setIcon(int icon) {
-        //mIcon = icon;
-        //getActionBar().setIcon(mIcon);
-    //}
-
-	/**
-	 * When using the ActionBarDrawerToggle, you must call it during
-	 * onPostCreate() and onConfigurationChanged()...
-	 */
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -439,11 +414,6 @@ public class MainActivity extends FragmentActivity {
 
         Log.d("MainActivity", "Refresh intent sent to ArticleDownloaderService");
 
-        /*Intent i = new Intent(MainActivity.this, SplashActivity.class);
-        i.putExtra("refreshSource", ArticleParser.SourceMode.DOWNLOAD_ONLY);
-        i.putExtra("alarm", "manual refresh");
-        startActivity(i);
-        */
     }
 
     @Override
@@ -453,9 +423,22 @@ public class MainActivity extends FragmentActivity {
 
     }
 
+    private void setActionBar(int i) {
+        /*TypedArray navMenuIcons = getResources()
+                .obtainTypedArray(R.array.nav_drawer_icons);
+        if (i == 0) {
+            getActionBar().setTitle(R.string.app_name);
+        } else {
+            getActionBar().setTitle(navMenuTitles[i]);
+        }
+        getActionBar().setIcon(navMenuIcons.getResourceId(i,-1));
+        */
+    }
 
-
-
-
-
+    @Override
+    public void onBackPressed() {
+        SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        swipeLayout.setEnabled(true);
+        super.onBackPressed();
+    }
 }

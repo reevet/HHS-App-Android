@@ -1,11 +1,13 @@
 package info.holliston.high.app;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ExpandableListView;
 
 import java.text.SimpleDateFormat;
@@ -17,6 +19,7 @@ import java.util.List;
 
 import info.holliston.high.app.adapter.EventsArrayAdapter;
 import info.holliston.high.app.model.Article;
+import info.holliston.high.app.pager.EventPager;
 import info.holliston.high.app.xmlparser.ArticleParser;
 
 public class EventsListFragment extends Fragment {
@@ -35,7 +38,17 @@ public class EventsListFragment extends Fragment {
         // Inflate the layout for this fragment
         v= inflater.inflate(R.layout.events_exlistview,
                 container, false);
+        final SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
+        final ExpandableListView exListView = (ExpandableListView) v.findViewById(R.id.events_exlistview);
+        exListView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = exListView.getScrollY();
+                if(scrollY == 0) swipeLayout.setEnabled(true);
+                else swipeLayout.setEnabled(false);
 
+            }
+        });
 
         return v;
     }
@@ -96,9 +109,9 @@ public class EventsListFragment extends Fragment {
         EventsArrayAdapter adapter = new EventsArrayAdapter(getActivity(), this.headers, this.events);
         this.lv.setAdapter(adapter);
 
-        if (getActivity().findViewById(R.id.frame_container) == null) {
+        if (getActivity().findViewById(R.id.frame_pager) == null) {
             if (articles.size() > 0) {
-                sendToDetailFragment(articles.get(0));
+                sendToDetailFragment(0);
             }
         }
 
@@ -124,7 +137,7 @@ public class EventsListFragment extends Fragment {
                 if (sendArticle.details.equals("")) {
                     //do nothing
                 } else {
-                    sendToDetailFragment(sendArticle);
+                    sendToDetailFragment(childPosition);
                 }
                 return false;
             }
@@ -133,15 +146,15 @@ public class EventsListFragment extends Fragment {
 
     }
 
-    private void sendToDetailFragment(Article sendArticle) {
+    private void sendToDetailFragment(int i) {
 
-        Fragment newFragment = new EventsDetailFragment();
+        EventPager newFragment = new EventPager();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("detail_article", sendArticle);
+        bundle.putInt("position", i);
         newFragment.setArguments(bundle);
-        if (getActivity().findViewById(R.id.frame_container) != null) {
+        if (getActivity().findViewById(R.id.events_frame) != null) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame_container, newFragment);
+            transaction.replace(R.id.events_frame, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else {

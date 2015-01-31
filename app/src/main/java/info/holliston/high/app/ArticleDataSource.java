@@ -22,7 +22,7 @@ import info.holliston.high.app.model.Article;
 import info.holliston.high.app.xmlparser.ArticleParser;
 import info.holliston.high.app.xmlparser.EventJsonParser;
 
-public class ArticleDataSource {
+public class ArticleDataSource{
 
     // Database fields
     private SQLiteDatabase database;
@@ -223,7 +223,7 @@ public class ArticleDataSource {
         String where;
 
         Date now = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // kk:mm");
         String nowString;
         Calendar cal = Calendar.getInstance();
         cal.setTime(now);

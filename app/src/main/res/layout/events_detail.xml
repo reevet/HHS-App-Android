@@ -44,9 +44,12 @@
         android:textStyle="bold"
         android:layout_alignParentRight="true"
         android:layout_alignParentLeft="true"
-        android:padding="10dp"
         android:textColor="@android:color/white"
-        android:background="@color/hhs_red" />
+        android:background="@color/hhs_red"
+        android:paddingLeft="10dp"
+        android:paddingTop="60dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp" />
 
     <TextView
         android:layout_width="wrap_content"

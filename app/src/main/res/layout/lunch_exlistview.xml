@@ -1,15 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/lunch_frame">
 
-    <ExpandableListView
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+        android:background="@color/button_material_light">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:background="@drawable/shadow_black"
+            android:paddingLeft="0dp"
+            android:paddingTop="0dp"
+            android:paddingRight="0dp">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView7"
+                android:src="@drawable/tray"
+                android:adjustViewBounds="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Lunch Menus"
+                android:id="@+id/textView9"
+                android:layout_alignLeft="@+id/imageView7"
+                android:layout_alignBottom="@+id/imageView7"
+                android:layout_marginLeft="10dp"
+                android:textColor="#ffffffff"
+                android:textSize="24dp" />
+        </RelativeLayout>
+
+        <ExpandableListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/lunch_exlistview"
         android:groupIndicator="@null"
-        android:background="@color/background_material_light" />
+        android:background="#ffffffff" />
     <TextView android:id="@id/android:empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,3 +55,4 @@
         android:padding="30dp" />
 
 </LinearLayout>
+    </FrameLayout>

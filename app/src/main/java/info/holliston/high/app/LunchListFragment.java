@@ -1,11 +1,13 @@
 package info.holliston.high.app;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ExpandableListView;
 
 import java.text.SimpleDateFormat;
@@ -16,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import info.holliston.high.app.adapter.LunchArrayAdapter;
-import info.holliston.high.app.adapter.SchedulesArrayAdapter;
 import info.holliston.high.app.model.Article;
+import info.holliston.high.app.pager.LunchPager;
 import info.holliston.high.app.xmlparser.ArticleParser;
 
 public class LunchListFragment extends Fragment {
@@ -38,6 +40,17 @@ public class LunchListFragment extends Fragment {
         // Inflate the layout for this fragment
         v= inflater.inflate(R.layout.lunch_exlistview,
                 container, false);
+        final SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
+        final ExpandableListView listView = (ExpandableListView) v.findViewById(R.id.lunch_exlistview);
+        listView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = listView.getScrollY();
+                if(scrollY == 0) swipeLayout.setEnabled(true);
+                else swipeLayout.setEnabled(false);
+
+            }
+        });
         return v;
     }
 
@@ -117,9 +130,9 @@ public class LunchListFragment extends Fragment {
         LunchArrayAdapter adapter = new LunchArrayAdapter(getActivity(), this.headers, this.lunches);
         this.lv.setAdapter(adapter);
 
-        if (getActivity().findViewById(R.id.frame_container) == null) {
+        if (getActivity().findViewById(R.id.frame_pager) == null) {
             if (lunches.size() > 0) {
-                sendToDetailFragment(articles.get(0));
+                sendToDetailFragment(0);
             }
         }
 
@@ -144,7 +157,7 @@ public class LunchListFragment extends Fragment {
                     List<Article> groupArticles = lunches.get(header);
                     Article sendArticle = groupArticles.get(childPosition);
 
-                    sendToDetailFragment(sendArticle);
+                    sendToDetailFragment(childPosition);
                     return false;
                 }
             }
@@ -152,13 +165,13 @@ public class LunchListFragment extends Fragment {
         );
     }
 
-    private void sendToDetailFragment(Article sendArticle) {
+    private void sendToDetailFragment(int i) {
 
-        Fragment newFragment = new LunchDetailFragment();
+        LunchPager newFragment = new LunchPager();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("detail_article", sendArticle);
+        bundle.putInt("position", i);
         newFragment.setArguments(bundle);
-        if (getActivity().findViewById(R.id.frame_container) != null) {
+        if (getActivity().findViewById(R.id.lunch_frame) != null) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_container, newFragment);
             transaction.addToBackStack(null);
