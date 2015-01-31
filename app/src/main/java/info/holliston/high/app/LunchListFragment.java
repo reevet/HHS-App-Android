@@ -172,12 +172,12 @@ public class LunchListFragment extends Fragment {
         bundle.putInt("position", i);
         newFragment.setArguments(bundle);
         if (getActivity().findViewById(R.id.lunch_frame) != null) {
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else {
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_detail_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();

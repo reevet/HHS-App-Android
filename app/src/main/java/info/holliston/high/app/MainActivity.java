@@ -220,13 +220,6 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //Start download
-
         tabPager = new TabPager();
 
         if (findViewById(R.id.frame_container) != null) {
@@ -235,6 +228,15 @@ public class MainActivity extends FragmentActivity {
             transaction.addToBackStack(null);
             transaction.commit();
         }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Start download
+
+
         boolean isDebuggable =  ( 0 != ( getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE ) );
 
         if ((currentView<0) && (isDebuggable == false)) {
