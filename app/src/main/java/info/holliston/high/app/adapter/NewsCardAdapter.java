@@ -3,7 +3,6 @@ package info.holliston.high.app.adapter;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.UUID;
 
 import info.holliston.high.app.R;
 import info.holliston.high.app.model.Article;
@@ -66,18 +64,13 @@ public class NewsCardAdapter extends RecyclerView.Adapter<NewsCardAdapter.NewsVi
             int newHeight = (int)context.getResources().getDimension(R.dimen.news_thumbnail_height);
             int newWidth = (int)context.getResources().getDimension(R.dimen.news_thumbnail_width);
 
-            UUID key = articleList.get(position).key;
+            String key = articleList.get(position).key;
             ImageAsyncLoader ial = new ImageAsyncLoader (position, holder,
                     newWidth, newHeight,
                     ImageAsyncLoader.FitMode.FILL, ImageAsyncLoader.SourceMode.ALLOW_BOTH,
                     key, context);
             //DownloadedDrawable downloadedDrawable = new DownloadedDrawable(ial);
             ial.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, imgSrc);
-
-            Log.d("News Article",position+". Title ="+a.title);
-            Log.d("News Article",position+". Key   ="+a.key);
-            Log.d("News Article","----------------------------------");
-
         }
 
     }

@@ -64,6 +64,7 @@
         <item>start</item>
         <item></item>
         <item>description</item>
+        <item></item>
     </string-array>
     <string-array name="events_parser_names">
         <item></item>
@@ -72,6 +73,7 @@
         <item>start</item>
         <item></item>
         <item>description</item>
+        <item></item>
     </string-array>
     <string-array name="news_parser_names">
         <item>entry</item>
@@ -80,6 +82,7 @@
         <item>updated</item>
         <item/>
         <item>content</item>
+        <item>id</item>
     </string-array>
     <string-array name="dailyann_parser_names">
         <item>entry</item>
@@ -88,6 +91,7 @@
         <item>published</item>
         <item/>
         <item>content</item>
+        <item></item>
     </string-array>
     <string-array name="lunch_parser_names">
         <item></item>
@@ -96,6 +100,7 @@
         <item>start</item>
         <item></item>
         <item>description</item>
+        <item></item>
     </string-array>
 
     <string name="appwidget_text">EXAMPLE</string>

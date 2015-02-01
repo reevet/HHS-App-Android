@@ -4,14 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import java.util.List;
 
@@ -33,17 +31,6 @@ public class NewsRecyclerFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.news_recyclerview,
                 container, false);
-        final SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
-        final RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.cardlist);
-        recyclerView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int scrollY = recyclerView.getScrollY();
-                if(scrollY == 0) swipeLayout.setEnabled(true);
-                else swipeLayout.setEnabled(false);
-
-            }
-        });
         return v;
     }
 
@@ -80,13 +67,6 @@ public class NewsRecyclerFragment extends Fragment {
                     }
                 })
         );
-
-        if (getActivity().findViewById(R.id.frame_pager) == null) {
-            if (articles.size() > 0) {
-                sendToDetailFragment(0);
-            }
-        }
-
     }
 
     private void sendToDetailFragment(int i) {
@@ -95,9 +75,9 @@ public class NewsRecyclerFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putInt("position", i);
         newFragment.setArguments(bundle);
-        if (getActivity().findViewById(R.id.news_frame) != null) {
+        if (getActivity().findViewById(R.id.frame_container) != null) {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.news_frame, newFragment);
+            transaction.replace(R.id.frame_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else {
@@ -105,6 +85,14 @@ public class NewsRecyclerFragment extends Fragment {
             transaction.replace(R.id.frame_detail_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        }
+    }
+
+    public void showFirst() {
+        if (getActivity().findViewById(R.id.frame_detail_container) != null) {
+            if (articles.size() > 0) {
+                sendToDetailFragment(0);
+            }
         }
     }
 

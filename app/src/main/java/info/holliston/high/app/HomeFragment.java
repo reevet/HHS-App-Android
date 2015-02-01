@@ -24,7 +24,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import info.holliston.high.app.adapter.ImageAsyncLoader;
 import info.holliston.high.app.model.Article;
@@ -42,11 +41,10 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     private ArticleDataSource dailyAnnSource;
     private ArticleDataSource lunchSource;
 
+    private Article newsArticle;
+
     List<String> eventHeaders = new ArrayList<String>();
     HashMap<String, List<Article>> events = new HashMap<String, List<Article>>();
-    String newsImageSrc = "";
-    UUID newsKey;
-
     View v;
 
 
@@ -57,7 +55,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         v = inflater.inflate(R.layout.home_fragment,
                 container, false);
 
-        final SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
+        final SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) v.findViewById(R.id.swipe_container);
         final ScrollView scrollView = (ScrollView) v.findViewById(R.id.scrollView);
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
@@ -66,6 +64,15 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                 if(scrollY == 0) swipeLayout.setEnabled(true);
                 else swipeLayout.setEnabled(false);
 
+            }
+        });
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override
+            public void onRefresh()
+            {
+                MainActivity ma = (MainActivity) getActivity();
+                ma.refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD);
             }
         });
         return v;
@@ -82,7 +89,6 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         List<Article> tempArticles;
         Article scheduleArticle;
         int schedIndex = -1;
-        Article newsArticle;
         int newsIndex = -1;
         Article dailyAnnArticle;
         int dailyAnnIndex = -1;
@@ -216,7 +222,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         titlesTextView.setText(article.title);
 
         String imgSrc = article.imgSrc;
-        UUID key = article.key;
+        String key = article.key;
 
         ImageAsyncLoader.ViewHolder holder;
         ImageView imageView = (ImageView) v.findViewById(R.id.news_image);
@@ -254,7 +260,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View view) {
                 Fragment newFragment = new NewsPager();
-                sendToDetailFragment(0, newFragment, R.id.frame_container);
+                sendToDetailFragment(0, newFragment);
             }
         };
         box.setOnClickListener(cl);
@@ -299,7 +305,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             public void onClick(View view) {
                 MainActivity ma = (MainActivity) getActivity();
                 Fragment newFragment = new SchedulePager();
-                sendToDetailFragment(z, newFragment, R.id.frame_container);
+                sendToDetailFragment(z, newFragment);
             }
         };
         box.setOnClickListener(cl);
@@ -316,7 +322,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View view) {
                 Fragment newFragment = new LunchPager();
-                sendToDetailFragment(z, newFragment, R.id.frame_container);
+                sendToDetailFragment(z, newFragment);
             }
         };
         box.setOnClickListener(cl);
@@ -351,7 +357,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View view) {
                 Fragment newFragment = new DailyAnnPager();
-                sendToDetailFragment(0, newFragment, R.id.frame_container);
+                sendToDetailFragment(0, newFragment);
             }
         };
         box.setOnClickListener(cl);
@@ -440,7 +446,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void onClick(View view) {
                         Fragment newFragment = new EventPager();
-                        sendToDetailFragment(j, newFragment, R.id.frame_container);
+                        sendToDetailFragment(j, newFragment);
                     }
                 };
                 row.setOnClickListener(cl);
@@ -450,13 +456,13 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
     }
 
-    private void sendToDetailFragment(int i, Fragment newFragment, int frame) {
+    private void sendToDetailFragment(int i, Fragment newFragment) {
 
         Bundle bundle = new Bundle();
         bundle.putInt("position", i);
         newFragment.setArguments(bundle);
 
-        if (getActivity().findViewById(frame) != null) {
+        if (getActivity().findViewById(R.id.frame_container) != null) {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_container, newFragment);
             transaction.addToBackStack(null);
@@ -466,6 +472,13 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             transaction.replace(R.id.frame_detail_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        }
+    }
+    public void showFirstNews() {
+        if (getActivity().findViewById(R.id.frame_detail_container) != null) {
+            if (newsArticle!=null) {
+                sendToDetailFragment(0, new NewsPager());
+            }
         }
     }
 }

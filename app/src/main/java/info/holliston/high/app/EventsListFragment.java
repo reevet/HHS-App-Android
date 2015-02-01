@@ -3,11 +3,9 @@ package info.holliston.high.app;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ExpandableListView;
 
 import java.text.SimpleDateFormat;
@@ -38,18 +36,6 @@ public class EventsListFragment extends Fragment {
         // Inflate the layout for this fragment
         v= inflater.inflate(R.layout.events_exlistview,
                 container, false);
-        final SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
-        final ExpandableListView exListView = (ExpandableListView) v.findViewById(R.id.events_exlistview);
-        exListView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int scrollY = exListView.getScrollY();
-                if(scrollY == 0) swipeLayout.setEnabled(true);
-                else swipeLayout.setEnabled(false);
-
-            }
-        });
-
         return v;
     }
 
@@ -109,12 +95,6 @@ public class EventsListFragment extends Fragment {
         EventsArrayAdapter adapter = new EventsArrayAdapter(getActivity(), this.headers, this.events);
         this.lv.setAdapter(adapter);
 
-        if (getActivity().findViewById(R.id.frame_pager) == null) {
-            if (articles.size() > 0) {
-                sendToDetailFragment(0);
-            }
-        }
-
         ExpandableListView.OnGroupClickListener gcl = new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
@@ -152,9 +132,9 @@ public class EventsListFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putInt("position", i);
         newFragment.setArguments(bundle);
-        if (getActivity().findViewById(R.id.events_frame) != null) {
+        if (getActivity().findViewById(R.id.frame_container) != null) {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.events_frame, newFragment);
+            transaction.replace(R.id.frame_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else {
@@ -170,6 +150,14 @@ public class EventsListFragment extends Fragment {
         super.onStart();
         for (int i=0; i< this.headers.size(); i++) {
             this.lv.expandGroup(i);
+        }
+    }
+
+    public void showFirst() {
+        if (getActivity().findViewById(R.id.frame_detail_container) != null) {
+            if (events.size() > 0) {
+                sendToDetailFragment(0);
+            }
         }
     }
 

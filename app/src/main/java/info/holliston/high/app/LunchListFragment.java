@@ -3,11 +3,9 @@ package info.holliston.high.app;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ExpandableListView;
 
 import java.text.SimpleDateFormat;
@@ -40,17 +38,6 @@ public class LunchListFragment extends Fragment {
         // Inflate the layout for this fragment
         v= inflater.inflate(R.layout.lunch_exlistview,
                 container, false);
-        final SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
-        final ExpandableListView listView = (ExpandableListView) v.findViewById(R.id.lunch_exlistview);
-        listView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int scrollY = listView.getScrollY();
-                if(scrollY == 0) swipeLayout.setEnabled(true);
-                else swipeLayout.setEnabled(false);
-
-            }
-        });
         return v;
     }
 
@@ -130,12 +117,6 @@ public class LunchListFragment extends Fragment {
         LunchArrayAdapter adapter = new LunchArrayAdapter(getActivity(), this.headers, this.lunches);
         this.lv.setAdapter(adapter);
 
-        if (getActivity().findViewById(R.id.frame_pager) == null) {
-            if (lunches.size() > 0) {
-                sendToDetailFragment(0);
-            }
-        }
-
         ExpandableListView.OnGroupClickListener gcl = new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
@@ -203,5 +184,13 @@ public class LunchListFragment extends Fragment {
     public void onPause() {
         datasource.close();
         super.onPause();
+    }
+
+    public void showFirst() {
+        if (getActivity().findViewById(R.id.frame_detail_container) != null) {
+            if (lunches.size() > 0) {
+                sendToDetailFragment(0);
+            }
+        }
     }
 }

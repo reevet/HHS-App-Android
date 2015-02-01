@@ -20,7 +20,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.UUID;
 
 public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
     //private final WeakReference<ImageView> bmImage;
@@ -28,7 +27,7 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
     int newWidth;
     int newHeight;
     Context context;
-    UUID key;
+    String key;
     private int mPosition;
     private ViewHolder mHolder;
 
@@ -40,7 +39,7 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
 
     public ImageAsyncLoader(int position, ViewHolder holder,
                             int width, int height, FitMode fitMode, SourceMode sourceMode,
-                            UUID key, Context c) {
+                            String key, Context c) {
         this.mPosition = position;
         this.mHolder = holder;
         this.newWidth = width;
@@ -67,7 +66,7 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
 
         if ((SourceMode.DOWNLOAD_ONLY != this.sourceMode)) {
             try {
-                filein = new File(context.getCacheDir(), key.toString());
+                filein = new File(context.getCacheDir(), key);
                 //File testFile = new File(context.getCacheDir().getPath());
                 //File[] files = testFile.listFiles();
                 fis = new FileInputStream(filein);
@@ -78,19 +77,19 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
                 oldWidth = options.outWidth;
                 if ((oldHeight > 0) && (oldWidth > 0)) {
                     iFound = "cache";
+                    Log.i("imageCache","cached image found");
                 } else {
                     Log.e("imageCache", "cached image file had dimensions 0x0");
                 }
             } catch (Exception e) {
-                Log.e("imageCache", "cached image file had dimensions 0x0");
+                Log.i("imageCache", "cached image not found");
             }
         }
         if (mPosition != mHolder.position) {
             return null;
         }
 
-        if (!(iFound.equals("cache")) &&
-                (this.sourceMode != SourceMode.CACHE_ONLY) ) {
+        if (!(iFound.equals("cache")) && (this.sourceMode != SourceMode.CACHE_ONLY) ) {
             try {
                 in = new URL(urldisplay).openStream();
                 options = new BitmapFactory.Options();
@@ -101,11 +100,13 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
                 oldWidth = options.outWidth;
                 if ((oldHeight > 0) && (oldWidth > 0)) {
                     iFound = "web";
+                    Log.i("imageCache", "image downloaded");
                 } else {
                     Log.e("imageCache", "web image file had dimensions 0x0");
                 }
             } catch (Exception ex) {
                 iFound = "";
+                Log.e("imageCache","Error downloading image "+key);
             }
         }
         if (mPosition != mHolder.position) {
@@ -157,9 +158,10 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
 
         if (iFound.equals("web")) {
             try {
-                File outfile = new File(this.context.getCacheDir(), key.toString());
+                File outfile = new File(this.context.getCacheDir(), key);
                 os = new FileOutputStream(outfile);
-                fullImage.compress(Bitmap.CompressFormat.PNG, 60, os);
+                fullImage.compress(Bitmap.CompressFormat.PNG, 100, os);
+                Log.i("imageCache", "Successfully cached image with key "+key);
             } catch (Exception ex) {
                 Log.e("imageCache", "Error writing image to cache");
             } finally {

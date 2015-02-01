@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import info.holliston.high.app.model.Article;
 import info.holliston.high.app.xmlparser.ArticleParser;
@@ -61,7 +60,7 @@ public class ArticleDataSource{
         dbHelper.close();
     }
 
-    public Article createArticle(String title, URL url, Date date, String details, String imgsrc) {
+    public Article createArticle(String title, String key, URL url, Date date, String details, String imgsrc) {
         Article newArticle;
         newArticle = articleFromUrl(url);
             ContentValues values = new ContentValues();
@@ -82,14 +81,15 @@ public class ArticleDataSource{
             } else {
                 timeString = timeString.substring(0,5);
             }*/
-            String fullDateString = dateString+" "+timeString;
+        String fullDateString = dateString+" "+timeString;
         values.put(ArticleSQLiteHelper.COLUMN_URL, url.toString());
-            values.put(ArticleSQLiteHelper.COLUMN_DATE, fullDateString);
-            values.put(ArticleSQLiteHelper.COLUMN_DETAILS, details);
-            values.put(ArticleSQLiteHelper.COLUMN_IMGSRC, imgsrc);
+        values.put(ArticleSQLiteHelper.COLUMN_DATE, fullDateString);
+        values.put(ArticleSQLiteHelper.COLUMN_DETAILS, details);
+        values.put(ArticleSQLiteHelper.COLUMN_IMGSRC, imgsrc);
+        values.put(ArticleSQLiteHelper.COLUMN_KEY, key);
 
         if (newArticle == null) {
-            values.put(ArticleSQLiteHelper.COLUMN_KEY, UUID.randomUUID().toString());
+            //values.put(ArticleSQLiteHelper.COLUMN_KEY, UUID.randomUUID().toString());
 
             long insertId = database.insert(dbHelper.getName(), null,
                     values);
@@ -118,7 +118,7 @@ public class ArticleDataSource{
 
     public void createArticles(List<Article> articleList) {
         for (Article art : articleList){
-            this.createArticle(art.title, art.url, art.date, art.details, art.imgSrc);
+            this.createArticle(art.title, art.key, art.url, art.date, art.details, art.imgSrc);
         }
     }
 
@@ -281,7 +281,7 @@ public class ArticleDataSource{
         } catch (Exception e) {
             article.date = new Date();
         }
-        article.key = UUID.fromString(cursor.getString(4));
+        article.key = cursor.getString(4);
         article.details = cursor.getString(5);
         article.imgSrc = cursor.getString(6);
         return article;

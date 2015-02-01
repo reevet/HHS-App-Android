@@ -22,17 +22,16 @@ public class ArticleParser {
     // We don't use namespaces
     private static final String ns = null;
 
-     private String[] parserNames;
+    private String[] parserNames;
 
     private String entryName;
     private String titleName;
     private String linkName;
     private String dateName;
     private String startTimeName;
-    private String detailsName;
-    private String currentImgSrc;
+    private String detailsName;    private String idName;
 
-    //private ArticleDataSource dataSource;
+    private String currentImgSrc;
 
     public enum HtmlTags {KEEP_HTML_TAGS, CONVERT_LINE_BREAKS, IGNORE_HTML_TAGS}
     public enum SourceMode {ALLOW_BOTH, DOWNLOAD_ONLY, CACHE_ONLY, PREFER_DOWNLOAD}
@@ -64,6 +63,7 @@ public class ArticleParser {
         this.dateName = parserNames[3];
         this.startTimeName = parserNames[4];
         this.detailsName =parserNames[5];
+        this.idName =parserNames[6];
 
         try {
             XmlPullParser parser = Xml.newPullParser();
@@ -112,6 +112,7 @@ public class ArticleParser {
         String details = null;
         String link = null;
         String date = null;
+        String id = null;
         this.currentImgSrc = null;
 
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -125,9 +126,11 @@ public class ArticleParser {
                 details = readSummary(parser);
             } else if (name.equals(linkName)) {
                 link = readLink(parser, link);
-            }  else if (name.equals(dateName)) {
+            } else if (name.equals(dateName)) {
                 date = readDate(parser);
-            } else {
+            } else if (name.equals(idName)) {
+                id = readId(parser);
+            }else {
                 skip(parser);
             }
         }
@@ -154,7 +157,13 @@ public class ArticleParser {
             dateDate = new Date();
             Log.d("parser", "Error making date");
         }
-        Article tempArticle = new Article(title, url, dateDate, details, this.currentImgSrc);
+        //These replacements SHOULD be redundant, but just in case....
+        if (id != null) {
+            id = id.replace("/", "");
+            id = id.replace("&", "");
+            id = id.replace("?", "");
+        }
+        Article tempArticle = new Article(title, id, url, dateDate, details, this.currentImgSrc);
         this.articleList.add(tempArticle);
         //dataSource.createArticle(title, url, dateDate, details, this.currentImgSrc);
     }
@@ -262,6 +271,14 @@ public class ArticleParser {
             parser.nextTag();
         }
         return result;
+    }
+
+    // Processes title tags in the feed.
+    private String readId(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, idName);
+        String id = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, idName);
+        return id;
     }
     private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
         if (parser.getEventType() != XmlPullParser.START_TAG) {

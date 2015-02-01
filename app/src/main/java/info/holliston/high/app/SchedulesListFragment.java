@@ -3,11 +3,9 @@ package info.holliston.high.app;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ExpandableListView;
 
 import java.text.SimpleDateFormat;
@@ -40,24 +38,12 @@ public class SchedulesListFragment extends Fragment {
         // Inflate the layout for this fragment
         v= inflater.inflate(R.layout.schedules_exlistview,
                 container, false);
-        final SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
-        final ExpandableListView exListView = (ExpandableListView) v.findViewById(R.id.schedules_exlistview);
-        exListView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int scrollY = exListView.getScrollY();
-                if(scrollY == 0) swipeLayout.setEnabled(true);
-                else swipeLayout.setEnabled(false);
-
-            }
-        });
         return v;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
 
         ArticleDataSourceOptions options = new ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_SCHEDULES, getString(R.string.schedules_url),
@@ -130,12 +116,6 @@ public class SchedulesListFragment extends Fragment {
             SchedulesArrayAdapter adapter = new SchedulesArrayAdapter(getActivity(), this.headers, this.schedules);
             this.lv.setAdapter(adapter);
 
-            if (getActivity().findViewById(R.id.frame_pager) == null) {
-                if (schedules.size() > 0) {
-                    sendToDetailFragment(0);
-                }
-            }
-
             ExpandableListView.OnGroupClickListener gcl = new ExpandableListView.OnGroupClickListener() {
                 @Override
                 public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
@@ -175,9 +155,9 @@ public class SchedulesListFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putInt("position", i);
         newFragment.setArguments(bundle);
-        if (getActivity().findViewById(R.id.sched_frame) != null) {
+        if (getActivity().findViewById(R.id.frame_container) != null) {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.sched_frame, newFragment);
+            transaction.replace(R.id.frame_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else {
@@ -208,5 +188,13 @@ public class SchedulesListFragment extends Fragment {
     public void onPause() {
         datasource.close();
         super.onPause();
+    }
+
+    public void showFirst() {
+        if (getActivity().findViewById(R.id.frame_detail_container) != null) {
+            if (schedules.size() > 0) {
+                sendToDetailFragment(0);
+            }
+        }
     }
 }

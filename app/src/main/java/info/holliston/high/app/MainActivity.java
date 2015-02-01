@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.net.Uri;
@@ -41,6 +40,9 @@ public class MainActivity extends FragmentActivity {
     private LinearLayout mDrawerLinLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
+    // nav drawer title
+    private CharSequence mDrawerTitle;
+    private int mDrawerIcon;
 
     String schedulesString;
     String eventsString;
@@ -48,187 +50,121 @@ public class MainActivity extends FragmentActivity {
     String dailyAnnString;
     String lunchString;
 
-	// nav drawer title
-	private CharSequence mDrawerTitle;
-    private int mDrawerIcon;
-    //private ArrayList<NavDrawerItem> navDrawerItems;
-
     // used to store app title
 	private CharSequence mTitle;
     private int mIcon;
-
-    private CharSequence mLastTitle;
-    private int mLastIcon;
 
 	// slide menu items
 	private String[] navMenuTitles;
 	private ArrayList<String> fragmentData;
 
-
     public int currentView = -1;
-    private int defaultView = 0;
-    //Boolean newNewsAvailable = false;
 
     ArticleParser.SourceMode refreshSource;
 
+    //receive messages about data download
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
-                //Toast.makeText(MainActivity.this, "Download complete", Toast.LENGTH_LONG).show();
-                //Toast.makeText(SplashActivity.this, "Data sync complete", Toast.LENGTH_LONG).show();
                 String result = bundle.getString("result");
                 if (result != null) {
                     SwipeRefreshLayout swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_container);
                     if (swipeRefreshLayout != null) {
                         swipeRefreshLayout.setRefreshing(false);
                         Toast.makeText(MainActivity.this, "Download complete", Toast.LENGTH_LONG).show();
+                        //Intent i = new Intent(MainActivity.this, MainActivity.class);
+                        //startActivity(i);
                     }
                 }
-
-
-                if (currentView >=0) {
-                    displayView(currentView);
-                } else {
-                    displayView(defaultView);
-                }
-
+                displayView(0);
             }
         }
     };
-
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //layout
+        //title bar setup
         mTitle = mDrawerTitle = getTitle();
         mIcon = mDrawerIcon = R.drawable.ic_hhs_hollow;
 
 		// load slide menu items
 		navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
-
         TypedArray navMenuIcons;
-        // nav drawer icons from resources
-		navMenuIcons = getResources()
-				.obtainTypedArray(R.array.nav_drawer_icons);
+		navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
+        ArrayList<NavDrawerItem> navDrawerItems;
 
+        //get drawer elements
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLinLayout = (LinearLayout) findViewById(R.id.drawer_lin_layout);
 		mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
 
-        ArrayList<NavDrawerItem> navDrawerItems;
         fragmentData = new ArrayList<String>();
 
 		// adding nav drawer items to array
-		// Schedules
-
-        navDrawerItems = new ArrayList<NavDrawerItem>();
-
-        // Home
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        fragmentData.add("");
-        // Schedules
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-        fragmentData.add(schedulesString);
-		// News
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-        fragmentData.add(newsString);
-        // Daily Announcements
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
-        fragmentData.add(dailyAnnString);
-        // Events
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
-        fragmentData.add(eventsString);
-        // Lunch
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
-        fragmentData.add(lunchString);
-        // Website link
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(6, -1)));
-        fragmentData.add("");
-        // Refresh
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[7], navMenuIcons.getResourceId(7, -1)));
-        fragmentData.add("");
+		navDrawerItems = new ArrayList<NavDrawerItem>();
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1))); //Home
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1))); //Schedules
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1))); //News
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1))); //DailyAnn
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1))); //Events
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1))); //Lunch
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(6, -1))); //Website
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[7], navMenuIcons.getResourceId(7, -1))); //Refresh
 
 		// Recycle the typed array
 		navMenuIcons.recycle();
 
 		mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
+        //this is defined below
 
+        // setting the nav drawer list adapter
         NavDrawerListAdapter adapter;
-		// setting the nav drawer list adapter
-		adapter = new NavDrawerListAdapter(getApplicationContext(),
-				navDrawerItems);
+		adapter = new NavDrawerListAdapter(getApplicationContext(), navDrawerItems);
 		mDrawerList.setAdapter(adapter);
 
-		// enabling action bar app icon and behaving it as toggle button
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.app_name, R.string.app_name) {
+            public void onDrawerClosed(View view) {
+                invalidateOptionsMenu();
+            }
+            public void onDrawerOpened(View drawerView) {
+                invalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        // enabling action bar app icon and behaving it as toggle button
 		ActionBar bar = getActionBar();
         if (bar!=null) {
             bar.setDisplayHomeAsUpEnabled(true);
             bar.setHomeButtonEnabled(true);
             bar.setIcon(R.drawable.ic_hhs_hollow);
         }
-		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-				//R.drawable.ic_drawer, //nav menu toggle icon
-				R.string.app_name, // nav drawer open - description for accessibility
-				R.string.app_name // nav drawer close - description for accessibility
-		) {
-			public void onDrawerClosed(View view) {
-				//getActionBar().setTitle(mTitle);
-                //getActionBar().setIcon(mIcon);
-                //getActionBar().setIcon(navDrawerItems.get());
-				// calling onPrepareOptionsMenu() to show action bar icons
-				invalidateOptionsMenu();
-			}
+        startPager();
 
-			public void onDrawerOpened(View drawerView) {
-				mLastTitle = getActionBar().getTitle();
-                //mLastIcon = getActionBar().
-                getActionBar().setTitle(mDrawerTitle);
-                getActionBar().setIcon(mDrawerIcon);
-                // calling onPrepareOptionsMenu() to hide action bar icons
-				invalidateOptionsMenu();
-			}
-		};
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
 
-        /*schedulesFragment = new SchedulesListFragment();
-        eventsFragment = new EventsListFragment();
-        newsFragment = new NewsListFragment();
-        dailyAnnFragment = new DailyAnnListFragment();
-        */
-        if (savedInstanceState == null) {
-            //displayView(defaultView);
+    private void startPager() {
+        if (tabPager!=null) {
+            tabPager.onDestroy();
         }
-
-        //SwipeRefresher Listener
-        final SwipeRefreshLayout swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_container);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-        {
-            @Override
-            public void onRefresh()
-            {
-
-                if (findViewById(R.id.detail_pager) == null) {
-                    refreshData();
-                } else
-                    swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
         tabPager = new TabPager();
-
         if (findViewById(R.id.frame_container) != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_container, tabPager);
             transaction.addToBackStack(null);
             transaction.commit();
+        } else {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame_list_container, tabPager);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
-
     }
 
     @Override
@@ -236,8 +172,7 @@ public class MainActivity extends FragmentActivity {
         super.onStart();
         //Start download
 
-
-        boolean isDebuggable =  ( 0 != ( getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE ) );
+        boolean isDebuggable =  false;//( 0 != ( getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE ) );
 
         if ((currentView<0) && (isDebuggable == false)) {
             Toast.makeText(MainActivity.this, "Loading data", Toast.LENGTH_LONG).show();
@@ -304,7 +239,7 @@ public class MainActivity extends FragmentActivity {
 		// Handle action bar actions click
 		switch (item.getItemId()) {
 		case R.id.action_settings:
-            refreshData();
+            refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -330,14 +265,13 @@ public class MainActivity extends FragmentActivity {
 		Bundle bundle = new Bundle();
         bundle.putInt("position", position);
 
-
         if (position == 6) {
             Uri uriUrl = Uri.parse(getResources().getString(R.string.hhs_home_page));
             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
             startActivity(launchBrowser);
             return;
         } else if (position == 7) {
-            refreshData();
+            refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD);
             return;
         }
 
@@ -350,22 +284,15 @@ public class MainActivity extends FragmentActivity {
                 setActionBar(position);
                 currentView=position;
             } else {
-                TabPager newFragment = new TabPager();
-                newFragment.setArguments(bundle);
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frame_detail_container, newFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                tabPager.setPage(position);
+                setActionBar(position);
+                currentView=position;
             }
         } else {
             tabPager.setPage(position);
             setActionBar(position);
             currentView=position;
             //currentView = position;
-        }
-        if (position == 0) {
-            SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) findViewById(R.id.swipe_container);
-            swipeLayout.setEnabled(true);
         }
 
         DrawerLayout mDrawerLayout;
@@ -398,14 +325,12 @@ public class MainActivity extends FragmentActivity {
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
-    public void refreshData() {
+    public void refreshData(ArticleParser.SourceMode refreshSource) {
         //destroyFragments();
         Log.d("MainActivity", "Refresh called");
 
         Toast.makeText(MainActivity.this, "Loading data", Toast.LENGTH_LONG).show();
 
-        Intent i = getIntent();
-        refreshSource = (ArticleParser.SourceMode) i.getSerializableExtra("refreshSource");
         if (refreshSource == null) {
             refreshSource = ArticleParser.SourceMode.PREFER_DOWNLOAD;
         }
@@ -437,10 +362,5 @@ public class MainActivity extends FragmentActivity {
         */
     }
 
-    @Override
-    public void onBackPressed() {
-        SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) findViewById(R.id.swipe_container);
-        swipeLayout.setEnabled(true);
-        super.onBackPressed();
-    }
+
 }

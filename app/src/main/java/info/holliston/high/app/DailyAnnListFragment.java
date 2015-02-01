@@ -4,11 +4,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -32,17 +30,7 @@ public class DailyAnnListFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.dailyann_listview,
                 container, false);
-        final SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
-        final ListView listView = (ListView) v.findViewById(R.id.dailyann_list);
-        listView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int scrollY = listView.getScrollY();
-                if(scrollY == 0) swipeLayout.setEnabled(true);
-                else swipeLayout.setEnabled(false);
 
-            }
-        });
         return v;
     }
 
@@ -70,12 +58,6 @@ public class DailyAnnListFragment extends Fragment {
         DailyAnnArrayAdapter adapter = new DailyAnnArrayAdapter(getActivity(), articles);
         ListView lv = (ListView) getActivity().findViewById(R.id.dailyann_list);
         lv.setAdapter(adapter);
-
-        if (getActivity().findViewById(R.id.frame_pager) == null) {
-            if (articles.size() > 0) {
-                sendToDetailFragment(0);
-            }
-        }
 
         // Listview on child click listener
         lv.setOnItemClickListener(new ListView.OnItemClickListener() {
@@ -107,6 +89,14 @@ public class DailyAnnListFragment extends Fragment {
             transaction.replace(R.id.frame_detail_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        }
+    }
+
+    public void showFirst() {
+        if (getActivity().findViewById(R.id.frame_detail_container) != null) {
+            if (articles.size() > 0) {
+                sendToDetailFragment(0);
+            }
         }
     }
 

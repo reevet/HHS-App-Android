@@ -13,42 +13,48 @@ import info.holliston.high.app.NewsRecyclerFragment;
 import info.holliston.high.app.SchedulesListFragment;
 
 public class TabPagerAdapter extends FragmentPagerAdapter {
+    public HomeFragment mHomeFragment;
+    public SchedulesListFragment mSchedFragment;
+    public NewsRecyclerFragment mNewsFragment;
+    public DailyAnnListFragment mDailyAnnFragment;
+    public EventsListFragment mEventsFragment;
+    public LunchListFragment mLunchFragment;
+
     public TabPagerAdapter(FragmentManager fm) {
         super(fm);
+        mHomeFragment = new HomeFragment();
+        mSchedFragment = new SchedulesListFragment();
+        mNewsFragment = new NewsRecyclerFragment();
+        mDailyAnnFragment = new DailyAnnListFragment();
+        mEventsFragment = new EventsListFragment();
+        mLunchFragment = new LunchListFragment();
     }
 
     @Override
     public Fragment getItem(int i) {
-        //Fragment fragment = new TabFragment();
-        //Bundle args = new Bundle();
-        // Our object is just an integer :-P
-        //args.putInt(TabFragment.ARG_OBJECT, i + 1);
-        //fragment.setArguments(args);
 
-        //pasted in
-        // update the main content by replacing fragments
         Fragment fragment = null;
         Boolean refresh = false;
         Bundle bundle = new Bundle();
 
         switch (i) {
             case 0:
-                fragment = new HomeFragment();
+                fragment = mHomeFragment;
                 break;
             case 1:
-                fragment = new SchedulesListFragment();
-                 break;
+                fragment = mSchedFragment;
+                break;
             case 2:
-                fragment = new NewsRecyclerFragment();
+                fragment = mNewsFragment;
                 break;
             case 3:
-                fragment = new DailyAnnListFragment();
+                fragment = mDailyAnnFragment;
                 break;
             case 4:
-                fragment = new EventsListFragment();
+                fragment = mEventsFragment;
                 break;
             case 5:
-                fragment = new LunchListFragment();
+                fragment = mLunchFragment;
                 break;
             /*case 6:
                 Uri uriUrl = Uri.parse(getResources().getString(R.string.hhs_home_page));

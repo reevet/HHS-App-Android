@@ -2,7 +2,6 @@ package info.holliston.high.app;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +26,6 @@ public class LunchDetailFragment extends Fragment {
         article = (Article) bundle.getSerializable("detail_article");
 
         View rootView = inflater.inflate(R.layout.lunch_detail, container, false);
-        final SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
-        swipeLayout.setEnabled(false);
 
         TextView titleTextView = (TextView) rootView.findViewById(R.id.detail_title);
         titleTextView.setText(article.title);
