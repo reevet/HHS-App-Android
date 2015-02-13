@@ -13,13 +13,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import info.holliston.high.app.ArticleDataSource;
-import info.holliston.high.app.ArticleDataSourceOptions;
-import info.holliston.high.app.ArticleSQLiteHelper;
+import info.holliston.high.app.datamodel.download.ArticleDataSource;
+import info.holliston.high.app.datamodel.download.ArticleSQLiteHelper;
 import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
-import info.holliston.high.app.model.Article;
-import info.holliston.high.app.xmlparser.ArticleParser;
+import info.holliston.high.app.datamodel.Article;
+import info.holliston.high.app.datamodel.download.ArticleParser;
 
 /**
  * Implementation of App Widget functionality.
@@ -50,19 +49,6 @@ public class HHSWidget extends AppWidgetProvider {
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
 
         super.onReceive(context, intent);
-/*
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            AppWidgetManager appWidgetManager = AppWidgetManager
-                    .getInstance(context);
-            ComponentName thisAppWidget = new ComponentName(context
-                    .getPackageName(), HHSWidget.class.getName());
-            int[] appWidgetIds = appWidgetManager
-                    .getAppWidgetIds(thisAppWidget);
-
-            onUpdate(context, appWidgetManager, appWidgetIds);
-        }
-        */
     }
 
     @Override
@@ -76,17 +62,18 @@ public class HHSWidget extends AppWidgetProvider {
         ArticleDataSource datasource;
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-        ArticleDataSourceOptions options = new ArticleDataSourceOptions(
-                ArticleSQLiteHelper.TABLE_SCHEDULES, context.getString(R.string.schedules_url),
+        ArticleDataSource.ArticleDataSourceOptions options = new ArticleDataSource.ArticleDataSourceOptions(
+                ArticleSQLiteHelper.TABLE_SCHEDULES,
+                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
+                context.getString(R.string.schedules_url),
                 context.getResources().getStringArray(R.array.schedules_parser_names),
-                ArticleParser.HtmlTags.IGNORE_HTML_TAGS, ArticleDataSource.SortOrder.GET_FUTURE,
+                ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
+                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "2");
         datasource = new ArticleDataSource(context,options);
-        datasource.open();
 
         List<Article> articles;
         articles = datasource.getAllArticles();
-        datasource.close();
 
         if (articles.size() >0)
         {

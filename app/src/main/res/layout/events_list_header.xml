@@ -8,7 +8,6 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="20dp"
             android:id="@+id/header_title"
             android:textColor="@android:color/black"
             android:textSize="@dimen/row_normal_text_size"

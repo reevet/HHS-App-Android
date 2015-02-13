@@ -25,28 +25,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import info.holliston.high.app.adapter.ImageAsyncLoader;
-import info.holliston.high.app.model.Article;
-import info.holliston.high.app.pager.DailyAnnPager;
-import info.holliston.high.app.pager.EventPager;
-import info.holliston.high.app.pager.LunchPager;
-import info.holliston.high.app.pager.NewsPager;
-import info.holliston.high.app.pager.SchedulePager;
-import info.holliston.high.app.xmlparser.ArticleParser;
+import info.holliston.high.app.datamodel.Article;
+import info.holliston.high.app.datamodel.download.ArticleDataSource;
+import info.holliston.high.app.datamodel.download.ArticleParser;
+import info.holliston.high.app.pager.DailyAnnPagerFragment;
+import info.holliston.high.app.pager.EventPagerFragment;
+import info.holliston.high.app.pager.LunchPagerFragment;
+import info.holliston.high.app.pager.NewsPagerFragment;
+import info.holliston.high.app.pager.SchedulePagerFragment;
 
 public class HomeFragment extends android.support.v4.app.Fragment {
 
-    private ArticleDataSource newsSource;
-    private ArticleDataSource schedulesSource;
-    private ArticleDataSource dailyAnnSource;
-    private ArticleDataSource lunchSource;
-
     private Article newsArticle;
 
-    List<String> eventHeaders = new ArrayList<String>();
-    HashMap<String, List<Article>> events = new HashMap<String, List<Article>>();
+    List<String> eventHeaders = new ArrayList<>();
+    HashMap<String, List<Article>> events = new HashMap<>();
     View v;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,9 +66,10 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             public void onRefresh()
             {
                 MainActivity ma = (MainActivity) getActivity();
-                ma.refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD);
+                ma.refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, ImageAsyncCacher.SourceMode.DOWNLOAD_ONLY);
             }
         });
+
         return v;
         }
 
@@ -83,32 +78,24 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ArticleDataSource eventsSource;
+        MainActivity ma = (MainActivity) getActivity();
 
-        ArticleDataSourceOptions options;
+        ArticleDataSource eventsSource = ma.eventsSource;
+        ArticleDataSource newsSource = ma.newsSource;
+        ArticleDataSource schedulesSource = ma.scheduleSource;
+        ArticleDataSource dailyAnnSource = ma.dailyannSource;
+        ArticleDataSource lunchSource = ma.lunchSource;
+
         List<Article> tempArticles;
         Article scheduleArticle;
-        int schedIndex = -1;
-        int newsIndex = -1;
+        int schedIndex;
         Article dailyAnnArticle;
-        int dailyAnnIndex = -1;
         Article lunchArticle;
-        int lunchIndex = -1;
+        int lunchIndex;
         Date scheduleDate = new Date();
         List<Article> eventsArticles;
-        int eventIndex = -1;
-
-        /*Get the most recent news item */
-        options = new ArticleDataSourceOptions(
-                ArticleSQLiteHelper.TABLE_NEWS, getString(R.string.news_url),
-                getResources().getStringArray(R.array.news_parser_names),
-                ArticleParser.HtmlTags.KEEP_HTML_TAGS, ArticleDataSource.SortOrder.GET_PAST,
-                "1");
-        newsSource = new ArticleDataSource(getActivity().getApplicationContext(),options);
-        newsSource.open();
 
         tempArticles = newsSource.getAllArticles();
-        newsSource.close();
 
         if (tempArticles.size() >0) {
             newsArticle = tempArticles.get(0);
@@ -116,16 +103,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         }
 
         /*Get the most recent schedule */
-        options = new ArticleDataSourceOptions(
-                ArticleSQLiteHelper.TABLE_SCHEDULES, getString(R.string.schedules_url),
-                getResources().getStringArray(R.array.schedules_parser_names),
-                ArticleParser.HtmlTags.IGNORE_HTML_TAGS, ArticleDataSource.SortOrder.GET_FUTURE,
-                "2");
-        schedulesSource = new ArticleDataSource(getActivity().getApplicationContext(),options);
-        schedulesSource.open();
-
         tempArticles = schedulesSource.getAllArticles();
-        schedulesSource.close();
 
         if (tempArticles.size() >0) {
             scheduleArticle = tempArticles.get(0);
@@ -157,19 +135,9 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         }
 
         /*Get the most lunch menu for that date */
-        options = new ArticleDataSourceOptions(
-                ArticleSQLiteHelper.TABLE_LUNCH, getString(R.string.lunch_url),
-                getResources().getStringArray(R.array.lunch_parser_names),
-                ArticleParser.HtmlTags.IGNORE_HTML_TAGS, ArticleDataSource.SortOrder.GET_FUTURE,
-                "5");
-        lunchSource = new ArticleDataSource(getActivity().getApplicationContext(),options);
-        lunchSource.open();
-
         tempArticles = lunchSource.getAllArticles();
-        lunchSource.close();
 
         if (tempArticles.size() >0) {
-            lunchArticle = null;
             lunchArticle = tempArticles.get(0);
             lunchIndex =0;
             for (int z = 0; z< tempArticles.size(); z++) {
@@ -182,16 +150,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         }
 
         /*Get the most recent daily announcements */
-        options = new ArticleDataSourceOptions(
-                ArticleSQLiteHelper.TABLE_DAILYANN, getString(R.string.dailyann_url),
-                getResources().getStringArray(R.array.dailyann_parser_names),
-                ArticleParser.HtmlTags.CONVERT_LINE_BREAKS, ArticleDataSource.SortOrder.GET_PAST,
-                "1");
-        dailyAnnSource = new ArticleDataSource(getActivity().getApplicationContext(),options);
-        dailyAnnSource.open();
-
         tempArticles = dailyAnnSource.getAllArticles();
-        dailyAnnSource.close();
 
         if (tempArticles.size() >0) {
             dailyAnnArticle = tempArticles.get(0);
@@ -199,16 +158,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         }
 
         /*Get upcoming events */
-        options = new ArticleDataSourceOptions(
-                ArticleSQLiteHelper.TABLE_EVENTS, getString(R.string.events_url),
-                getResources().getStringArray(R.array.events_parser_names),
-                ArticleParser.HtmlTags.CONVERT_LINE_BREAKS, ArticleDataSource.SortOrder.GET_FUTURE,
-                "20");
-        eventsSource = new ArticleDataSource(getActivity().getApplicationContext(),options);
-        eventsSource.open();
-
         eventsArticles = eventsSource.getAllArticles();
-        eventsSource.close();
 
         TableLayout eventsTable = (TableLayout) v.findViewById(R.id.events_box);
         if ((eventsTable.getChildCount() == 0) && (eventsArticles.size() >0)){
@@ -218,6 +168,9 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
     private void assignNews(Article article) {
 
+        if (getActivity().findViewById(R.id.news_box) == null) {
+            return;
+        }
         TextView titlesTextView = (TextView) v.findViewById(R.id.news_title);
         titlesTextView.setText(article.title);
 
@@ -248,7 +201,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
             ImageAsyncLoader ial = new ImageAsyncLoader(0, holder,
                     newWidth, newHeight,
-                    ImageAsyncLoader.FitMode.FULL, ImageAsyncLoader.SourceMode.ALLOW_BOTH,
+                    ImageAsyncLoader.FitMode.FULL,
+                    ImageAsyncLoader.SourceMode.ALLOW_BOTH,
                     key, getActivity().getApplicationContext());
             //DownloadedDrawable downloadedDrawable = new DownloadedDrawable(ial);
             ial.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, imgSrc);
@@ -259,8 +213,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment newFragment = new NewsPager();
-                sendToDetailFragment(0, newFragment);
+                NewsPagerFragment newFragment = new NewsPagerFragment();
+                sendToDetailFragment(0, newFragment, 2);
             }
         };
         box.setOnClickListener(cl);
@@ -283,19 +237,19 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
         switch (initial) {
             case 'A' :
-                imageView.setImageResource(R.drawable.a_50);
+                imageView.setImageResource(R.drawable.a_lg);
                 break;
             case 'B' :
-                imageView.setImageResource(R.drawable.b_50);
+                imageView.setImageResource(R.drawable.b_lg);
                 break;
             case 'C' :
-                imageView.setImageResource(R.drawable.c_50);
+                imageView.setImageResource(R.drawable.c_lg);
                 break;
             case 'D' :
-                imageView.setImageResource(R.drawable.d_50);
+                imageView.setImageResource(R.drawable.d_lg);
                 break;
             default :
-                imageView.setImageResource(R.drawable.star_50);
+                imageView.setImageResource(R.drawable.star_lg);
                 break;
         }
 
@@ -303,9 +257,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity ma = (MainActivity) getActivity();
-                Fragment newFragment = new SchedulePager();
-                sendToDetailFragment(z, newFragment);
+                SchedulePagerFragment newFragment = new SchedulePagerFragment();
+                sendToDetailFragment(z, newFragment, 1);
             }
         };
         box.setOnClickListener(cl);
@@ -317,15 +270,14 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         String titleString = "Lunch: "+ article.title;
         txtListChild.setText(titleString);
 
-        View box = v.findViewById(R.id.lunch_title);
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment newFragment = new LunchPager();
-                sendToDetailFragment(z, newFragment);
+                Fragment newFragment = new LunchPagerFragment();
+                sendToDetailFragment(z, newFragment, 5);
             }
         };
-        box.setOnClickListener(cl);
+        txtListChild.setOnClickListener(cl);
     }
 
     private void assignDailyAnn(Article article) {
@@ -356,8 +308,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment newFragment = new DailyAnnPager();
-                sendToDetailFragment(0, newFragment);
+                DailyAnnPagerFragment newFragment = new DailyAnnPagerFragment();
+                sendToDetailFragment(0, newFragment, 3);
             }
         };
         box.setOnClickListener(cl);
@@ -366,10 +318,10 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     private void assignEvents(List<Article> articles) {
         int dayOfYear = -1;
         String currentHeader = "";
-        List<Article> eventsInDay = new ArrayList<Article>();
+        List<Article> eventsInDay = new ArrayList<>();
         int numOfDays = 0;
-        eventHeaders = new ArrayList<String>();
-        events = new HashMap<String, List<Article>>();
+        eventHeaders = new ArrayList<>();
+        events = new HashMap<>();
 
         for (Article article : articles) {
             Date date = article.date;
@@ -388,7 +340,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                 dayOfYear = thisDay;
                 if (!(currentHeader.equals(""))) {
                     this.events.put(currentHeader, eventsInDay);
-                    eventsInDay = new ArrayList<Article>();
+                    eventsInDay = new ArrayList<>();
                 }
                 SimpleDateFormat hFormat = new SimpleDateFormat("EEEE, MMMM d");
                 String headerString = hFormat.format(date);
@@ -445,8 +397,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                 View.OnClickListener cl = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Fragment newFragment = new EventPager();
-                        sendToDetailFragment(j, newFragment);
+                    EventPagerFragment newFragment = new EventPagerFragment();
+                    sendToDetailFragment(j, newFragment, 4);
                     }
                 };
                 row.setOnClickListener(cl);
@@ -456,7 +408,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
     }
 
-    private void sendToDetailFragment(int i, Fragment newFragment) {
+    private void sendToDetailFragment(int i, Fragment newFragment, int tabPagerPosition) {
 
         Bundle bundle = new Bundle();
         bundle.putInt("position", i);
@@ -470,14 +422,16 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         } else {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_detail_container, newFragment);
-            transaction.addToBackStack(null);
+            //transaction.addToBackStack(null);
             transaction.commit();
+            MainActivity ma = (MainActivity) getActivity();
+            ma.tabPagerFragment.setPage(tabPagerPosition);
         }
     }
     public void showFirstNews() {
         if (getActivity().findViewById(R.id.frame_detail_container) != null) {
             if (newsArticle!=null) {
-                sendToDetailFragment(0, new NewsPager());
+                sendToDetailFragment(0, new NewsPagerFragment(), 0);
             }
         }
     }

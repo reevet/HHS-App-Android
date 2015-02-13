@@ -15,60 +15,49 @@
             android:layout_width="@dimen/news_thumbnail_width"
             android:layout_height="@dimen/news_thumbnail_height"
             android:id="@+id/row_icon"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentEnd="false"
-            android:layout_alignParentRight="false"
             android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
-            android:layout_margin="10dp" />
+            android:layout_margin="10dp"
+            android:contentDescription="@string/news_highlight_image" />
 
         <ProgressBar
             android:layout_width="@dimen/news_pbar"
             android:layout_height="@dimen/news_pbar"
             android:id="@+id/row_progress"
             android:padding="15dp"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp" />
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/row_icon"
+            android:layout_toEndOf="@+id/row_icon"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp">
+            android:layout_marginEnd="10dp">
 
             <TextView
                 android:layout_width="fill_parent"
-                android:text="New Text"
                 android:id="@+id/row_title"
                 android:textSize="@dimen/row_normal_text_size"
                 android:textAlignment="gravity"
                 android:textColor="@android:color/black"
-                android:gravity="left"
-                android:layout_toRightOf="@+id/row_icon"
-                android:layout_alignTop="@+id/row_icon"
-                android:layout_toLeftOf="@+id/row_disc_icon"
+                android:gravity="start"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:layout_height="20dp"
-                android:text="New Text"
                 android:id="@+id/row_date"
                 android:textSize="@dimen/row_smaller_text_size"
                 android:textColor="@android:color/darker_gray"
-                android:layout_toRightOf="@+id/row_icon"
-                android:layout_below="@+id/row_title"
-                android:layout_alignBottom="@+id/row_icon"
-                android:gravity="left|bottom"
+                android:gravity="start|bottom"
                 android:textAlignment="gravity"
-                android:layout_toLeftOf="@+id/row_disc_icon"
                 android:layout_width="fill_parent" />
         </LinearLayout>
 

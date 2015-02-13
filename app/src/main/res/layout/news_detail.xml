@@ -4,65 +4,74 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:id="@+id/scrollView"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="#ffffffff">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-    <RelativeLayout
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/detail_background">
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shadow_down"
+            android:paddingLeft="0dp"
+            android:paddingTop="0dp"
+            android:paddingRight="0dp"
+            android:paddingBottom="10dp">
 
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/detail_title"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="24dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true"
-        android:textAlignment="gravity"
-        android:gravity="center_horizontal"
-            android:background="@color/hhs_red"
-            android:textColor="@android:color/white"
-            android:paddingTop="40dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="10dp" />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="@drawable/red_grad_shape">
 
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/detail_date"
-        android:layout_alignParentTop="false"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentEnd="true"
-            android:gravity="top|center_horizontal"
-            android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true"
-        android:textSize="18dp"
-        android:layout_below="@+id/detail_title"
-            android:padding="10dp"
-            android:background="@color/divider"
-            android:textColor="@android:color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/detail_title"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="@dimen/section_header_text_size"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentStart="true"
+                    android:textAlignment="gravity"
+                    android:gravity="center_horizontal"
+                    android:textColor="@android:color/white"
+                    android:paddingTop="40dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/detail_date"
+                    android:layout_alignParentTop="false"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="top|center_horizontal"
+                    android:layout_alignParentStart="true"
+                    android:textSize="@dimen/section_subhead_size"
+                    android:layout_below="@+id/detail_title"
+                    android:padding="10dp"
+                    android:textColor="#ffffffff" />
+
+            </RelativeLayout>
+        </RelativeLayout>
 
         <WebView
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:id="@+id/detail_webview"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/detail_webview"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:background="@android:color/white"
             android:layout_below="@+id/detail_date" />
 
-    </RelativeLayout>
-    </ScrollView>
+    </LinearLayout>
+
+</ScrollView>

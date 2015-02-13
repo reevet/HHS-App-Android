@@ -12,8 +12,8 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/shadow_black"
-            android:paddingBottom="5dp"
+            android:background="@drawable/shadow_down"
+            android:paddingBottom="10dp"
             android:paddingLeft="0dp"
             android:paddingTop="0dp"
             android:paddingRight="0dp">
@@ -23,18 +23,19 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/imageView6"
                 android:src="@drawable/dance"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/event_title_plural" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Events"
+                android:text="@string/event_title_plural"
                 android:id="@+id/textView8"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:textColor="#ffffffff"
-                android:textSize="24dp"
-                android:layout_alignLeft="@+id/imageView6"
+                android:textSize="@dimen/section_header_text_size"
+                android:layout_alignStart="@+id/imageView6"
                 android:layout_alignBottom="@+id/imageView6" />
         </RelativeLayout>
 
@@ -46,7 +47,7 @@
     <TextView android:id="@id/android:empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Please connect to a network and choose Refresh from the menu."
+        android:text="@string/please_refresh"
         android:gravity="center_vertical|center_horizontal"
         android:textAlignment="gravity"
         android:textSize="@dimen/row_normal_text_size"

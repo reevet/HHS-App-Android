@@ -12,9 +12,16 @@
     <dimen name="news_home_height">100dp</dimen>
     <dimen name="news_pbar">50dp</dimen>
     <dimen name="disclosure_indicator">15dp</dimen>
-    <dimen name="row_normal_text_size">18dp</dimen>
-    <dimen name="row_smaller_text_size">14dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
+    <dimen name="more_row">60dp</dimen>
+
+    <!--text sizes  -->
+    <dimen name="section_header_text_size">24sp</dimen>
+    <dimen name="section_subhead_size">18sp</dimen>
     <dimen name="card_title">20sp</dimen>
+    <dimen name="ex_list_group_text_size">18sp</dimen>
+    <dimen name="row_normal_text_size">18sp</dimen>
+    <dimen name="row_smaller_text_size">14sp</dimen>
+
 
 </resources>

@@ -14,45 +14,41 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Text"
             android:id="@+id/row_date"
             android:textSize="@dimen/row_normal_text_size"
-            android:layout_gravity="left|center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:layout_marginRight="10dp"
             android:layout_alignParentEnd="false"
             android:textColor="@android:color/black"
-            android:gravity="left"
+            android:gravity="start"
             android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentRight="false"
-            android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Text"
             android:id="@+id/row_title"
             android:textSize="@dimen/row_normal_text_size"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:textAlignment="gravity"
             android:textColor="@color/counter_text_bg"
-            android:layout_toRightOf="@+id/row_date"
-            android:layout_alignParentLeft="false"
-            android:gravity="right"
+            android:layout_toEndOf="@+id/row_date"
+            android:layout_alignParentStart="false"
+            android:gravity="end"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/row_disc_icon" />
+            android:layout_toStartOf="@+id/row_disc_icon" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/row_disc_icon"
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:src="@drawable/disclosure"
-            android:layout_marginRight="10dp" />
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@string/disclosure_icon" />
 
     </RelativeLayout>
 

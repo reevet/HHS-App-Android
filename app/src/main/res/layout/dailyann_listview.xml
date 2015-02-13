@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/dailyann_frame">
@@ -8,13 +9,14 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/dailyann_layout">
+    android:id="@+id/dailyann_layout"
+        tools:ignore="UselessParent">
 
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/shadow_black"
-            android:paddingBottom="5dp"
+            android:background="@drawable/shadow_down"
+            android:paddingBottom="10dp"
             android:paddingLeft="0dp"
             android:paddingTop="0dp"
             android:paddingRight="0dp">
@@ -26,19 +28,20 @@
                 android:background="@color/hhs_red"
                 android:src="@drawable/microphone"
                 android:cropToPadding="true"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/daily_ann_title" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Daily Announcements"
+                android:text="@string/daily_ann_title"
                 android:id="@+id/textView"
                 android:layout_alignBottom="@+id/imageView3"
-                android:layout_alignLeft="@+id/imageView3"
+                android:layout_alignStart="@+id/imageView3"
                 android:textColor="#ffffffff"
-                android:textSize="24dp"
-                android:layout_marginLeft="10dp" />
+                android:textSize="@dimen/section_header_text_size"
+                android:layout_marginStart="10dp"/>
         </RelativeLayout>
 
         <ListView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -48,7 +51,7 @@
     <TextView android:id="@id/android:empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Please connect to a network and choose Refresh from the menu."
+        android:text="@string/please_refresh"
         android:gravity="center_vertical|center_horizontal"
         android:textAlignment="gravity"
         android:textSize="@dimen/row_normal_text_size"
