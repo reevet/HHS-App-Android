@@ -33,6 +33,7 @@ public class LunchListFragment extends Fragment {
 
     View v;
     ExpandableListView lv;
+    LunchArrayAdapter adapter;
 
 
     @Override
@@ -53,6 +54,37 @@ public class LunchListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         updateUI();
+
+        this.lv = (ExpandableListView) v.findViewById(R.id.lunch_exlistview);
+
+        adapter = new LunchArrayAdapter(getActivity(), this.headers, this.lunches);
+        this.lv.setAdapter(adapter);
+
+        ExpandableListView.OnGroupClickListener gcl = new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                parent.expandGroup(groupPosition);
+                return true;
+            }
+        };
+
+        this.lv.setOnGroupClickListener(gcl);
+
+        // Listview on child click listener
+        this.lv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                                            @Override
+                                            public boolean onChildClick(ExpandableListView parent, View v,
+                                                                        int groupPosition, int childPosition, long id) {
+                                                sendToDetailFragment(childPosition);
+                                                return false;
+                                            }
+                                        }
+
+        );
+        if (currentArticle >=0) {
+            sendToDetailFragment(currentArticle);
+        }
     }
 
     public void updateUI() {
@@ -114,35 +146,13 @@ public class LunchListFragment extends Fragment {
                 this.lunches.put(currentHeader, eventsInDay);
             }
         }
-        this.lv = (ExpandableListView) v.findViewById(R.id.lunch_exlistview);
 
-        LunchArrayAdapter adapter = new LunchArrayAdapter(getActivity(), this.headers, this.lunches);
-        this.lv.setAdapter(adapter);
 
-        ExpandableListView.OnGroupClickListener gcl = new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                parent.expandGroup(groupPosition);
-                return true;
+        if (this.adapter!=null) {
+            adapter.notifyDataSetChanged();
+            for (int i=0; i<headers.size(); i++ ) {
+                lv.expandGroup(i);
             }
-        };
-
-        this.lv.setOnGroupClickListener(gcl);
-
-        // Listview on child click listener
-        this.lv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
-                                            @Override
-                                            public boolean onChildClick(ExpandableListView parent, View v,
-                                                                        int groupPosition, int childPosition, long id) {
-                                                sendToDetailFragment(childPosition);
-                                                return false;
-                                            }
-                                        }
-
-        );
-        if (currentArticle >=0) {
-            sendToDetailFragment(currentArticle);
         }
     }
 

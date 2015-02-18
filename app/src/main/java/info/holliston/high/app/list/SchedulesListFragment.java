@@ -161,7 +161,12 @@ public class SchedulesListFragment extends Fragment  {
         }
 
         if (this.adapter!=null) {
+            //adapter._listDataHeader = headers;
+            //adapter._listDataChild = schedules;
             adapter.notifyDataSetChanged();
+            for (int i=0; i<headers.size(); i++ ) {
+                lv.expandGroup(i);
+            }
         }
 
 

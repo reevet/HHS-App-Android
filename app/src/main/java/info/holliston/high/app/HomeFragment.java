@@ -37,6 +37,7 @@ import info.holliston.high.app.pager.SchedulePagerFragment;
 public class HomeFragment extends android.support.v4.app.Fragment {
 
     private Article newsArticle;
+    Date scheduleDate = new Date();
 
     List<String> eventHeaders = new ArrayList<>();
     HashMap<String, List<Article>> events = new HashMap<>();
@@ -77,36 +78,21 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        updateUI();
+        updateNewsUI();
+        updateSchedulesUI();
+        updateDailyAnnUI();
+        updateLunchUI();
+        updateEventsUI();
+
     }
 
-    public void updateUI(){
+    public void updateSchedulesUI() {
         MainActivity ma = (MainActivity) getActivity();
-
-        ArticleDataSource eventsSource = ma.eventsSource;
-        ArticleDataSource newsSource = ma.newsSource;
         ArticleDataSource schedulesSource = ma.scheduleSource;
-        ArticleDataSource dailyAnnSource = ma.dailyannSource;
-        ArticleDataSource lunchSource = ma.lunchSource;
-
-        List<Article> tempArticles;
         Article scheduleArticle;
         int schedIndex;
-        Article dailyAnnArticle;
-        Article lunchArticle;
-        int lunchIndex;
-        Date scheduleDate = new Date();
-        List<Article> eventsArticles;
-
-        tempArticles = newsSource.getAllArticles();
-
-        if (tempArticles.size() >0) {
-            newsArticle = tempArticles.get(0);
-            assignNews(newsArticle);
-        }
-
         /*Get the most recent schedule */
-        tempArticles = schedulesSource.getAllArticles();
+        List<Article> tempArticles = schedulesSource.getAllArticles();
 
         if (tempArticles.size() >0) {
             scheduleArticle = tempArticles.get(0);
@@ -135,7 +121,44 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             }
             assignSchedule(scheduleArticle, schedIndex);
             scheduleDate = scheduleArticle.date;
+
+            updateLunchUI();
         }
+    }
+
+    public void updateNewsUI() {
+        MainActivity ma = (MainActivity) getActivity();
+        ArticleDataSource newsSource = ma.newsSource;
+        List<Article> tempArticles;
+        tempArticles = newsSource.getAllArticles();
+
+        if (tempArticles.size() >0) {
+            newsArticle = tempArticles.get(0);
+            assignNews(newsArticle);
+        }
+    }
+
+    public void updateDailyAnnUI() {
+        MainActivity ma = (MainActivity) getActivity();
+        ArticleDataSource dailyAnnSource = ma.dailyannSource;
+        List<Article> tempArticles;
+        Article dailyAnnArticle;
+
+        /*Get the most recent daily announcements */
+        tempArticles = dailyAnnSource.getAllArticles();
+
+        if (tempArticles.size() >0) {
+            dailyAnnArticle = tempArticles.get(0);
+            assignDailyAnn(dailyAnnArticle);
+        }
+    }
+
+    public void updateLunchUI() {
+        MainActivity ma = (MainActivity) getActivity();
+        ArticleDataSource lunchSource = ma.lunchSource;
+        List<Article> tempArticles;
+        Article lunchArticle;
+        int lunchIndex;
 
         /*Get the most lunch menu for that date */
         tempArticles = lunchSource.getAllArticles();
@@ -151,20 +174,20 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             }
             assignLunch(lunchArticle, lunchIndex);
         }
+    }
 
-        /*Get the most recent daily announcements */
-        tempArticles = dailyAnnSource.getAllArticles();
-
-        if (tempArticles.size() >0) {
-            dailyAnnArticle = tempArticles.get(0);
-            assignDailyAnn(dailyAnnArticle);
-        }
+    public void updateEventsUI(){
+        MainActivity ma = (MainActivity) getActivity();
+        ArticleDataSource eventsSource = ma.eventsSource;
+        List<Article> tempArticles;
+        List<Article> eventsArticles;
 
         /*Get upcoming events */
         eventsArticles = eventsSource.getAllArticles();
 
         TableLayout eventsTable = (TableLayout) v.findViewById(R.id.events_box);
-        if ((eventsTable.getChildCount() == 0) && (eventsArticles.size() >0)){
+        eventsTable.removeAllViews();
+        if (eventsArticles.size()>0) {  //((eventsTable.getChildCount() == 0) && (eventsArticles.size() >0)){
             assignEvents(eventsArticles);
         }
     }
@@ -408,7 +431,6 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
             }
         }
-
     }
 
     private void sendToDetailFragment(int i, Fragment newFragment, int tabPagerPosition) {

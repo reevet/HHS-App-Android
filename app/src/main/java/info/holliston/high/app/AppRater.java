@@ -18,7 +18,7 @@ public class AppRater {
     private final static int LAUNCHES_UNTIL_PROMPT = 7;
 
     public static void app_launched(Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences("apprater", 0);
+        SharedPreferences prefs = mContext.getSharedPreferences("hhsapprater", 0);
         if (prefs.getBoolean("dontshowagain", false)) { return ; }
 
         SharedPreferences.Editor editor = prefs.edit();

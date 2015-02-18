@@ -140,6 +140,9 @@ public class EventsListFragment extends Fragment {
 
         if (this.adapter!=null) {
             adapter.notifyDataSetChanged();
+            for (int i=0; i<headers.size(); i++ ) {
+                lv.expandGroup(i);
+            }
         }
 
 

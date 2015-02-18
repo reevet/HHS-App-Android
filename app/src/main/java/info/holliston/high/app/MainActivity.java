@@ -73,6 +73,7 @@ public class MainActivity extends FragmentActivity {
     public SchedulesListFragment mSchedFragment;
 
     public Boolean newNewsAvailable = false;
+    private int isRefreshing = 0;
 
     // used to store app title
     //private CharSequence mTitle;
@@ -90,18 +91,42 @@ public class MainActivity extends FragmentActivity {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 String result = bundle.getString("result");
+                String name = bundle.getString("datasource");
                 String notification = bundle.getString("fromNotification");
-                if (result != null) {
-                    updateAllUI();
-
-                 /*Intent newIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    if (notification != null) {
-                        newNewsAvailable = true;
-                        intent.putExtra("fromNotification", true);
+                if ((result != null) && (name != null)) {
+                    if (name.equals(ArticleSQLiteHelper.TABLE_SCHEDULES)) {
+                        mSchedFragment.updateUI();
+                        mHomeFragment.updateSchedulesUI();
+                        isRefreshing++;
+                    } else if (name.equals(ArticleSQLiteHelper.TABLE_DAILYANN)) {
+                        mDailyAnnFragment.updateUI();
+                        mHomeFragment.updateDailyAnnUI();
+                        isRefreshing++;
+                    } else if (name.equals(ArticleSQLiteHelper.TABLE_NEWS)) {
+                        mNewsFragment.updateUI();
+                        mHomeFragment.updateNewsUI();
+                        isRefreshing++;
+                    }else if (name.equals(ArticleSQLiteHelper.TABLE_EVENTS)) {
+                        mEventsFragment.updateUI();
+                        mHomeFragment.updateEventsUI();
+                        isRefreshing++;
+                    }else if (name.equals(ArticleSQLiteHelper.TABLE_LUNCH)) {
+                        mLunchFragment.updateUI();
+                        mHomeFragment.updateLunchUI();
+                        isRefreshing++;
                     }
-                  startActivity(newIntent);*/
+                   if (isRefreshing == 5) {
+                       SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+                        if (swipeRefreshLayout != null) {
+                            swipeRefreshLayout.setRefreshing(false);
+                            isRefreshing = 0;
+                            SharedPreferences prefs = getSharedPreferences("hhsapp", 0);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putBoolean("firstTime", false);
+                            editor.commit();
+                        }
+                   }
                 }
-                //displayView(0);
             }
         }
     };
@@ -178,6 +203,8 @@ public class MainActivity extends FragmentActivity {
         }
         defineDataSources();
         AppRater.app_launched(this);
+        checkIfFirstTime();
+
         //decideIfRefresh();
 
         mHomeFragment = new HomeFragment();
@@ -550,17 +577,12 @@ public class MainActivity extends FragmentActivity {
             //AppRater.showRateDialog(this, null); //for debug purposes
         }
     }*/
+    private void checkIfFirstTime() {
+        SharedPreferences prefs = getSharedPreferences("hhsapp", 0);
+        Boolean firstTime = prefs.getBoolean("firstTime", true);
 
-    private void updateAllUI() {
-        mHomeFragment.updateUI();
-        mSchedFragment.updateUI();
-        mNewsFragment.updateUI();
-        mEventsFragment.updateUI();
-        mDailyAnnFragment.updateUI();
-        mLunchFragment.updateUI();
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setRefreshing(false);
+        if (firstTime) {
+            refreshData(ArticleParser.SourceMode.DOWNLOAD_ONLY, ImageAsyncCacher.SourceMode.ALLOW_BOTH);
         }
     }
 }

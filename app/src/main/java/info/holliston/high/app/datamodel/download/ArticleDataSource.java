@@ -35,6 +35,7 @@ public class ArticleDataSource{
             ArticleSQLiteHelper.COLUMN_DETAILS,
             ArticleSQLiteHelper.COLUMN_IMGSRC};
     private ArticleDataSourceOptions options;
+    public String name;
 
     Context context;
     public Boolean newNewsAvailable = false;
@@ -65,6 +66,10 @@ public class ArticleDataSource{
 
     private void close() {
         dbHelper.close();
+    }
+
+    public String getName() {
+        return this.options.getDatabaseName();
     }
 
     public Article createArticle(String title, String key, URL url, Date date, String details, String imgsrc) {

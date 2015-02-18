@@ -42,6 +42,18 @@ public class ArticleDownloaderService extends Service {
     private String alarmSource;
     private Boolean newNewsAvailable = false;
 
+    ArticleDataSource schedulesDataSource;
+    ArticleDataSource dailyAnnDataSource;
+    //ArticleDataSource newsDataSource;
+    ArticleDataSource eventsDataSource;
+    ArticleDataSource lunchDataSource;
+
+    String schedulesString = "";
+    String newsString = "";
+    String eventsString = "";
+    String dailyAnnString = "";
+    String lunchString = "";
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -67,8 +79,81 @@ public class ArticleDownloaderService extends Service {
         if (!(sentMode == null)) {
             this.refreshSource = sentMode;
         }
-        new PrefetchData().execute();
+
+        refreshNews();
+        refreshDailyAnn();
+        refreshSchedules();
+        refreshEvents();
+        refreshLunch();
+        scheduleDownloads();
+
         return Service.START_NOT_STICKY;
+    }
+
+    private void refreshSchedules() {
+        ArticleDataSource.ArticleDataSourceOptions sdso = new ArticleDataSource.ArticleDataSourceOptions(
+                ArticleSQLiteHelper.TABLE_SCHEDULES,
+                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
+                getString(R.string.schedules_url),
+                getResources().getStringArray(R.array.schedules_parser_names),
+                ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
+                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
+                "25");
+        schedulesDataSource = new ArticleDataSource(getApplicationContext(), sdso);
+
+        new refreshDataSource(schedulesDataSource, false, null, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void refreshNews() {
+        ArticleDataSource.ArticleDataSourceOptions ndso = new ArticleDataSource.ArticleDataSourceOptions(
+                ArticleSQLiteHelper.TABLE_NEWS,
+                ArticleDataSource.ArticleDataSourceOptions.SourceType.XML,
+                getString(R.string.news_url),
+                getResources().getStringArray(R.array.news_parser_names),
+                ArticleParser.HtmlTags.KEEP_HTML_TAGS,
+                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
+                "25");
+        newsDataSource = new ArticleDataSource(getApplicationContext(), ndso);
+        new refreshDataSource(newsDataSource, true, this.getImages, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void refreshDailyAnn() {
+        ArticleDataSource.ArticleDataSourceOptions dadso = new ArticleDataSource.ArticleDataSourceOptions(
+                ArticleSQLiteHelper.TABLE_DAILYANN,
+                ArticleDataSource.ArticleDataSourceOptions.SourceType.XML,
+                getString(R.string.dailyann_url),
+                getResources().getStringArray(R.array.dailyann_parser_names),
+                ArticleParser.HtmlTags.CONVERT_LINE_BREAKS,
+                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
+                "10");
+        dailyAnnDataSource = new ArticleDataSource(getApplicationContext(), dadso);
+        new refreshDataSource(dailyAnnDataSource, true, null, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void refreshEvents() {
+        ArticleDataSource.ArticleDataSourceOptions edso = new ArticleDataSource.ArticleDataSourceOptions(
+                ArticleSQLiteHelper.TABLE_EVENTS,
+                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
+                getString(R.string.events_url),
+                getResources().getStringArray(R.array.events_parser_names),
+                ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
+                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
+                "40");
+        eventsDataSource = new ArticleDataSource(getApplicationContext(), edso);
+        new refreshDataSource(eventsDataSource, true, null, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void refreshLunch() {
+        ArticleDataSource.ArticleDataSourceOptions ldso = new ArticleDataSource.ArticleDataSourceOptions(
+                ArticleSQLiteHelper.TABLE_LUNCH,
+                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
+                getString(R.string.lunch_url),
+                getResources().getStringArray(R.array.lunch_parser_names),
+                ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
+                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
+                "40");
+        lunchDataSource = new ArticleDataSource(getApplicationContext(), ldso);
+        new refreshDataSource(lunchDataSource, true, null, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -76,161 +161,76 @@ public class ArticleDownloaderService extends Service {
         return null;
     }
 
-    private class PrefetchData extends AsyncTask<Void, Void, Void> {
+    private class refreshDataSource extends AsyncTask<Void, Void, String> {
 
-        ArticleDataSource schedulesDataSource;
-        ArticleDataSource dailyAnnDataSource;
-        //ArticleDataSource newsDataSource;
-        ArticleDataSource eventsDataSource;
-        ArticleDataSource lunchDataSource;
+        ArticleDataSource dataSource;
+        Boolean triggersNotification;
+        Boolean cacheImages;
+        ImageAsyncCacher.SourceMode getImages;
 
-        String schedulesString = "";
-        String newsString = "";
-        String eventsString = "";
-        String dailyAnnString = "";
-        String lunchString = "";
+        public refreshDataSource (ArticleDataSource dataSource, Boolean cacheImages, ImageAsyncCacher.SourceMode getImages, Boolean triggersNotification) {
+            this.dataSource = dataSource;
+            this.cacheImages = cacheImages;
+            this.getImages = getImages;
+            this.triggersNotification = triggersNotification;
+        }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-            ArticleDataSource.ArticleDataSourceOptions sdso = new ArticleDataSource.ArticleDataSourceOptions(
-                    ArticleSQLiteHelper.TABLE_SCHEDULES,
-                    ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
-                    getString(R.string.schedules_url),
-                    getResources().getStringArray(R.array.schedules_parser_names),
-                    ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
-                    ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
-                    "25");
-            schedulesDataSource = new ArticleDataSource(getApplicationContext(), sdso);
-
-            ArticleDataSource.ArticleDataSourceOptions dadso = new ArticleDataSource.ArticleDataSourceOptions(
-                    ArticleSQLiteHelper.TABLE_DAILYANN,
-                    ArticleDataSource.ArticleDataSourceOptions.SourceType.XML,
-                    getString(R.string.dailyann_url),
-                    getResources().getStringArray(R.array.dailyann_parser_names),
-                    ArticleParser.HtmlTags.CONVERT_LINE_BREAKS,
-                    ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
-                    "10");
-            dailyAnnDataSource = new ArticleDataSource(getApplicationContext(), dadso);
-
-            ArticleDataSource.ArticleDataSourceOptions ndso = new ArticleDataSource.ArticleDataSourceOptions(
-                    ArticleSQLiteHelper.TABLE_NEWS,
-                    ArticleDataSource.ArticleDataSourceOptions.SourceType.XML,
-                    getString(R.string.news_url),
-                    getResources().getStringArray(R.array.news_parser_names),
-                    ArticleParser.HtmlTags.KEEP_HTML_TAGS,
-                    ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
-                    "25");
-            newsDataSource = new ArticleDataSource(getApplicationContext(), ndso);
-
-            ArticleDataSource.ArticleDataSourceOptions edso = new ArticleDataSource.ArticleDataSourceOptions(
-                    ArticleSQLiteHelper.TABLE_EVENTS,
-                    ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
-                    getString(R.string.events_url),
-                    getResources().getStringArray(R.array.events_parser_names),
-                    ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
-                    ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
-                    "40");
-            eventsDataSource = new ArticleDataSource(getApplicationContext(), edso
-            );
-
-            ArticleDataSource.ArticleDataSourceOptions ldso = new ArticleDataSource.ArticleDataSourceOptions(
-                    ArticleSQLiteHelper.TABLE_LUNCH,
-                    ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
-                    getString(R.string.lunch_url),
-                    getResources().getStringArray(R.array.lunch_parser_names),
-                    ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
-                    ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
-                    "40");
-            lunchDataSource = new ArticleDataSource(getApplicationContext(), ldso
-            );
-
-            // before making http calls
-
         }
 
         @Override
-        protected Void doInBackground(Void... arg0) {
+        protected String doInBackground(Void... arg0) {
             //nukeDatabaseRecords();
             //nukeCache();
-            try {
-                String result = schedulesDataSource.downloadArticles(refreshSource, null);
-                Log.i("ArticleDownloaderService", "Schedules: " + result);
-            } catch (Exception e) {
-                schedulesString = getResources().getString(R.string.xml_error);
-            }
-
-            try {
-                String result = eventsDataSource.downloadArticles(refreshSource, null);
-                Log.i("ArticleDownloaderService", "Events: " + result);
-            } catch (Exception e) {
-                eventsString = getResources().getString(R.string.xml_error);
-            }
-
+            String result = "";
             try {
                 String mostRecentNewsKey = "";
-                List<Article> newsList = newsDataSource.getAllArticles();
-                if ((newsList == null) && (newsList.size() > 0)) {
-                    mostRecentNewsKey = newsList.get(0).title;
+                List<Article> newsList = dataSource.getAllArticles();
+                if (triggersNotification) {
+                    mostRecentNewsKey = "";
+                    if ((newsList == null) && (newsList.size() > 0)) {
+                        mostRecentNewsKey = newsList.get(0).title;
+                    }
                 }
+                result = dataSource.downloadArticles(refreshSource, getImages);
+                Log.i("ArticleDownloaderService", dataSource.getName() +": "+ result);
 
-                String result = newsDataSource.downloadArticles(refreshSource, getImages);
-                Log.i("ArticleDownloaderService", "News: " + result);
-
-                if (alarmSource != null) {
-                    List<Article> downloadedList = newsDataSource.getAllArticles();
+                if (triggersNotification && (alarmSource != null)) {
+                    List<Article> downloadedList = dataSource.getAllArticles();
                     //TODO: undebug this
                     //if ((newsList != null) && (newsList.size() > 0)) {
 
                         String downloadedNewsKey = newsList.get(0).title;
-                        if (!downloadedList.equals(mostRecentNewsKey)) {
+                        if (!downloadedNewsKey.equals(mostRecentNewsKey)) {
                             sendNotification();
                         }
-                //}
+                    //}
                 }
-
             } catch (Exception e) {
-                newsString = getResources().getString(R.string.xml_error);
+                result = getResources().getString(R.string.xml_error);
             }
 
-            try {
-                String result = dailyAnnDataSource.downloadArticles(refreshSource, null);
-                Log.i("ArticleDownloaderService", "Daily Announcements: " + result);
-            } catch (Exception e) {
-                dailyAnnString = getResources().getString(R.string.xml_error);
-            }
-
-            try {
-                String result = lunchDataSource.downloadArticles(refreshSource, null);
-                Log.i("ArticleDownloaderService", "Lunch: " + result);
-            } catch (Exception e) {
-                lunchString = getResources().getString(R.string.xml_error);
-            }
-            return null;
+            return result;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            publishResults("Success!");
-            newsDataSource.downloadAndCacheImages(getImages);
-            scheduleDownloads();
-            refreshSource = ArticleParser.SourceMode.ALLOW_BOTH;
+            publishResults(this.dataSource.getName(), result);
+            if (this.cacheImages) {
+                dataSource.downloadAndCacheImages(getImages);
+            }
+
+
         }
-
-        /*private void nukeDatabaseRecords() {
-            schedulesDataSource.nukeAllRecords();
-            eventsDataSource.nukeAllRecords();
-            newsDataSource.nukeAllRecords();
-            dailyAnnDataSource.nukeAllRecords();
-
-        }*/
     }
 
-    private void publishResults(String result) {
+    private void publishResults(String name, String result) {
         Intent intent = new Intent(NOTIFICATION);
         intent.putExtra("result", result);
+        intent.putExtra("datasource", name);
         sendBroadcast(intent);
 
         Intent intent2 = new Intent(this, HHSWidget.class);
@@ -241,17 +241,8 @@ public class ArticleDownloaderService extends Service {
         intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         sendBroadcast(intent2);
 
-        Log.d("ArticleDownloaderService", "Results published as intents");
+        //Log.d("ArticleDownloaderService", "Results published for "+name );
 
-        SharedPreferences prefs = getSharedPreferences("hhsapp", Context.MODE_MULTI_PROCESS);
-        SharedPreferences.Editor editor = prefs.edit();
-
-        // Get date of last update
-        Long date_lastupdate = System.currentTimeMillis();
-        editor.putLong("date_lastupdate", date_lastupdate);
-        editor.putBoolean("data_changed", true);
-
-        editor.commit();
     }
 
     private void scheduleDownloads() {
@@ -327,7 +318,7 @@ public class ArticleDownloaderService extends Service {
         alarmMgr = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(getApplicationContext(), ArticleDownloaderService.class);
-        intent.putExtra("refreshSource", ArticleParser.SourceMode.DOWNLOAD_ONLY);
+        intent.putExtra("refreshSource", ArticleParser.SourceMode.PREFER_DOWNLOAD);
         intent.putExtra("alarm", "alarm-" + alarm);
         intent.putExtra("getImages", "ALLOW_BOTH");
 

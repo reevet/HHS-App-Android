@@ -17,9 +17,9 @@ import info.holliston.high.app.datamodel.Article;
 
 public class SchedulesArrayAdapter extends BaseExpandableListAdapter{ // ArrayAdapter<Article> {
 private final Context context;
-    private List<String> _listDataHeader; // header titles
+    public List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
-    private HashMap<String, List<Article>> _listDataChild;
+    public HashMap<String, List<Article>> _listDataChild;
     //private final ArrayList<Article> articleList;
 
     public SchedulesArrayAdapter(Context context, List<String> listDataHeader,
