@@ -29,16 +29,18 @@ public class ImageAsyncCacher extends AsyncTask<List<Article>, Void, Void> {
     public static enum SourceMode {DOWNLOAD_ONLY, ALLOW_BOTH}
 
     private SourceMode sourceMode;
+    private List<Article> articleList;
 
-    public ImageAsyncCacher(int width, int height, SourceMode sourceMode, Context c) {
+    public ImageAsyncCacher(int width, int height, SourceMode sourceMode, Context c, List<Article> al) {
         this.newWidth = width;
         this.newHeight = height;
         this.sourceMode = sourceMode;
         this.context = c;
+        this.articleList = al;
     }
 
     protected Void doInBackground(List<Article>... lists) {
-        List<Article> articleList = lists[0];
+
         for (Article art : articleList) {
 
             String urldisplay = art.imgSrc;

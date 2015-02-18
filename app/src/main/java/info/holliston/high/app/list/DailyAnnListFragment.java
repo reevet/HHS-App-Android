@@ -43,6 +43,10 @@ public class DailyAnnListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+       updateUI();
+    }
+
+    public void updateUI() {
         MainActivity ma = (MainActivity) getActivity();
         articles = ma.dailyannSource.getAllArticles();
 
@@ -53,12 +57,12 @@ public class DailyAnnListFragment extends Fragment {
         // Listview on child click listener
         lv.setOnItemClickListener(new ListView.OnItemClickListener() {
 
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
-                    sendToDetailFragment(position);
-                }
-            }
+                                      @Override
+                                      public void onItemClick(AdapterView<?> parent, View view,
+                                                              int position, long id) {
+                                          sendToDetailFragment(position);
+                                      }
+                                  }
         );
 
         if (currentArticle >=0) {

@@ -52,6 +52,10 @@ public class LunchListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        updateUI();
+    }
+
+    public void updateUI() {
         List<Article> articles;
         MainActivity ma = (MainActivity) getActivity();
         articles = ma.lunchSource.getAllArticles();

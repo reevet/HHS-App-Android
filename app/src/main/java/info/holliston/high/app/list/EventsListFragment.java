@@ -32,6 +32,7 @@ public class EventsListFragment extends Fragment {
 
     View v;
     ExpandableListView lv;
+    EventsArrayAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,45 +51,11 @@ public class EventsListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        List<Article> articles;
-        MainActivity ma = (MainActivity) getActivity();
-        articles = ma.eventsSource.getAllArticles();
-
-        int dayOfYear = -1;
-        String currentHeader = "";
-        List<Article> eventsInDay = new ArrayList<>();
-
-
-        for (Article article : articles) {
-            Date date = article.date;
-            if (date == null) {
-                return;
-            }
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-            int thisDay = cal.get(Calendar.DAY_OF_YEAR);
-
-            if (thisDay != dayOfYear) {
-                dayOfYear = thisDay;
-                if (!(currentHeader.equals(""))) {
-                    this.events.put(currentHeader, eventsInDay);
-                    eventsInDay = new ArrayList<>();
-                }
-                SimpleDateFormat hFormat = new SimpleDateFormat("EEEE, MMMM d");
-                String headerString = hFormat.format(date);
-                this.headers.add(headerString);
-                currentHeader = headerString;
-
-            }
-            eventsInDay.add(article);
-        }
-        if (eventsInDay.size() > 0) {
-            this.events.put(currentHeader, eventsInDay);
-        }
+        updateUI();
 
         this.lv = (ExpandableListView) v.findViewById(R.id.events_exlistview);
 
-        EventsArrayAdapter adapter = new EventsArrayAdapter(getActivity(), this.headers, this.events);
+        this.adapter = new EventsArrayAdapter(getActivity(), this.headers, this.events);
         this.lv.setAdapter(adapter);
 
         ExpandableListView.OnGroupClickListener gcl = new ExpandableListView.OnGroupClickListener() {
@@ -129,9 +96,54 @@ public class EventsListFragment extends Fragment {
         if (currentArticle >=0) {
             sendToDetailFragment(currentArticle);
         }
-
     }
 
+    public void updateUI() {
+        List<Article> articles;
+        MainActivity ma = (MainActivity) getActivity();
+        articles = ma.eventsSource.getAllArticles();
+        headers.clear();
+        events.clear();
+
+
+        int dayOfYear = -1;
+        String currentHeader = "";
+        List<Article> eventsInDay = new ArrayList<>();
+
+
+        for (Article article : articles) {
+            Date date = article.date;
+            if (date == null) {
+                return;
+            }
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            int thisDay = cal.get(Calendar.DAY_OF_YEAR);
+
+            if (thisDay != dayOfYear) {
+                dayOfYear = thisDay;
+                if (!(currentHeader.equals(""))) {
+                    this.events.put(currentHeader, eventsInDay);
+                    eventsInDay = new ArrayList<>();
+                }
+                SimpleDateFormat hFormat = new SimpleDateFormat("EEEE, MMMM d");
+                String headerString = hFormat.format(date);
+                this.headers.add(headerString);
+                currentHeader = headerString;
+
+            }
+            eventsInDay.add(article);
+        }
+        if (eventsInDay.size() > 0) {
+            this.events.put(currentHeader, eventsInDay);
+        }
+
+        if (this.adapter!=null) {
+            adapter.notifyDataSetChanged();
+        }
+
+
+    }
     private void sendToDetailFragment(int i) {
 
         EventPagerFragment newFragment = new EventPagerFragment();

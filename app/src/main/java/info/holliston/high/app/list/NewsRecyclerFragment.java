@@ -45,6 +45,10 @@ public class NewsRecyclerFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        updateUI();
+    }
+
+    public void updateUI() {
         MainActivity ma = (MainActivity) getActivity();
         articles = ma.newsSource.getAllArticles();
 
@@ -61,8 +65,10 @@ public class NewsRecyclerFragment extends Fragment {
                     }
                 })
         );
-        if (currentArticle >=0) {
+
+        if ((currentArticle >=0) || ma.newNewsAvailable) {
             sendToDetailFragment(currentArticle);
+            ma.newNewsAvailable = false;
         }
     }
 

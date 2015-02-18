@@ -77,7 +77,10 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        updateUI();
+    }
 
+    public void updateUI(){
         MainActivity ma = (MainActivity) getActivity();
 
         ArticleDataSource eventsSource = ma.eventsSource;

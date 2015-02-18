@@ -1,1 +1,2 @@
-include ':app'
+include ':app', ':preferencefragment'
+project(':preferencefragment').projectDir = new File('libs/preferencefragment')

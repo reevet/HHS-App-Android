@@ -1,6 +1,7 @@
 package info.holliston.high.app;
 
 import android.app.ActionBar;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -71,6 +72,8 @@ public class MainActivity extends FragmentActivity {
     public NewsRecyclerFragment mNewsFragment;
     public SchedulesListFragment mSchedFragment;
 
+    public Boolean newNewsAvailable = false;
+
     // used to store app title
     //private CharSequence mTitle;
     //private int mIcon;
@@ -87,9 +90,16 @@ public class MainActivity extends FragmentActivity {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 String result = bundle.getString("result");
+                String notification = bundle.getString("fromNotification");
                 if (result != null) {
-                    Intent newIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(newIntent);
+                    updateAllUI();
+
+                 /*Intent newIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    if (notification != null) {
+                        newNewsAvailable = true;
+                        intent.putExtra("fromNotification", true);
+                    }
+                  startActivity(newIntent);*/
                 }
                 //displayView(0);
             }
@@ -101,6 +111,16 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent intent = getIntent();
+        Boolean notification = intent.getBooleanExtra("fromNotification", false);
+        if (notification) {
+            newNewsAvailable = true;
+            NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(0);
+        } else {
+            newNewsAvailable = false;
+        }
+        //newNewsAvailable = true;  //for debug
         //title bar setup
         //mTitle = mDrawerTitle = getTitle();
         //mIcon = mDrawerIcon = R.drawable.ic_hhs_hollow;
@@ -157,7 +177,8 @@ public class MainActivity extends FragmentActivity {
             bar.setIcon(R.drawable.ic_hhs_hollow);
         }
         defineDataSources();
-        decideIfRefresh();
+        AppRater.app_launched(this);
+        //decideIfRefresh();
 
         mHomeFragment = new HomeFragment();
         mDailyAnnFragment = new DailyAnnListFragment();
@@ -219,6 +240,10 @@ public class MainActivity extends FragmentActivity {
             startActivity(newIntent);
         }
 
+        if (newNewsAvailable) {
+            //displayView(2);
+        }
+
     }
 
     @Override
@@ -275,9 +300,16 @@ public class MainActivity extends FragmentActivity {
         }
         // Handle action bar actions click
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_refresh:
                 refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, ImageAsyncCacher.SourceMode.DOWNLOAD_ONLY);
                 return true;
+            case R.id.action_settings:
+                SettingsFragment settingsFragment = new SettingsFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.addToBackStack(null);
+                transaction.replace(R.id.frame_container, settingsFragment);
+                transaction.commit();
+                return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -290,7 +322,7 @@ public class MainActivity extends FragmentActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // if nav drawer is opened, hide the action items
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerLinLayout);
-        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_refresh).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -431,7 +463,12 @@ public class MainActivity extends FragmentActivity {
     public void onBackPressed() {
         if ((findViewById(R.id.frame_detail_container) != null) //landscape mode
                 || (findViewById(R.id.detail_pager) == null)) { //not showing detail portrait
-            if (currentView != 0) {
+            if (findViewById(R.id.settings_layout) != null) {
+                super.onBackPressed();
+                Intent intent = new Intent(getApplicationContext(), ArticleDownloaderService.class);
+                intent.putExtra("alarmReset","reset");
+                startService(intent);
+            }else if (currentView != 0) {
                 tabPagerFragment.setPage(0);
             }
         } else {
@@ -495,7 +532,7 @@ public class MainActivity extends FragmentActivity {
         eventsSource = new ArticleDataSource(getApplicationContext(), options);
     }
 
-    private void decideIfRefresh() {
+    /*private void decideIfRefresh() {
         SharedPreferences prefs = getSharedPreferences("hhsapp", Context.MODE_MULTI_PROCESS);
         SharedPreferences.Editor editor = prefs.edit();
 
@@ -506,13 +543,24 @@ public class MainActivity extends FragmentActivity {
         Long timeSinceUpdate = System.currentTimeMillis()  - (date_lastupdate + updateLimit);
 
         if ((date_lastupdate == 0) ||  (timeSinceUpdate > 0) ) {
-
-            refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, ImageAsyncCacher.SourceMode.ALLOW_BOTH);
+            updateAllUI();
+            //refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, ImageAsyncCacher.SourceMode.ALLOW_BOTH);
         } else {
-            AppRater.app_launched(this);  //for production
+             //for production
             //AppRater.showRateDialog(this, null); //for debug purposes
-
         }
+    }*/
 
+    private void updateAllUI() {
+        mHomeFragment.updateUI();
+        mSchedFragment.updateUI();
+        mNewsFragment.updateUI();
+        mEventsFragment.updateUI();
+        mDailyAnnFragment.updateUI();
+        mLunchFragment.updateUI();
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 }

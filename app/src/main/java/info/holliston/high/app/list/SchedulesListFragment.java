@@ -33,6 +33,7 @@ public class SchedulesListFragment extends Fragment  {
 
     View v;
     ExpandableListView lv;
+    SchedulesArrayAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,9 +52,58 @@ public class SchedulesListFragment extends Fragment  {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        this.lv = (ExpandableListView) v.findViewById(R.id.schedules_exlistview);
+
+        updateUI();
+
+        this.adapter = new SchedulesArrayAdapter(getActivity(), this.headers, this.schedules);
+        this.lv.setAdapter(this.adapter);
+
+        ExpandableListView.OnGroupClickListener gcl = new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                parent.expandGroup(groupPosition);
+                return true;
+            }
+        };
+
+        this.lv.setOnGroupClickListener(gcl);
+
+        // Listview on child click listener
+        this.lv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                                            @Override
+                                            public boolean onChildClick(ExpandableListView parent, View v,
+                                                                        int groupPosition, int childPosition, long id) {
+                                                int counter = 0;
+                                                for (int j = 0; j <= groupPosition; j++) {
+                                                    String headerName = headers.get(j);
+                                                    List<Article> a = schedules.get(headerName);
+                                                    for (int i = 0; i < a.size(); i++) {
+                                                        if ((j == groupPosition) && (i == childPosition)) {
+                                                            sendToDetailFragment(counter);
+                                                            break;
+                                                        } else {
+                                                            counter++;
+                                                        }
+                                                    }
+                                                }
+                                                return false;
+                                            }
+                                        }
+
+        );
+        if (currentArticle >= 0) {
+            sendToDetailFragment(currentArticle);
+        }
+    }
+
+    public void updateUI() {
         final List<Article> articles;
         MainActivity ma = (MainActivity) getActivity();
         articles = ma.scheduleSource.getAllArticles();
+        this.headers.clear();
+        this.schedules.clear();
 
         if (headers.size() == 0) {
             int weekOfYear = -1;
@@ -109,48 +159,13 @@ public class SchedulesListFragment extends Fragment  {
                 this.schedules.put(currentHeader, eventsInDay);
             }
         }
-            this.lv = (ExpandableListView) v.findViewById(R.id.schedules_exlistview);
 
-            SchedulesArrayAdapter adapter = new SchedulesArrayAdapter(getActivity(), this.headers, this.schedules);
-            this.lv.setAdapter(adapter);
-
-            ExpandableListView.OnGroupClickListener gcl = new ExpandableListView.OnGroupClickListener() {
-                @Override
-                public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                    parent.expandGroup(groupPosition);
-                    return true;
-                }
-            };
-
-            this.lv.setOnGroupClickListener(gcl);
-
-            // Listview on child click listener
-            this.lv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
-                @Override
-                public boolean onChildClick(ExpandableListView parent, View v,
-                                            int groupPosition, int childPosition, long id) {
-                    int counter =0;
-                    for (int j=0; j<=groupPosition; j++) {
-                        String headerName = headers.get(j);
-                        List<Article> a = schedules.get(headerName);
-                        for (int i=0; i<a.size(); i++ ) {
-                            if ((j==groupPosition) && (i==childPosition)){
-                                sendToDetailFragment(counter);
-                                break;
-                            } else {
-                                counter++;
-                            }
-                        }
-                    }
-                    return false;
-                }
-                                            }
-
-            );
-        if (currentArticle >=0) {
-            sendToDetailFragment(currentArticle);
+        if (this.adapter!=null) {
+            adapter.notifyDataSetChanged();
         }
+
+
+
     }
 
     private void sendToDetailFragment(int i){

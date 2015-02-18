@@ -3,7 +3,6 @@
 /.idea/workspace.xml
 /.idea/libraries
 .DS_Store
-/build
 /app/.gitignore
 /app/proguard-rules.pro
 gradle.properties

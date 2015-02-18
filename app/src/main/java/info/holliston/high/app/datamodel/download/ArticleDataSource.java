@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class ArticleDataSource{
     private ArticleDataSourceOptions options;
 
     Context context;
+    public Boolean newNewsAvailable = false;
 
     /*private String[] parserNames;
     private String urlString;
@@ -136,11 +138,11 @@ public class ArticleDataSource{
         database.delete(ArticleSQLiteHelper.TABLE_SCHEDULES,
                 ArticleSQLiteHelper.COLUMN_ID
                 + " = " + id, null);
-    }
+    }*/
 
-    public Article articleFromKey(UUID key) {
+    public Article articleFromKey(String key) {
         Cursor cursor = database.query(ArticleSQLiteHelper.TABLE_SCHEDULES,
-                allColumns, ArticleSQLiteHelper.COLUMN_KEY+"="+key.toString(),
+                allColumns, ArticleSQLiteHelper.COLUMN_KEY+"="+key,
                 null, null, null, null);
 
         Article article;
@@ -154,7 +156,7 @@ public class ArticleDataSource{
         // make sure to close the cursor
         cursor.close();
         return article;
-    }*/
+    }
 
     public Article articleFromUrl(URL url) {
         Cursor cursor;
@@ -306,15 +308,15 @@ public class ArticleDataSource{
     public String downloadArticles(ArticleParser.SourceMode refreshSource, ImageAsyncCacher.SourceMode getImages) {
         String result;
         if (options.sourceType == ArticleDataSourceOptions.SourceType.JSON) {
-            result = downloadJsonFromNetwork(refreshSource, getImages);
+            result = downloadJsonFromNetwork(refreshSource);
         } else if (options.sourceType == ArticleDataSourceOptions.SourceType.XML) {
-            result = downloadXmlFromNetwork(refreshSource, getImages);
+            result = downloadXmlFromNetwork(refreshSource);
         } else {
             result = "Error: not clear if XML or JSON";
         }
         return result;
     }
-    public String downloadXmlFromNetwork(ArticleParser.SourceMode refreshSource, ImageAsyncCacher.SourceMode getImages) {
+    public String downloadXmlFromNetwork(ArticleParser.SourceMode refreshSource) {
         String result;
 
         int articlesCount = this.getAllArticles().size();
@@ -334,14 +336,6 @@ public class ArticleDataSource{
                 if (xmlParser.getAllArticles().size() > 0) {
                     this.nukeAllRecords();
                     this.createArticles(xmlParser.getAllArticles());
-
-                    List<Article> al = this.getAllArticles();
-                    if (getImages != null) {
-                        ImageAsyncCacher ial = new ImageAsyncCacher (
-                                200, 200, getImages, context);
-                        //DownloadedDrawable downloadedDrawable = new DownloadedDrawable(ial);
-                        ial.execute(al);
-                    }
                 }
                 //testStore.privateItems = articles;
                 // Makes sure that the InputStream is closed after the app is
@@ -364,7 +358,7 @@ public class ArticleDataSource{
         return result;
     }
 
-    public String downloadJsonFromNetwork(ArticleParser.SourceMode refreshSource, ImageAsyncCacher.SourceMode getImages) {
+    public String downloadJsonFromNetwork(ArticleParser.SourceMode refreshSource) {
         String result;
 
         int articlesCount = this.getAllArticles().size();
@@ -423,6 +417,17 @@ public class ArticleDataSource{
         // Starts the query
         conn.connect();
         return conn.getInputStream();
+    }
+
+    public void downloadAndCacheImages(ImageAsyncCacher.SourceMode getImages) {
+        List<Article> al = this.getAllArticles();
+        if ((al != null) && (al.size()>0)) {
+
+            ImageAsyncCacher ial = new ImageAsyncCacher(
+                    200, 200, getImages, context, al);
+            //DownloadedDrawable downloadedDrawable = new DownloadedDrawable(ial);
+            ial.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
     public static class ArticleDataSourceOptions {
