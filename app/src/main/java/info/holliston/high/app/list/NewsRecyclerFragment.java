@@ -19,15 +19,15 @@ import info.holliston.high.app.datamodel.Article;
 import info.holliston.high.app.list.adapter.NewsCardAdapter;
 import info.holliston.high.app.list.adapter.RecyclerItemClickListener;
 import info.holliston.high.app.pager.NewsPagerFragment;
-import info.holliston.high.app.pager.adapter.TabPagerAdapter;
 
 public class NewsRecyclerFragment extends Fragment {
 
-    private TabPagerAdapter parentPagerAdapter;
-    public NewsRecyclerFragment() {}
-    private List<Article> articles;
     NewsCardAdapter adapter;
+    private List<Article> articles;
     private int currentArticle;
+
+    public NewsRecyclerFragment() {
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -56,17 +56,18 @@ public class NewsRecyclerFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardlist);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),1));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
+                    @Override
+                    public void onItemClick(View view, int position) {
                         sendToDetailFragment(position);
                     }
                 })
         );
 
-        if ((currentArticle >=0) || ma.newNewsAvailable) {
+        if ((currentArticle >= 0) || ma.newNewsAvailable) {
             sendToDetailFragment(currentArticle);
             ma.newNewsAvailable = false;
         }
@@ -80,7 +81,7 @@ public class NewsRecyclerFragment extends Fragment {
         newFragment.setArguments(bundle);
         if (getActivity().findViewById(R.id.frame_container) != null) {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame_container, newFragment,"newsPager");
+            transaction.replace(R.id.frame_container, newFragment, "newsPager");
             transaction.addToBackStack(null);
             transaction.commit();
         } else {

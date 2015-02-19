@@ -20,21 +20,18 @@ import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
 import info.holliston.high.app.list.adapter.LunchArrayAdapter;
 import info.holliston.high.app.pager.LunchPagerFragment;
-import info.holliston.high.app.pager.adapter.TabPagerAdapter;
 
 public class LunchListFragment extends Fragment {
 
-    public LunchListFragment() {}
-
-    private TabPagerAdapter parentPagerAdapter;
     List<String> headers = new ArrayList<>();
     HashMap<String, List<Article>> lunches = new HashMap<>();
-    private int currentArticle;
-
     View v;
     ExpandableListView lv;
     LunchArrayAdapter adapter;
+    private int currentArticle;
 
+    public LunchListFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,7 +41,7 @@ public class LunchListFragment extends Fragment {
             currentArticle = savedInstanceState.getInt("currentArticle", 0);
         }
         // Inflate the layout for this fragment
-        v= inflater.inflate(R.layout.lunch_exlistview,
+        v = inflater.inflate(R.layout.lunch_exlistview,
                 container, false);
         return v;
     }
@@ -82,7 +79,7 @@ public class LunchListFragment extends Fragment {
                                         }
 
         );
-        if (currentArticle >=0) {
+        if (currentArticle >= 0) {
             sendToDetailFragment(currentArticle);
         }
     }
@@ -92,7 +89,7 @@ public class LunchListFragment extends Fragment {
         MainActivity ma = (MainActivity) getActivity();
         articles = ma.lunchSource.getAllArticles();
 
-        if(headers.size() == 0) {
+        if (headers.size() == 0) {
             int weekOfYear = -1;
             String currentHeader = "";
             List<Article> eventsInDay = new ArrayList<>();
@@ -148,9 +145,9 @@ public class LunchListFragment extends Fragment {
         }
 
 
-        if (this.adapter!=null) {
+        if (this.adapter != null) {
             adapter.notifyDataSetChanged();
-            for (int i=0; i<headers.size(); i++ ) {
+            for (int i = 0; i < headers.size(); i++) {
                 lv.expandGroup(i);
             }
         }
@@ -164,7 +161,7 @@ public class LunchListFragment extends Fragment {
 
         if (getActivity().findViewById(R.id.frame_container) != null) {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame_container, newFragment,"lunchPager");
+            transaction.replace(R.id.frame_container, newFragment, "lunchPager");
             transaction.addToBackStack(null);
             transaction.commit();
         } else {
@@ -180,7 +177,7 @@ public class LunchListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        for (int i=0; i< this.headers.size(); i++) {
+        for (int i = 0; i < this.headers.size(); i++) {
             this.lv.expandGroup(i);
         }
     }

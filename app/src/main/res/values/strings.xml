@@ -85,29 +85,29 @@
 
     <!-- Parser element names -->
     <string-array name="schedules_parser_names">
-        <item/>
+        <item />
         <item>summary</item>
         <item>htmlLink</item>
         <item>start</item>
-        <item/>
+        <item />
         <item>description</item>
-        <item/>
+        <item>id</item>
     </string-array>
     <string-array name="events_parser_names">
-        <item/>
+        <item />
         <item>summary</item>
         <item>htmlLink</item>
         <item>start</item>
-        <item/>
+        <item />
         <item>description</item>
-        <item/>
+        <item>id</item>
     </string-array>
     <string-array name="news_parser_names">
         <item>entry</item>
         <item>title</item>
         <item>link</item>
         <item>updated</item>
-        <item/>
+        <item />
         <item>content</item>
         <item>id</item>
     </string-array>
@@ -116,18 +116,18 @@
         <item>title</item>
         <item>link</item>
         <item>published</item>
-        <item/>
+        <item />
         <item>content</item>
-        <item/>
+        <item>id</item>
     </string-array>
     <string-array name="lunch_parser_names">
-        <item/>
+        <item />
         <item>summary</item>
         <item>htmlLink</item>
         <item>start</item>
-        <item/>
+        <item />
         <item>description</item>
-        <item/>
+        <item>id</item>
     </string-array>
 
 </resources>

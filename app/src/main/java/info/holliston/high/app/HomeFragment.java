@@ -36,43 +36,40 @@ import info.holliston.high.app.pager.SchedulePagerFragment;
 
 public class HomeFragment extends android.support.v4.app.Fragment {
 
-    private Article newsArticle;
     Date scheduleDate = new Date();
-
     List<String> eventHeaders = new ArrayList<>();
     HashMap<String, List<Article>> events = new HashMap<>();
     View v;
+    private Article newsArticle;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.home_fragment,
                 container, false);
 
-        final SwipeRefreshLayout swipeLayout=(SwipeRefreshLayout) v.findViewById(R.id.swipe_container);
+        final SwipeRefreshLayout swipeLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_container);
         final ScrollView scrollView = (ScrollView) v.findViewById(R.id.scrollView);
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
                 int scrollY = scrollView.getScrollY();
-                if(scrollY == 0) swipeLayout.setEnabled(true);
+                if (scrollY == 0) swipeLayout.setEnabled(true);
                 else swipeLayout.setEnabled(false);
 
             }
         });
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-        {
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh()
-            {
+            public void onRefresh() {
                 MainActivity ma = (MainActivity) getActivity();
-                ma.refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, ImageAsyncCacher.SourceMode.DOWNLOAD_ONLY);
+                ma.refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, true);
             }
         });
 
         return v;
-        }
+    }
 
 
     @Override
@@ -94,11 +91,11 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         /*Get the most recent schedule */
         List<Article> tempArticles = schedulesSource.getAllArticles();
 
-        if (tempArticles.size() >0) {
+        if (tempArticles.size() > 0) {
             scheduleArticle = tempArticles.get(0);
             schedIndex = 0;
 
-            if(tempArticles.size() >=2) {
+            if (tempArticles.size() >= 2) {
                 Date todayDate = new Date();
                 Calendar todayCal = Calendar.getInstance();
                 todayCal.setTime(todayDate);
@@ -106,7 +103,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                 int todayDay = todayCal.get(Calendar.DATE);
                 int todayHour = todayCal.get(Calendar.HOUR_OF_DAY);
 
-                if (todayHour >=14) {
+                if (todayHour >= 14) {
                     Date firstDate = tempArticles.get(0).date;
                     Calendar firstCal = Calendar.getInstance();
                     firstCal.setTime(firstDate);
@@ -132,7 +129,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         List<Article> tempArticles;
         tempArticles = newsSource.getAllArticles();
 
-        if (tempArticles.size() >0) {
+        if (tempArticles.size() > 0) {
             newsArticle = tempArticles.get(0);
             assignNews(newsArticle);
         }
@@ -147,7 +144,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         /*Get the most recent daily announcements */
         tempArticles = dailyAnnSource.getAllArticles();
 
-        if (tempArticles.size() >0) {
+        if (tempArticles.size() > 0) {
             dailyAnnArticle = tempArticles.get(0);
             assignDailyAnn(dailyAnnArticle);
         }
@@ -163,10 +160,10 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         /*Get the most lunch menu for that date */
         tempArticles = lunchSource.getAllArticles();
 
-        if (tempArticles.size() >0) {
+        if (tempArticles.size() > 0) {
             lunchArticle = tempArticles.get(0);
-            lunchIndex =0;
-            for (int z = 0; z< tempArticles.size(); z++) {
+            lunchIndex = 0;
+            for (int z = 0; z < tempArticles.size(); z++) {
                 if (tempArticles.get(z).date.compareTo(scheduleDate) == 0) {
                     lunchArticle = tempArticles.get(z);
                     lunchIndex = z;
@@ -176,10 +173,9 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    public void updateEventsUI(){
+    public void updateEventsUI() {
         MainActivity ma = (MainActivity) getActivity();
         ArticleDataSource eventsSource = ma.eventsSource;
-        List<Article> tempArticles;
         List<Article> eventsArticles;
 
         /*Get upcoming events */
@@ -187,12 +183,14 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
         TableLayout eventsTable = (TableLayout) v.findViewById(R.id.events_box);
         eventsTable.removeAllViews();
-        if (eventsArticles.size()>0) {  //((eventsTable.getChildCount() == 0) && (eventsArticles.size() >0)){
+        if (eventsArticles.size() > 0) {  //((eventsTable.getChildCount() == 0) && (eventsArticles.size() >0)){
             assignEvents(eventsArticles);
         }
     }
 
     private void assignNews(Article article) {
+
+        showFirstNews();
 
         if (getActivity().findViewById(R.id.news_box) == null) {
             return;
@@ -262,19 +260,19 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         ImageView imageView = (ImageView) v.findViewById(R.id.sched_icon);
 
         switch (initial) {
-            case 'A' :
+            case 'A':
                 imageView.setImageResource(R.drawable.a_lg);
                 break;
-            case 'B' :
+            case 'B':
                 imageView.setImageResource(R.drawable.b_lg);
                 break;
-            case 'C' :
+            case 'C':
                 imageView.setImageResource(R.drawable.c_lg);
                 break;
-            case 'D' :
+            case 'D':
                 imageView.setImageResource(R.drawable.d_lg);
                 break;
-            default :
+            default:
                 imageView.setImageResource(R.drawable.star_lg);
                 break;
         }
@@ -293,7 +291,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     private void assignLunch(Article article, final int z) {
 
         TextView txtListChild = (TextView) v.findViewById(R.id.lunch_title);
-        String titleString = "Lunch: "+ article.title;
+        String titleString = "Lunch: " + article.title;
         txtListChild.setText(titleString);
 
         View.OnClickListener cl = new View.OnClickListener() {
@@ -330,7 +328,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         TextView titleTextView = (TextView) v.findViewById(R.id.dailyann_date);
         titleTextView.setText(formattedDateString);
 
-        View box =  v.findViewById(R.id.dailyann_box);
+        View box = v.findViewById(R.id.dailyann_box);
         View.OnClickListener cl = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -360,7 +358,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
             if (thisDay != dayOfYear) {
                 numOfDays++;
-                if (numOfDays >=3) {
+                if (numOfDays >= 3) {
                     break;
                 }
                 dayOfYear = thisDay;
@@ -383,7 +381,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         TableLayout eventsBox = (TableLayout) v.findViewById(R.id.events_box);
         eventsBox.removeAllViews();
-        for (String header: eventHeaders) {
+        for (String header : eventHeaders) {
             View headerRow = inflater.inflate(R.layout.events_list_header, eventsBox, false);
 
             TextView lblListHeader = (TextView) headerRow
@@ -395,7 +393,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
             List<Article> theseArticles = events.get(header);
 
-            for (int i=0; i<theseArticles.size(); i++) { //(final Article article :theseArticles) {
+            for (int i = 0; i < theseArticles.size(); i++) { //(final Article article :theseArticles) {
                 Article article = theseArticles.get(i);
                 View row = inflater.inflate(R.layout.events_row, eventsBox, false);
                 eventsBox.addView(row);
@@ -423,8 +421,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                 View.OnClickListener cl = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                    EventPagerFragment newFragment = new EventPagerFragment();
-                    sendToDetailFragment(j, newFragment, 4);
+                        EventPagerFragment newFragment = new EventPagerFragment();
+                        sendToDetailFragment(j, newFragment, 4);
                     }
                 };
                 row.setOnClickListener(cl);
@@ -453,9 +451,10 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             ma.tabPagerFragment.setPage(tabPagerPosition);
         }
     }
+
     public void showFirstNews() {
         if (getActivity().findViewById(R.id.frame_detail_container) != null) {
-            if (newsArticle!=null) {
+            if (newsArticle != null) {
                 sendToDetailFragment(0, new NewsPagerFragment(), 0);
             }
         }

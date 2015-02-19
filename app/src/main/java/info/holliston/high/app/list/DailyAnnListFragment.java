@@ -17,14 +17,14 @@ import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
 import info.holliston.high.app.list.adapter.DailyAnnArrayAdapter;
 import info.holliston.high.app.pager.DailyAnnPagerFragment;
-import info.holliston.high.app.pager.adapter.TabPagerAdapter;
 
 public class DailyAnnListFragment extends Fragment {
 
-    public DailyAnnListFragment() {}
-    private TabPagerAdapter parentPagerAdapter;
     private List<Article> articles;
     private int currentArticle;
+
+    public DailyAnnListFragment() {
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -43,7 +43,7 @@ public class DailyAnnListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-       updateUI();
+        updateUI();
     }
 
     public void updateUI() {
@@ -65,7 +65,7 @@ public class DailyAnnListFragment extends Fragment {
                                   }
         );
 
-        if (currentArticle >=0) {
+        if (currentArticle >= 0) {
             sendToDetailFragment(currentArticle);
         }
     }

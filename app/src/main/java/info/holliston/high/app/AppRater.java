@@ -19,7 +19,9 @@ public class AppRater {
 
     public static void app_launched(Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences("hhsapprater", 0);
-        if (prefs.getBoolean("dontshowagain", false)) { return ; }
+        if (prefs.getBoolean("dontshowagain", false)) {
+            return;
+        }
 
         SharedPreferences.Editor editor = prefs.edit();
 
@@ -41,8 +43,7 @@ public class AppRater {
                 showRateDialog(mContext, editor);
             }
         }
-
-        editor.commit();
+        editor.apply();
     }
 
     public static void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {

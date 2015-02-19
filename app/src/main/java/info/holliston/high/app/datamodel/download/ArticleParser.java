@@ -18,93 +18,108 @@ import java.util.List;
 import info.holliston.high.app.datamodel.Article;
 
 public class ArticleParser {
-    // We don't use namespaces
     private static final String ns = null;
 
     private String[] parserNames;
 
+    // these are the values that are in the XML to indicate items
+    // e.g. entryName = "entry", dateName = "startDate"
     private String entryName;
     private String titleName;
     private String linkName;
     private String dateName;
     private String startTimeName;
-    private String detailsName;    private String idName;
+    private String detailsName;
+    private String idName;
 
+    //holder for the image source
     private String currentImgSrc;
-
-    public enum HtmlTags {KEEP_HTML_TAGS, CONVERT_LINE_BREAKS, IGNORE_HTML_TAGS}
-    public enum SourceMode {ALLOW_BOTH, DOWNLOAD_ONLY, CACHE_ONLY, PREFER_DOWNLOAD}
-
     private HtmlTags htmlTags;
+    //counters
     private int limit;
     private int counter = 0;
-
-    private List<Article> articleList ;
+    private List<Article> articleList;
 
     public ArticleParser(String[] parserNames, HtmlTags conversionType, int limit) {
-        //this.dataSource = datasource;
         this.parserNames = parserNames;
         this.htmlTags = conversionType;
         this.limit = limit;
         this.articleList = new ArrayList<>();
     }
 
+    /*
+     * Get the articles from this parser
+     */
     public List<Article> getAllArticles() {
         return this.articleList;
     }
 
+    /*
+     * Main method that pulls the data to parse
+     */
     public String parse(InputStream in) throws XmlPullParserException, IOException {
-        String result="";
+        String result = "";
 
         this.entryName = parserNames[0];
         this.titleName = parserNames[1];
         this.linkName = parserNames[2];
         this.dateName = parserNames[3];
         this.startTimeName = parserNames[4];
-        this.detailsName =parserNames[5];
-        this.idName =parserNames[6];
+        this.detailsName = parserNames[5];
+        this.idName = parserNames[6];
 
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
+            // send parser data to "readFeed" method to extract the info
             result = readFeed(parser);
         } catch (Exception e) {
-            result = "ArticleParser error: "+e.toString();
-        }
-        finally
-         {
+            result = "ArticleParser error: " + e.toString();
+        } finally {
             in.close();
         }
+        //returns a result string to the sender. If satisfied, the sender can then
+        //send a getAllArticles() request for the actual dat
         return result;
     }
 
+    /*
+     * Takes a parse object and extracts the info
+     * Serially reads tags to find articles, and then
+     * sends them out for processing
+     */
     private String readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
         String result;
-
+        //require that "feed" is the first containing tag
         parser.require(XmlPullParser.START_TAG, ns, "feed");
+
+        // within "feed", continue to find start tags until end of "feed" is reached
+        // or until we have read enough articles (by reaching the "limit"), e.g. read 30 schedules.
         while ((parser.next() != XmlPullParser.END_TAG) && (this.counter < this.limit)) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
+                //ignore end tags while looking for an article
                 continue;
             }
             String name = parser.getName();
             // Starts by looking for the entry tag
             if (name.equals(entryName)) {
-                //entries.add(readEntry(parser));
+                // if this is the start tag for an article, send the parser to
+                // readEntry to process the article
                 readEntry(parser);
                 counter++;
             } else {
                 skip(parser);
             }
         }
-        result = "Articles downloaded: "+counter;
+        result = "Articles downloaded: " + counter;
         return result;
         //return entries;
     }
 
     // Parses the contents of an entry. If it encounters a title, summary, or link tag, hands them off
-// to their respective "read" methods for processing. Otherwise, skips the tag.
+    // to their respective "read" methods for processing. Otherwise, skips the tag.
     private void readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "entry");
         String title = null;
@@ -114,6 +129,7 @@ public class ArticleParser {
         String id = null;
         this.currentImgSrc = null;
 
+        // an end tag here means the end of the article
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -129,18 +145,22 @@ public class ArticleParser {
                 date = readDate(parser);
             } else if (name.equals(idName)) {
                 id = readId(parser);
-            }else {
+            } else {
                 skip(parser);
             }
         }
+
+        //now that the article is processed, prep it to be stored in the datasource
         URL url;
-        try{
+        try {
             url = new URL(link);
         } catch (Exception e) {
             url = new URL("http://www.google.com");
             Log.d("parser", "Error making URL");
         }
-        Date dateDate ;
+
+        //parse possible date formats
+        Date dateDate;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss.SSSZ");
 
         if (date != null) {
@@ -162,9 +182,10 @@ public class ArticleParser {
             id = id.replace("&", "");
             id = id.replace("?", "");
         }
+
+        //make an Article with the data, and store in the temporary (parser's) articleList
         Article tempArticle = new Article(title, id, url, dateDate, details, this.currentImgSrc);
         this.articleList.add(tempArticle);
-        //dataSource.createArticle(title, url, dateDate, details, this.currentImgSrc);
     }
 
     // Processes title tags in the feed.
@@ -182,7 +203,7 @@ public class ArticleParser {
         String tag = parser.getName();
         String relType = parser.getAttributeValue(null, "rel");
         if (tag.equals(linkName)) {
-            if (relType.equals("alternate")){
+            if (relType.equals("alternate")) {
                 link = parser.getAttributeValue(null, "href");
             }
         }
@@ -199,11 +220,10 @@ public class ArticleParser {
         parser.require(XmlPullParser.START_TAG, ns, dateName);
         if (!startTimeName.equals("")) {
             //if (dateType.equals("startTime")){
-                date = parser.getAttributeValue(null, startTimeName);
-                parser.nextTag();
+            date = parser.getAttributeValue(null, startTimeName);
+            parser.nextTag();
             //}
-        } else
-        {
+        } else {
             date = readText(parser);
         }
         parser.require(XmlPullParser.END_TAG, ns, dateName);
@@ -224,8 +244,7 @@ public class ArticleParser {
                 int next = parser.next();
                 if (next == XmlPullParser.TEXT) {
                     sb.append(parser.getText());
-                }
-                else if (next == XmlPullParser.START_TAG) {
+                } else if (next == XmlPullParser.START_TAG) {
                     if (this.htmlTags == HtmlTags.KEEP_HTML_TAGS) {
                         sb.append("<").append(parser.getName());
                         for (int i = 0; i < parser.getAttributeCount(); i++) {
@@ -238,7 +257,7 @@ public class ArticleParser {
                         this.currentImgSrc = parser.getAttributeValue(null, "src");
                     }
 
-                } else if (next ==XmlPullParser.END_TAG) {
+                } else if (next == XmlPullParser.END_TAG) {
                     if (htmlTags == HtmlTags.KEEP_HTML_TAGS) {
                         if (!(parser.getName().equals(detailsName))) {
                             sb.append("</").append(parser.getName()).append(">");
@@ -254,12 +273,10 @@ public class ArticleParser {
                         }
                     }
                 }
-
             }
             summary = sb.toString();
         }
         return summary;
-
     }
 
     // For the tags title and summary, extracts their text values.
@@ -279,6 +296,8 @@ public class ArticleParser {
         parser.require(XmlPullParser.END_TAG, ns, idName);
         return id;
     }
+
+    // skips any other tags, but manages the end tag so the article doesn't end yet.
     private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
         if (parser.getEventType() != XmlPullParser.START_TAG) {
             throw new IllegalStateException();
@@ -294,5 +313,15 @@ public class ArticleParser {
                     break;
             }
         }
+    }
+
+    // marker for how to process HTML
+    public enum HtmlTags {
+        KEEP_HTML_TAGS, CONVERT_LINE_BREAKS, IGNORE_HTML_TAGS
+    }
+
+    // marker for where to get the data from
+    public enum SourceMode {
+        ALLOW_BOTH, DOWNLOAD_ONLY, CACHE_ONLY, PREFER_DOWNLOAD
     }
 }

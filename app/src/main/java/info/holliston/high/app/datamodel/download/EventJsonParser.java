@@ -23,14 +23,14 @@ import info.holliston.high.app.datamodel.Article;
 public class EventJsonParser {
     private String[] parserNames;
 
-    String entryName;
+    private String entryName;
     private String titleName;
     private String linkName;
     private String dateName;
     private String detailsName;
-    //private String currentImgSrc;
+    private String idName;
 
-    private List<Article> articleList ;
+    private List<Article> articleList;
 
     public EventJsonParser(String[] parserNames) {
         this.parserNames = parserNames;
@@ -41,15 +41,16 @@ public class EventJsonParser {
         return this.articleList;
     }
 
-    public String parse(InputStream in)  {
-        String result=null;
+    public String parse(InputStream in) {
+        String result = null;
 
         this.entryName = parserNames[0];
         this.titleName = parserNames[1];
         this.linkName = parserNames[2];
         this.dateName = parserNames[3];
         //String startTimeName = parserNames[4];
-        this.detailsName =parserNames[5];
+        this.detailsName = parserNames[5];
+        this.idName = parserNames[6];
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         StringBuilder sb = new StringBuilder();
@@ -57,15 +58,13 @@ public class EventJsonParser {
         String line;
 
         try {
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
             result = readFeed(sb.toString());
         } catch (Exception e) {
-            result = "ArticleParser error: "+e.toString();
-        }
-        finally
-         {
+            result = "ArticleParser error: " + e.toString();
+        } finally {
             try {
                 in.close();
             } catch (IOException e) {
@@ -83,7 +82,7 @@ public class EventJsonParser {
             JSONObject calObj = new JSONObject(input);
 
             JSONArray items = calObj.getJSONArray("items");
-            for (int i=0; i<items.length(); i++) {
+            for (int i = 0; i < items.length(); i++) {
                 JSONObject event = items.getJSONObject(i);
                 getAndStoreArticle(event);
                 counter++;
@@ -92,7 +91,7 @@ public class EventJsonParser {
             e.printStackTrace();
         }
 
-        result = "Articles downloaded: "+ counter;
+        result = "Articles downloaded: " + counter;
         return result;
         //return entries;
     }
@@ -105,14 +104,16 @@ public class EventJsonParser {
         String details;
         String link;
         String date;
+        String id;
 
         title = readTitle(event);
         details = readSummary(event);
         link = readLink(event);
         date = readDate(event);
+        id = readId(event);
 
         URL url = null;
-        try{
+        try {
             url = new URL(link);
         } catch (Exception e) {
             try {
@@ -123,7 +124,7 @@ public class EventJsonParser {
             }
         }
 
-        Date dateDate ;
+        Date dateDate;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss.SSSZ");
 
         if (date != null) {
@@ -142,8 +143,14 @@ public class EventJsonParser {
             Log.d("parser", "Error making date");
         }
 
+        if (id != null) {
+            id = id.replace("/", "");
+            id = id.replace("&", "");
+            id = id.replace("?", "");
+        }
+
         //the "null" below represents the Key, which we don't bother with for events
-        Article tempArticle = new Article(title, null, url, dateDate, details, null);
+        Article tempArticle = new Article(title, id, url, dateDate, details, null);
         this.articleList.add(tempArticle);
     }
 
@@ -159,7 +166,7 @@ public class EventJsonParser {
     }
 
     // Processes link tags in the feed.
-    private String readLink(JSONObject event)  {
+    private String readLink(JSONObject event) {
         String link = null;
         try {
             link = event.getString(this.linkName);
@@ -169,12 +176,12 @@ public class EventJsonParser {
         return link;
     }
 
-    private String readDate(JSONObject event)  {
+    private String readDate(JSONObject event) {
         String date = "";
         try {
             JSONObject startDateObj = event.getJSONObject(this.dateName);
             Iterator<String> keys = startDateObj.keys();
-            while(keys.hasNext()) {
+            while (keys.hasNext()) {
                 // loop to get the dynamic key
                 String currentDynamicKey = keys.next();
 
@@ -188,6 +195,16 @@ public class EventJsonParser {
             e.printStackTrace();
         }
         return date;
+    }
+
+    private String readId(JSONObject event) {
+        String id = null;
+        try {
+            id = event.getString(this.idName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 
     // Processes summary tags in the feed.

@@ -21,8 +21,13 @@ import java.util.List;
 import info.holliston.high.app.ImageAsyncCacher;
 import info.holliston.high.app.datamodel.Article;
 
-public class ArticleDataSource{
+/*
+ * The storage and retrieval vessel for feed articles
+ */
+public class ArticleDataSource {
 
+    public String name;
+    Context context;
     // Database fields
     private SQLiteDatabase database;
     private ArticleSQLiteHelper dbHelper;
@@ -35,27 +40,10 @@ public class ArticleDataSource{
             ArticleSQLiteHelper.COLUMN_DETAILS,
             ArticleSQLiteHelper.COLUMN_IMGSRC};
     private ArticleDataSourceOptions options;
-    public String name;
 
-    Context context;
-    public Boolean newNewsAvailable = false;
-
-    /*private String[] parserNames;
-    private String urlString;
-    private ArticleParser.HtmlTags conversionType;
-    private SortOrder sortOrder;
-    private String limit;
-    */
     public ArticleDataSource(Context context, ArticleDataSourceOptions options) {
-
         this.options = options;
         this.context = context;
-        /*this.parserNames = options.getParserNames();
-        this.urlString = options.getUrlString();
-        this.conversionType = options.getConversionType();
-        this.sortOrder = options.getSortOrder();
-        this.limit = options.getLimit();
-        */
         String databaseName = options.getDatabaseName();
         dbHelper = new ArticleSQLiteHelper(context, databaseName);
     }
@@ -72,71 +60,85 @@ public class ArticleDataSource{
         return this.options.getDatabaseName();
     }
 
+    /*
+     * Creates an Article object with the given information
+     * and places it in the SQL database
+     */
     public Article createArticle(String title, String key, URL url, Date date, String details, String imgsrc) {
         Article newArticle;
-        newArticle = articleFromUrl(url);
-            ContentValues values = new ContentValues();
-            values.put(ArticleSQLiteHelper.COLUMN_TITLE, title);
-            SimpleDateFormat dateSdf = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat timeSdf = new SimpleDateFormat("kk:mm");
-            //SimpleDateFormat timeSdf = new SimpleDateFormat("hh:mm a");
+        // is the article already exists, get it
+        newArticle = articleFromKey(key);
+
+        //prep the info for a SQL query
+        ContentValues values = new ContentValues();
+
+        values.put(ArticleSQLiteHelper.COLUMN_TITLE, title);
+
+        SimpleDateFormat dateSdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat timeSdf = new SimpleDateFormat("kk:mm");
         String dateString = dateSdf.format(date);
-            String timeString = timeSdf.format(date);
-            int tsio = timeString.indexOf("24");
-            if (tsio == 0) {
-                timeString = timeString.replace("24", "00");
-            }
-            /*if (timeString.charAt(6) == 'P'){
-                int hour = Integer.parseInt(timeString.substring(0,2));
-                hour = hour+12;
-                timeString = String.valueOf(hour)+timeString.substring(2,5);
-            } else {
-                timeString = timeString.substring(0,5);
-            }*/
-        String fullDateString = dateString+" "+timeString;
+        String timeString = timeSdf.format(date);
+        int tsio = timeString.indexOf("24");
+        if (tsio == 0) {
+            timeString = timeString.replace("24", "00");
+        }
+        String fullDateString = dateString + " " + timeString;
+
         values.put(ArticleSQLiteHelper.COLUMN_URL, url.toString());
         values.put(ArticleSQLiteHelper.COLUMN_DATE, fullDateString);
         values.put(ArticleSQLiteHelper.COLUMN_DETAILS, details);
         values.put(ArticleSQLiteHelper.COLUMN_IMGSRC, imgsrc);
         values.put(ArticleSQLiteHelper.COLUMN_KEY, key);
 
+        // if the article does not exist, create/insert it.
+        // if it does exist, update it
         if (newArticle == null) {
-            //values.put(ArticleSQLiteHelper.COLUMN_KEY, UUID.randomUUID().toString());
             this.open();
+            //insert the article
             long insertId = database.insert(dbHelper.getName(), null,
                     values);
+            //get it back
             Cursor cursor = database.query(dbHelper.getName(),
                     allColumns, ArticleSQLiteHelper.COLUMN_ID + " = " + insertId, null,
                     null, null, null);
             cursor.moveToFirst();
+
+            //new article = the newly inserted article
             newArticle = cursorToArticle(cursor);
             cursor.close();
             this.close();
         } else {
             values.put(ArticleSQLiteHelper.COLUMN_KEY, newArticle.key);
             this.open();
-            int update = database.update(dbHelper.getName(),
-                    values, ArticleSQLiteHelper.COLUMN_URL+"='"+url.toString()+"'", null
-                    );
-            Log.d("ArticleDataSource", update+" records updated");
+            //update the article with the new info
+            //int update =
+            database.update(dbHelper.getName(),
+                    values, ArticleSQLiteHelper.COLUMN_URL + "='" + url.toString() + "'", null);
+            //Log.d("ArticleDataSource", update+" records updated");
             Cursor cursor = database.query(dbHelper.getName(),
-                    allColumns, ArticleSQLiteHelper.COLUMN_URL+"='"+url.toString()+"'", null,
+                    allColumns, ArticleSQLiteHelper.COLUMN_URL + "='" + url.toString() + "'", null,
                     null, null, null);
             cursor.moveToFirst();
+            //new article = recently updated article
             newArticle = cursorToArticle(cursor);
             cursor.close();
             this.close();
         }
-
         return newArticle;
     }
 
+    /*
+     * batch method for adding a set of articles
+     */
     public void createArticles(List<Article> articleList) {
-        for (Article art : articleList){
+        for (Article art : articleList) {
             this.createArticle(art.title, art.key, art.url, art.date, art.details, art.imgSrc);
         }
     }
 
+    /*
+     * Deletes a single article. No need for it now, bu you never know
+     */
     /*public void deleteArticle(Article article) {
         long id = article.id;
         System.out.println("Comment deleted with id: " + id);
@@ -145,31 +147,16 @@ public class ArticleDataSource{
                 + " = " + id, null);
     }*/
 
+    /*
+     * Finds an article with a given key
+     */
     public Article articleFromKey(String key) {
-        Cursor cursor = database.query(ArticleSQLiteHelper.TABLE_SCHEDULES,
-                allColumns, ArticleSQLiteHelper.COLUMN_KEY+"="+key,
-                null, null, null, null);
-
-        Article article;
-        cursor.moveToFirst();
-        if (!cursor.isAfterLast()) {
-            article = cursorToArticle(cursor);
-            cursor.moveToNext();
-        } else {
-            article = null;
-        }
-        // make sure to close the cursor
-        cursor.close();
-        return article;
-    }
-
-    public Article articleFromUrl(URL url) {
         Cursor cursor;
         Article article;
         try {
             this.open();
             cursor = database.query(dbHelper.getName(),
-                    allColumns, ArticleSQLiteHelper.COLUMN_URL+"='"+url.toString()+"'",
+                    allColumns, ArticleSQLiteHelper.COLUMN_KEY + "= '" + key + "'",
                     null, null, null, null);
             cursor.moveToFirst();
             if (!cursor.isAfterLast()) {
@@ -182,27 +169,31 @@ public class ArticleDataSource{
             cursor.close();
             this.close();
         } catch (Exception e) {
-            Log.e("ArticleDataSource",e.toString());
+            Log.e("ArticleDataSource", e.toString());
             article = null;
         }
-
         return article;
     }
 
+    /*Just in case
     public void nukeAllRecords() {
         this.open();
         database.execSQL("delete from " + dbHelper.getName());
         this.close();
-    }
+    }*/
 
+    /*
+     * Obtains all relevant articles in this datasource
+     */
     public List<Article> getAllArticles() {
         List<Article> articles = new ArrayList<>();
 
         String orderBy;
         String where;
 
+        //get the date (including anything since midnight)
         Date now = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");// kk:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String nowString;
         Calendar cal = Calendar.getInstance();
         cal.setTime(now);
@@ -210,88 +201,53 @@ public class ArticleDataSource{
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
 
+        //build "orderBy" and "where" "based on whether we want future or past articles
         if (options.sortOrder == ArticleDataSourceOptions.SortOrder.GET_FUTURE) {
             now = cal.getTime();
             nowString = sdf.format(now);
-            orderBy =  ArticleSQLiteHelper.COLUMN_DATE+" ASC";
-            where = ArticleSQLiteHelper.COLUMN_DATE+" >= '"+nowString+"'";
+            orderBy = ArticleSQLiteHelper.COLUMN_DATE + " ASC";
+            where = ArticleSQLiteHelper.COLUMN_DATE + " >= '" + nowString + "'";
         } else {
             cal.add(Calendar.DATE, 1);
             now = cal.getTime();
             nowString = sdf.format(now);
-            orderBy = ArticleSQLiteHelper.COLUMN_DATE+" DESC";
-            where = ArticleSQLiteHelper.COLUMN_DATE+" <= '"+nowString+"'";
+            orderBy = ArticleSQLiteHelper.COLUMN_DATE + " DESC";
+            where = ArticleSQLiteHelper.COLUMN_DATE + " <= '" + nowString + "'";
         }
 
         this.open();
+        //get the articles
         Cursor cursor = database.query(dbHelper.getName(),
                 allColumns, where, null, null, null, orderBy, null);
 
         cursor.moveToFirst();
+        //cycle through the query result, adding articles to the temp list
+        String tempKey = "";
         while (!cursor.isAfterLast()) {
             Article article = cursorToArticle(cursor);
-            articles.add(article);
+            //tempKey prevents returning duplicates (just in case)
+            if (!tempKey.equals(article.key)) {
+                articles.add(article);
+                tempKey = article.key;
+            }
             cursor.moveToNext();
         }
         // make sure to close the cursor
         cursor.close();
         this.close();
+        //return the temp list as the set of articles
         return articles;
     }
 
-    /*public Article getArticle(int i) {
-        String orderBy;
-        String where;
-
-        Date now = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // kk:mm");
-        String nowString;
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(now);
-        cal.set(Calendar.HOUR, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-
-        if (options.sortOrder == ArticleDataSourceOptions.SortOrder.GET_FUTURE) {
-            now = cal.getTime();
-            nowString = sdf.format(now);
-            orderBy =  ArticleSQLiteHelper.COLUMN_DATE+" ASC";
-            where = ArticleSQLiteHelper.COLUMN_DATE+" >= '"+nowString+"'";
-        } else {
-            cal.add(Calendar.DATE, 1);
-            now = cal.getTime();
-            nowString = sdf.format(now);
-            orderBy = ArticleSQLiteHelper.COLUMN_DATE+" DESC";
-            where = ArticleSQLiteHelper.COLUMN_DATE+" <= '"+nowString+"'";
-        }
-
-        this.open();
-        Cursor cursor = database.query(dbHelper.getName(),
-                allColumns, where, null, null, null, orderBy, options.limit);
-
-        cursor.moveToFirst();
-        Article article = null;
-        int j=0;
-        while (!cursor.isAfterLast()) {
-            if (j==i) {
-                article = cursorToArticle(cursor);
-                break;
-            }
-            cursor.moveToNext();
-            j++;
-        }
-        // make sure to close the cursor
-        cursor.close();
-        this.close();
-        return article;
-    } */
-
-
+    /*
+     * Turns a cursor object into a returnable Article
+     */
     private Article cursorToArticle(Cursor cursor) {
         Article article = new Article();
+
         article.id = cursor.getLong(0);
         article.title = cursor.getString(1);
-            String urlString = cursor.getString(2);
+        String urlString = cursor.getString(2);
         try {
             article.url = new URL(urlString);
         } catch (Exception e) {
@@ -310,7 +266,11 @@ public class ArticleDataSource{
         return article;
     }
 
-    public String downloadArticles(ArticleParser.SourceMode refreshSource, ImageAsyncCacher.SourceMode getImages) {
+    /*
+     * Starts the download/parsing process for this database.
+     * First, it chooses which type (XML or JSON) to download
+     */
+    public String downloadArticles(ArticleParser.SourceMode refreshSource) {
         String result;
         if (options.sourceType == ArticleDataSourceOptions.SourceType.JSON) {
             result = downloadJsonFromNetwork(refreshSource);
@@ -321,36 +281,36 @@ public class ArticleDataSource{
         }
         return result;
     }
+
+    /*
+     * Prep to download XML feed
+     */
     public String downloadXmlFromNetwork(ArticleParser.SourceMode refreshSource) {
         String result;
 
         int articlesCount = this.getAllArticles().size();
-
+        // if datasource is empty or downloading is OK...
         if ((refreshSource == ArticleParser.SourceMode.DOWNLOAD_ONLY)
                 || (refreshSource == ArticleParser.SourceMode.PREFER_DOWNLOAD)
-                || (articlesCount <=0)){
+                || (articlesCount <= 0)) {
             InputStream stream = null;
             try {
                 // Instantiate the parser
                 ArticleParser xmlParser = new ArticleParser(options.parserNames, options.conversionType, Integer.parseInt(options.limit));
                 stream = downloadUrl(options.urlString);
-                //List<Article> backup = this.getAllArticles();
+                // download and parse
                 String parseResult = xmlParser.parse(stream);
-                result = "Downloaded: "+parseResult;
+                result = "Downloaded: " + parseResult;
 
+                // add the parser's articles to the database
                 if (xmlParser.getAllArticles().size() > 0) {
-                    this.nukeAllRecords();
                     this.createArticles(xmlParser.getAllArticles());
                 }
-                //testStore.privateItems = articles;
-                // Makes sure that the InputStream is closed after the app is
-                // finished using it.
             } catch (Exception e) {
-                result = "Downloading error: "+e.toString()+". Using cache instead.";
-            }
-            finally  {
+                result = "Downloading error: " + e.toString() + ". Using cache instead.";
+            } finally {
                 try {
-                    if (stream !=null){
+                    if (stream != null) {
                         stream.close();
                     }
                 } catch (Exception e) {
@@ -358,48 +318,48 @@ public class ArticleDataSource{
                 }
             }
         } else {
-            result = "Download skipped: "+articlesCount+" articles in cache (good enough)";
+            result = "Download skipped: " + articlesCount + " articles in cache (good enough)";
         }
         return result;
     }
 
+    /*
+     * Prep to download JSON feed
+     */
     public String downloadJsonFromNetwork(ArticleParser.SourceMode refreshSource) {
         String result;
 
         int articlesCount = this.getAllArticles().size();
-
+        // if datasource is empty or downloading is OK...
         if ((refreshSource == ArticleParser.SourceMode.DOWNLOAD_ONLY)
                 || (refreshSource == ArticleParser.SourceMode.PREFER_DOWNLOAD)
-                || (articlesCount <=0)){
+                || (articlesCount <= 0)) {
             InputStream stream = null;
             try {
                 // Instantiate the parser
                 EventJsonParser jsonParser = new EventJsonParser(options.parserNames);
 
+                // these JSON feeds require the addition of dates added to the feed URL
                 Date now = new Date();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'00'%3A'00'%3A'00-05'%3A'00");
                 String nowString = sdf.format(now);
 
                 String urlString = options.getUrlString();
-                urlString = urlString+"&timeMin="+nowString;
+                urlString = urlString + "&timeMin=" + nowString;
                 stream = downloadUrl(urlString);
-                //List<Article> backup = this.getAllArticles();
+
+                //download and parse
                 String parseResult = jsonParser.parse(stream);
-                result = "Downloaded: "+parseResult;
+                result = "Downloaded: " + parseResult;
 
                 if (jsonParser.getAllArticles().size() > 0) {
-                    this.nukeAllRecords();
                     this.createArticles(jsonParser.getAllArticles());
                 }
-                //testStore.privateItems = articles;
-                // Makes sure that the InputStream is closed after the app is
-                // finished using it.
             } catch (Exception e) {
-                result = "Downloading error: "+e.toString()+". Using cache instead.";
-            }
-            finally  {
+                result = "Downloading error: " + e.toString() + ". Using cache instead.";
+            } finally {
                 try {
-                    if (stream !=null){
+                    if (stream != null) {
                         stream.close();
                     }
                 } catch (Exception e) {
@@ -407,11 +367,14 @@ public class ArticleDataSource{
                 }
             }
         } else {
-            result = "Download skipped: "+articlesCount+" events in cache (good enough)";
+            result = "Download skipped: " + articlesCount + " events in cache (good enough)";
         }
         return result;
     }
 
+    /*
+     * Create the HTTP connection to the feed
+     */
     private InputStream downloadUrl(String urlString) throws IOException {
         java.net.URL url = new java.net.URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -424,21 +387,23 @@ public class ArticleDataSource{
         return conn.getInputStream();
     }
 
-    public void downloadAndCacheImages(ImageAsyncCacher.SourceMode getImages) {
+    /*
+     * Cycle through the database and cache any images
+     */
+    public void downloadAndCacheImages() {
         List<Article> al = this.getAllArticles();
-        if ((al != null) && (al.size()>0)) {
+        if ((al != null) && (al.size() > 0)) {
 
             ImageAsyncCacher ial = new ImageAsyncCacher(
-                    200, 200, getImages, context, al);
-            //DownloadedDrawable downloadedDrawable = new DownloadedDrawable(ial);
+                    200, 200, context, al);
             ial.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
+    /*
+     * A custom object for holding all of the datasource options
+     */
     public static class ArticleDataSourceOptions {
-        public enum SortOrder {GET_FUTURE, GET_PAST}
-        public enum SourceType {XML, JSON}
-
         private String databaseName;
         private SourceType sourceType;
         private String urlString;
@@ -463,31 +428,42 @@ public class ArticleDataSource{
         public String getDatabaseName() {
             return this.databaseName;
         }
-        public String getUrlString() {
-            return this.urlString;
-        }
 
         public void setDatabaseName(String name) {
             this.databaseName = name;
         }
-        public void setSourceType(SourceType type) {
-            this.sourceType = type;
+
+        public String getUrlString() {
+            return this.urlString;
         }
+
         public void setUrlString(String url) {
             this.urlString = url;
         }
+
+        public void setSourceType(SourceType type) {
+            this.sourceType = type;
+        }
+
         public void setParserNames(String[] names) {
             this.parserNames = names;
         }
+
         public void setConversionType(ArticleParser.HtmlTags type) {
             this.conversionType = type;
         }
+
         public void setSortOrder(SortOrder order) {
             this.sortOrder = order;
         }
+
         public void setLimit(String limit) {
             this.limit = limit;
         }
+
+        public enum SortOrder {GET_FUTURE, GET_PAST}
+
+        public enum SourceType {XML, JSON}
     }
 }
 

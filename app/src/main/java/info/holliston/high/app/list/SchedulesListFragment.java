@@ -20,20 +20,18 @@ import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
 import info.holliston.high.app.list.adapter.SchedulesArrayAdapter;
 import info.holliston.high.app.pager.SchedulePagerFragment;
-import info.holliston.high.app.pager.adapter.TabPagerAdapter;
 
-public class SchedulesListFragment extends Fragment  {
+public class SchedulesListFragment extends Fragment {
 
-    public SchedulesListFragment() {}
-
-    private TabPagerAdapter parentPagerAdapter;
     List<String> headers = new ArrayList<>();
     HashMap<String, List<Article>> schedules = new HashMap<>();
-    private int currentArticle;
-
     View v;
     ExpandableListView lv;
     SchedulesArrayAdapter adapter;
+    private int currentArticle;
+
+    public SchedulesListFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,7 +41,7 @@ public class SchedulesListFragment extends Fragment  {
             currentArticle = savedInstanceState.getInt("currentArticle", 0);
         }
         // Inflate the layout for this fragment
-        v= inflater.inflate(R.layout.schedules_exlistview,
+        v = inflater.inflate(R.layout.schedules_exlistview,
                 container, false);
         return v;
     }
@@ -160,20 +158,19 @@ public class SchedulesListFragment extends Fragment  {
             }
         }
 
-        if (this.adapter!=null) {
+        if (this.adapter != null) {
             //adapter._listDataHeader = headers;
             //adapter._listDataChild = schedules;
             adapter.notifyDataSetChanged();
-            for (int i=0; i<headers.size(); i++ ) {
+            for (int i = 0; i < headers.size(); i++) {
                 lv.expandGroup(i);
             }
         }
 
 
-
     }
 
-    private void sendToDetailFragment(int i){
+    private void sendToDetailFragment(int i) {
         SchedulePagerFragment newFragment = new SchedulePagerFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("position", i);
@@ -196,7 +193,7 @@ public class SchedulesListFragment extends Fragment  {
     @Override
     public void onStart() {
         super.onStart();
-        for (int i=0; i< this.headers.size(); i++) {
+        for (int i = 0; i < this.headers.size(); i++) {
             this.lv.expandGroup(i);
         }
     }

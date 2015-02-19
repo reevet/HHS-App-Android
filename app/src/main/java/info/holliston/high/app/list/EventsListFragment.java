@@ -20,19 +20,18 @@ import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
 import info.holliston.high.app.list.adapter.EventsArrayAdapter;
 import info.holliston.high.app.pager.EventPagerFragment;
-import info.holliston.high.app.pager.adapter.TabPagerAdapter;
 
 public class EventsListFragment extends Fragment {
 
-    public EventsListFragment() {}
-    private TabPagerAdapter parentPagerAdapter;
     List<String> headers = new ArrayList<>();
     HashMap<String, List<Article>> events = new HashMap<>();
-    private int currentArticle;
-
     View v;
     ExpandableListView lv;
     EventsArrayAdapter adapter;
+    private int currentArticle;
+
+    public EventsListFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,7 +41,7 @@ public class EventsListFragment extends Fragment {
             currentArticle = savedInstanceState.getInt("currentArticle", 0);
         }
         // Inflate the layout for this fragment
-        v= inflater.inflate(R.layout.events_exlistview,
+        v = inflater.inflate(R.layout.events_exlistview,
                 container, false);
         return v;
     }
@@ -74,12 +73,12 @@ public class EventsListFragment extends Fragment {
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
                 // Create new fragment and transaction
-                int counter =0;
-                for (int j=0; j<=groupPosition; j++) {
+                int counter = 0;
+                for (int j = 0; j <= groupPosition; j++) {
                     String headerName = headers.get(j);
                     List<Article> a = events.get(headerName);
-                    for (int i=0; i<a.size(); i++ ) {
-                        if ((j==groupPosition) && (i==childPosition)){
+                    for (int i = 0; i < a.size(); i++) {
+                        if ((j == groupPosition) && (i == childPosition)) {
                             String details = a.get(i).details;
                             if (!details.equals("")) {
                                 sendToDetailFragment(counter);
@@ -93,7 +92,7 @@ public class EventsListFragment extends Fragment {
                 return false;
             }
         });
-        if (currentArticle >=0) {
+        if (currentArticle >= 0) {
             sendToDetailFragment(currentArticle);
         }
     }
@@ -138,15 +137,16 @@ public class EventsListFragment extends Fragment {
             this.events.put(currentHeader, eventsInDay);
         }
 
-        if (this.adapter!=null) {
+        if (this.adapter != null) {
             adapter.notifyDataSetChanged();
-            for (int i=0; i<headers.size(); i++ ) {
+            for (int i = 0; i < headers.size(); i++) {
                 lv.expandGroup(i);
             }
         }
 
 
     }
+
     private void sendToDetailFragment(int i) {
 
         EventPagerFragment newFragment = new EventPagerFragment();
@@ -155,7 +155,7 @@ public class EventsListFragment extends Fragment {
         newFragment.setArguments(bundle);
         if (getActivity().findViewById(R.id.frame_container) != null) {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame_container, newFragment,"eventsPager");
+            transaction.replace(R.id.frame_container, newFragment, "eventsPager");
             transaction.addToBackStack(null);
             transaction.commit();
         } else {
@@ -170,7 +170,7 @@ public class EventsListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        for (int i=0; i< this.headers.size(); i++) {
+        for (int i = 0; i < this.headers.size(); i++) {
             this.lv.expandGroup(i);
         }
     }
