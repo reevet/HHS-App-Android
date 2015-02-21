@@ -15,11 +15,11 @@ import java.util.List;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
 
-public class SchedulesArrayAdapter extends BaseExpandableListAdapter{ // ArrayAdapter<Article> {
-private final Context context;
-    public List<String> _listDataHeader; // header titles
+public class SchedulesArrayAdapter extends BaseExpandableListAdapter { // ArrayAdapter<Article> {
+    private final Context context;
+    private final List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
-    public HashMap<String, List<Article>> _listDataChild;
+    private final HashMap<String, List<Article>> _listDataChild;
     //private final ArrayList<Article> articleList;
 
     public SchedulesArrayAdapter(Context context, List<String> listDataHeader,
@@ -54,7 +54,7 @@ private final Context context;
         }
 
         //TextView txtListChild = (TextView) convertView
-                //.findViewById(R.id.row_title);
+        //.findViewById(R.id.row_title);
         TextView dayListChild = (TextView) convertView
                 .findViewById(R.id.row_date_day);
         TextView fullListChild = (TextView) convertView
@@ -76,19 +76,19 @@ private final Context context;
         ImageView imageView = (ImageView) convertView.findViewById(R.id.row_icon);
 
         switch (initial) {
-            case 'A' :
+            case 'A':
                 imageView.setImageResource(R.drawable.a_sm);
                 break;
-            case 'B' :
+            case 'B':
                 imageView.setImageResource(R.drawable.b_sm);
                 break;
-            case 'C' :
+            case 'C':
                 imageView.setImageResource(R.drawable.c_sm);
                 break;
-            case 'D' :
+            case 'D':
                 imageView.setImageResource(R.drawable.d_sm);
                 break;
-            default :
+            default:
                 imageView.setImageResource(R.drawable.star_sm);
                 break;
         }
@@ -128,7 +128,7 @@ private final Context context;
 
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.header_title);
-        if(groupPosition == 0) {
+        if (groupPosition == 0) {
             lblListHeader.setText("This week");
         } else if (groupPosition == 1) {
             lblListHeader.setText("Next week");

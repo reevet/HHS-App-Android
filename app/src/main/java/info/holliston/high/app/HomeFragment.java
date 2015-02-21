@@ -36,10 +36,10 @@ import info.holliston.high.app.pager.SchedulePagerFragment;
 
 public class HomeFragment extends android.support.v4.app.Fragment {
 
-    Date scheduleDate = new Date();
-    List<String> eventHeaders = new ArrayList<>();
-    HashMap<String, List<Article>> events = new HashMap<>();
-    View v;
+    private Date scheduleDate = new Date();
+    private List<String> eventHeaders = new ArrayList<>();
+    private HashMap<String, List<Article>> events = new HashMap<>();
+    private View v;
     private Article newsArticle;
 
     @Override
@@ -64,7 +64,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             @Override
             public void onRefresh() {
                 MainActivity ma = (MainActivity) getActivity();
-                ma.refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, true);
+                MainActivity.refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, true, ma);
             }
         });
 
@@ -84,8 +84,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     }
 
     public void updateSchedulesUI() {
-        MainActivity ma = (MainActivity) getActivity();
-        ArticleDataSource schedulesSource = ma.scheduleSource;
+        ArticleDataSource schedulesSource = MainActivity.getsScheduleSource();
         Article scheduleArticle;
         int schedIndex;
         /*Get the most recent schedule */
@@ -124,8 +123,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     }
 
     public void updateNewsUI() {
-        MainActivity ma = (MainActivity) getActivity();
-        ArticleDataSource newsSource = ma.newsSource;
+        ArticleDataSource newsSource = MainActivity.getsNewsSource();
         List<Article> tempArticles;
         tempArticles = newsSource.getAllArticles();
 
@@ -136,8 +134,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     }
 
     public void updateDailyAnnUI() {
-        MainActivity ma = (MainActivity) getActivity();
-        ArticleDataSource dailyAnnSource = ma.dailyannSource;
+        ArticleDataSource dailyAnnSource = MainActivity.getsDailyannSource();
         List<Article> tempArticles;
         Article dailyAnnArticle;
 
@@ -151,8 +148,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     }
 
     public void updateLunchUI() {
-        MainActivity ma = (MainActivity) getActivity();
-        ArticleDataSource lunchSource = ma.lunchSource;
+        ArticleDataSource lunchSource = MainActivity.getsLunchSource();
         List<Article> tempArticles;
         Article lunchArticle;
         int lunchIndex;
@@ -174,8 +170,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     }
 
     public void updateEventsUI() {
-        MainActivity ma = (MainActivity) getActivity();
-        ArticleDataSource eventsSource = ma.eventsSource;
+        ArticleDataSource eventsSource = MainActivity.getsEventsSource();
         List<Article> eventsArticles;
 
         /*Get upcoming events */
@@ -447,8 +442,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             transaction.replace(R.id.frame_detail_container, newFragment);
             //transaction.addToBackStack(null);
             transaction.commit();
-            MainActivity ma = (MainActivity) getActivity();
-            ma.tabPagerFragment.setPage(tabPagerPosition);
+            MainActivity.getsTabPagerFragment().setPage(tabPagerPosition);
         }
     }
 

@@ -18,16 +18,16 @@ import info.holliston.high.app.datamodel.Article;
  * Downloads all images stored as URLs in the articleList provided
  */
 public class ImageAsyncCacher extends AsyncTask<Void, Void, Void> {
-    final String DEBUG_NAME = "ImageAysncCacher";
-    int newWidth;
-    int newHeight;
-    Context context;
+    private final String DEBUG_NAME = "ImageAysncCacher";
+    private final int newWidth;
+    private final int newHeight;
+    private final Context context;
 
     private List<Article> articleList;
 
-    public ImageAsyncCacher(int width, int height, Context c, List<Article> al) {
+    public ImageAsyncCacher(int width, Context c, List<Article> al) {
         this.newWidth = width;
-        this.newHeight = height;
+        this.newHeight = 200;
         this.context = c;
         this.articleList = al;
     }

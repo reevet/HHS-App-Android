@@ -14,11 +14,11 @@ import java.util.List;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
 
-public class LunchArrayAdapter extends BaseExpandableListAdapter{ // ArrayAdapter<Article> {
-private final Context context;
-    private List<String> _listDataHeader; // header titles
+public class LunchArrayAdapter extends BaseExpandableListAdapter { // ArrayAdapter<Article> {
+    private final Context context;
+    private final List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
-    private HashMap<String, List<Article>> _listDataChild;
+    private final HashMap<String, List<Article>> _listDataChild;
     //private final ArrayList<Article> articleList;
 
     public LunchArrayAdapter(Context context, List<String> listDataHeader,
@@ -99,7 +99,7 @@ private final Context context;
 
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.header_title);
-        if(groupPosition == 0) {
+        if (groupPosition == 0) {
             lblListHeader.setText("This week");
         } else if (groupPosition == 1) {
             lblListHeader.setText("Next week");

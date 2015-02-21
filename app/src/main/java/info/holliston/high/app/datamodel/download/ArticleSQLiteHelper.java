@@ -1,8 +1,9 @@
 package info.holliston.high.app.datamodel.download;
 
 /**
-* Created by reevet on 7/7/2014.
-*/
+ * Created by reevet on 7/7/2014.
+ */
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -26,14 +27,14 @@ public class ArticleSQLiteHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
 
-    private String databaseName;
+    private final String databaseName;
 
     // Database creation sql statement
 
 
     public ArticleSQLiteHelper(Context context, String databaseName) {
 
-        super(context, databaseName+".db", null, DATABASE_VERSION);
+        super(context, databaseName + ".db", null, DATABASE_VERSION);
         this.databaseName = databaseName;
     }
 

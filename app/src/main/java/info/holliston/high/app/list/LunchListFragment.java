@@ -23,11 +23,11 @@ import info.holliston.high.app.pager.LunchPagerFragment;
 
 public class LunchListFragment extends Fragment {
 
-    List<String> headers = new ArrayList<>();
-    HashMap<String, List<Article>> lunches = new HashMap<>();
-    View v;
-    ExpandableListView lv;
-    LunchArrayAdapter adapter;
+    private final List<String> headers = new ArrayList<>();
+    private final HashMap<String, List<Article>> lunches = new HashMap<>();
+    private View v;
+    private ExpandableListView lv;
+    private LunchArrayAdapter adapter;
     private int currentArticle;
 
     public LunchListFragment() {
@@ -86,8 +86,7 @@ public class LunchListFragment extends Fragment {
 
     public void updateUI() {
         List<Article> articles;
-        MainActivity ma = (MainActivity) getActivity();
-        articles = ma.lunchSource.getAllArticles();
+        articles = MainActivity.getsLunchSource().getAllArticles();
 
         if (headers.size() == 0) {
             int weekOfYear = -1;

@@ -18,9 +18,9 @@ import info.holliston.high.app.datamodel.Article;
 
 public class EventsArrayAdapter extends BaseExpandableListAdapter {
     private final Context context;
-    private List<String> _listDataHeader; // header titles
+    private final List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
-    private HashMap<String, List<Article>> _listDataChild;
+    private final HashMap<String, List<Article>> _listDataChild;
 
     public EventsArrayAdapter(Context context, List<String> listDataHeader,
                               HashMap<String, List<Article>> listChildData) {
@@ -62,11 +62,10 @@ public class EventsArrayAdapter extends BaseExpandableListAdapter {
                 .findViewById(R.id.row_disc_icon);
 
 
-
         SimpleDateFormat df = new SimpleDateFormat("h:mm a");
         String dateString = df.format(article.date);
         if (dateString.equals("12:00 AM")) {
-            dateString = "All Day";
+            dateString = context.getString(R.string.all_day);
         }
         dateListChild.setText(dateString);
 

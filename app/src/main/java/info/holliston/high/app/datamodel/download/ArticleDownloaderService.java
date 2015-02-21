@@ -34,12 +34,12 @@ import info.holliston.high.app.widget.HHSWidget;
 public class ArticleDownloaderService extends Service {
 
     public static final String APP_RECEIVER = "info.holliston.high.service.receiver";
-    Boolean cacheImages = false;
-    ArticleDataSource schedulesDataSource;
-    ArticleDataSource dailyAnnDataSource;
-    ArticleDataSource newsDataSource;
-    ArticleDataSource eventsDataSource;
-    ArticleDataSource lunchDataSource;
+    private Boolean cacheImages = false;
+    private ArticleDataSource schedulesDataSource;
+    private ArticleDataSource dailyAnnDataSource;
+    private ArticleDataSource newsDataSource;
+    private ArticleDataSource eventsDataSource;
+    private ArticleDataSource lunchDataSource;
     private ArticleParser.SourceMode refreshSource = ArticleParser.SourceMode.ALLOW_BOTH;
     private String alarmSource;
 
@@ -307,7 +307,7 @@ public class ArticleDownloaderService extends Service {
             Article article = articleList.get(0);
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setSmallIcon(R.drawable.ic_hhs_hollow)
+                    .setSmallIcon(R.drawable.hhs_white)
                             //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_hhs_hollow))
                     .setContentTitle("News from Holliston High")
                     .setContentText(article.title);
@@ -375,19 +375,14 @@ public class ArticleDownloaderService extends Service {
      */
     private class refreshDataSource extends AsyncTask<Void, Void, String> {
 
-        ArticleDataSource dataSource;
-        Boolean triggersNotification;
-        Boolean cacheImages;
+        final ArticleDataSource dataSource;
+        final Boolean triggersNotification;
+        final Boolean cacheImages;
 
         public refreshDataSource(ArticleDataSource dataSource, Boolean cacheImages, Boolean triggersNotification) {
             this.dataSource = dataSource;
             this.cacheImages = cacheImages;
             this.triggersNotification = triggersNotification;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
         }
 
         @Override

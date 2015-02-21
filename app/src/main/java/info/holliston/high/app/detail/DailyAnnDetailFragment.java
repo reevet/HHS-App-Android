@@ -15,7 +15,8 @@ import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
 
 public class DailyAnnDetailFragment extends Fragment {
-    Article article;
+    private Article article;
+
     public DailyAnnDetailFragment() {
     }
 
@@ -52,7 +53,7 @@ public class DailyAnnDetailFragment extends Fragment {
         titleTextView.setText(formattedDateString);
 
         String detailString = article.details;
-        detailString = detailString.replace("</div>","\n" );
+        detailString = detailString.replace("</div>", "\n");
         //detailString = detailString.replace("\n\n","\n" );
         TextView detailTextView = (TextView) rootView.findViewById(R.id.detail_details);
         detailTextView.setText(detailString);

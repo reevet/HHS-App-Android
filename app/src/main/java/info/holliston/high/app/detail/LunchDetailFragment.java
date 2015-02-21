@@ -14,7 +14,7 @@ import info.holliston.high.app.datamodel.Article;
 
 public class LunchDetailFragment extends Fragment {
 
-    Article article;
+    private Article article;
 
     public LunchDetailFragment() {
     }

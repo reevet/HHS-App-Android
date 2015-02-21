@@ -23,11 +23,11 @@ import info.holliston.high.app.pager.EventPagerFragment;
 
 public class EventsListFragment extends Fragment {
 
-    List<String> headers = new ArrayList<>();
-    HashMap<String, List<Article>> events = new HashMap<>();
-    View v;
-    ExpandableListView lv;
-    EventsArrayAdapter adapter;
+    private final List<String> headers = new ArrayList<>();
+    private final HashMap<String, List<Article>> events = new HashMap<>();
+    private View v;
+    private ExpandableListView lv;
+    private EventsArrayAdapter adapter;
     private int currentArticle;
 
     public EventsListFragment() {
@@ -99,8 +99,7 @@ public class EventsListFragment extends Fragment {
 
     public void updateUI() {
         List<Article> articles;
-        MainActivity ma = (MainActivity) getActivity();
-        articles = ma.eventsSource.getAllArticles();
+        articles = MainActivity.getsEventsSource().getAllArticles();
         headers.clear();
         events.clear();
 

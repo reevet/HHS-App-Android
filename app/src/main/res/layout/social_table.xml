@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/social_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/social_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shadow_down"
+            android:paddingBottom="10dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:paddingTop="0dp">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:background="@color/hhs_red"
+                android:contentDescription="@string/daily_ann_title"
+                android:cropToPadding="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/phones" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageView3"
+                android:layout_alignStart="@+id/imageView3"
+                android:layout_marginStart="10dp"
+                android:text="@string/social_title"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#ffffffff"
+                android:textSize="@dimen/section_header_text_size" />
+        </RelativeLayout>
+
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent">
+
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TableRow
+                    android:id="@+id/facebook_row"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingEnd="20dp"
+                    android:paddingStart="20dp">
+
+                    <ImageView
+                        android:id="@+id/facebook_row_icon"
+                        android:layout_width="@dimen/social_icon"
+                        android:layout_height="@dimen/social_icon"
+                        android:layout_margin="10dp"
+                        android:contentDescription="@string/hhs_facebook_label"
+                        android:src="@drawable/facebook" />
+
+                    <TextView
+                        android:id="@+id/facebook_row_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="10dp"
+                        android:text="@string/hhs_facebook_label"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/twitter_row"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingEnd="20dp"
+                    android:paddingStart="20dp">
+
+                    <ImageView
+                        android:id="@+id/twitter_row_icon"
+                        android:layout_width="@dimen/social_icon"
+                        android:layout_height="@dimen/social_icon"
+                        android:layout_margin="10dp"
+                        android:contentDescription="@string/hhs_twitter_label"
+                        android:src="@drawable/twitter" />
+
+                    <TextView
+                        android:id="@+id/twitter_row_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="10dp"
+                        android:text="@string/hhs_twitter_label"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/googleplus_row"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingEnd="20dp"
+                    android:paddingStart="20dp">
+
+                    <ImageView
+                        android:id="@+id/googleplus_icon"
+                        android:layout_width="@dimen/social_icon"
+                        android:layout_height="@dimen/social_icon"
+                        android:layout_margin="10dp"
+                        android:contentDescription="@string/hhs_googleplus_label"
+                        android:src="@drawable/googleplus" />
+
+                    <TextView
+                        android:id="@+id/googleplus_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="10dp"
+                        android:text="@string/hhs_googleplus_label"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/instagram_row"
+                    android:name="@+id/instagram_row"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingEnd="20dp"
+                    android:paddingStart="20dp">
+
+                    <ImageView
+                        android:id="@+id/instagram_row_icon"
+                        android:layout_width="@dimen/social_icon"
+                        android:layout_height="@dimen/social_icon"
+                        android:layout_margin="10dp"
+                        android:contentDescription="@string/hhs_instagram"
+                        android:src="@drawable/instagram" />
+
+                    <TextView
+                        android:id="@+id/instagram_row_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="10dp"
+                        android:text="@string/hhs_instagram"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/youtube_row"
+                    android:name="@+id/youtube_row"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingEnd="20dp"
+                    android:paddingStart="20dp">
+
+                    <ImageView
+                        android:id="@+id/youtube_row_icon"
+                        android:layout_width="@dimen/social_icon"
+                        android:layout_height="@dimen/social_icon"
+                        android:layout_margin="10dp"
+                        android:contentDescription="@string/hhs_youtube"
+                        android:src="@drawable/youtube" />
+
+                    <TextView
+                        android:id="@+id/youtube_row_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="10dp"
+                        android:text="@string/hhs_youtube"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </TableRow>
+            </TableLayout>
+        </ScrollView>
+
+        <TextView
+            android:id="@id/android:empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="30dp"
+            android:text="@string/please_refresh"
+            android:textAlignment="gravity"
+            android:textSize="@dimen/row_normal_text_size" />
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -20,8 +20,11 @@ import info.holliston.high.app.datamodel.Article;
 public class ArticleParser {
     private static final String ns = null;
 
-    private String[] parserNames;
-
+    private final String[] parserNames;
+    private final HtmlTags htmlTags;
+    //counters
+    private final int limit;
+    private final List<Article> articleList;
     // these are the values that are in the XML to indicate items
     // e.g. entryName = "entry", dateName = "startDate"
     private String entryName;
@@ -31,14 +34,9 @@ public class ArticleParser {
     private String startTimeName;
     private String detailsName;
     private String idName;
-
     //holder for the image source
     private String currentImgSrc;
-    private HtmlTags htmlTags;
-    //counters
-    private int limit;
     private int counter = 0;
-    private List<Article> articleList;
 
     public ArticleParser(String[] parserNames, HtmlTags conversionType, int limit) {
         this.parserNames = parserNames;

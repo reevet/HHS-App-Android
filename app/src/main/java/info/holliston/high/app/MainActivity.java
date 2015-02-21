@@ -1,6 +1,6 @@
 package info.holliston.high.app;
 
-import android.app.ActionBar;
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,12 +12,15 @@ import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +32,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import info.holliston.high.app.datamodel.Article;
 import info.holliston.high.app.datamodel.download.ArticleDataSource;
 import info.holliston.high.app.datamodel.download.ArticleDownloaderService;
 import info.holliston.high.app.datamodel.download.ArticleParser;
@@ -45,37 +49,39 @@ import info.holliston.high.app.pager.TabPagerFragment;
 import info.holliston.high.app.pager.adapter.TabPagerAdapter;
 import info.holliston.high.app.widget.HHSWidget;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends ActionBarActivity {
 
     //Paging and Adapters
-    public TabPagerFragment tabPagerFragment;
-    public TabPagerAdapter tabPagerAdapter;
-    public ViewPager mViewPager;
+    private static TabPagerFragment sTabPagerFragment;
+    private static ViewPager sViewPager;
+
     //datasources
-    public ArticleDataSource scheduleSource;
-    public ArticleDataSource newsSource;
-    public ArticleDataSource dailyannSource;
-    public ArticleDataSource eventsSource;
-    public ArticleDataSource lunchSource;
+    private static ArticleDataSource sScheduleSource;
+    private static ArticleDataSource sNewsSource;
+    private static ArticleDataSource sDailyannSource;
+    private static ArticleDataSource sEventsSource;
+    private static ArticleDataSource sLunchSource;
     //main category fragments
-    public HomeFragment mHomeFragment;
-    public DailyAnnListFragment mDailyAnnFragment;
-    public EventsListFragment mEventsFragment;
-    public LunchListFragment mLunchFragment;
-    public NewsRecyclerFragment mNewsFragment;
-    public SchedulesListFragment mSchedFragment;
+    private static HomeFragment sHomeFragment;
+    private static DailyAnnListFragment sDailyAnnFragment;
+    private static EventsListFragment sEventsFragment;
+    private static LunchListFragment sLunchFragment;
+    private static NewsRecyclerFragment sNewsFragment;
+    private static SchedulesListFragment sSchedFragment;
+    private static SocialFragment sSocialFragment;
+
+    private static int sCurrentNewsItem = -1;
     //variables
-    public Boolean newNewsAvailable = false;
-    public int currentView = -1;
+    private static Boolean sNewNewsAvailable = false;
+
+    private static int sCurrentView = -1;
     //Menu drawer and action bar
-    private DrawerLayout mDrawerLayout;
-    private LinearLayout mDrawerLinLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private int isRefreshing = 0;
+    private static DrawerLayout sDrawerLayout;
+    private static int sIsRefreshing = 0;
     /*
      * receive messages for data refresh completion or notification
      */
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -88,34 +94,34 @@ public class MainActivity extends FragmentActivity {
                 if ((result != null) && (name != null)) {
                     switch (name) {
                         case ArticleSQLiteHelper.TABLE_SCHEDULES:
-                            mSchedFragment.updateUI();
-                            mHomeFragment.updateSchedulesUI();
+                            sSchedFragment.updateUI();
+                            sHomeFragment.updateSchedulesUI();
                             break;
                         case ArticleSQLiteHelper.TABLE_DAILYANN:
-                            mDailyAnnFragment.updateUI();
-                            mHomeFragment.updateDailyAnnUI();
+                            sDailyAnnFragment.updateUI();
+                            sHomeFragment.updateDailyAnnUI();
                             break;
                         case ArticleSQLiteHelper.TABLE_NEWS:
-                            mNewsFragment.updateUI();
-                            mHomeFragment.updateNewsUI();
+                            sNewsFragment.updateUI();
+                            sHomeFragment.updateNewsUI();
                             break;
                         case ArticleSQLiteHelper.TABLE_EVENTS:
-                            mEventsFragment.updateUI();
-                            mHomeFragment.updateEventsUI();
+                            sEventsFragment.updateUI();
+                            sHomeFragment.updateEventsUI();
                             break;
                         case ArticleSQLiteHelper.TABLE_LUNCH:
-                            mLunchFragment.updateUI();
-                            mHomeFragment.updateLunchUI();
+                            sLunchFragment.updateUI();
+                            sHomeFragment.updateLunchUI();
                             break;
                     }
-                    isRefreshing++;
+                    sIsRefreshing++;
 
                     //when all 5 report in, turn off SwipeRefresh animation
-                    if (isRefreshing == 5) {
+                    if (sIsRefreshing == 5) {
                         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
                         if (swipeRefreshLayout != null) {
                             swipeRefreshLayout.setRefreshing(false);
-                            isRefreshing = 0;
+                            sIsRefreshing = 0;
                             SharedPreferences prefs = getSharedPreferences("hhsapp", 0);
                             SharedPreferences.Editor editor = prefs.edit();
                             editor.putBoolean("firstTime", false);
@@ -126,6 +132,120 @@ public class MainActivity extends FragmentActivity {
             }
         }
     };
+    private static Intent sShareIntent;
+    private LinearLayout mDrawerLinLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private ShareActionProvider mShareActionProvider;
+
+    public static void refreshData(ArticleParser.SourceMode refreshSource, Boolean cacheImages, MainActivity ma) {
+
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) ma.findViewById(R.id.swipe_container);
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+
+        Toast.makeText(ma, "Loading data", Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(ma.getApplicationContext(), ArticleDownloaderService.class);
+        if (refreshSource == null) {
+            refreshSource = ArticleParser.SourceMode.PREFER_DOWNLOAD;
+        }
+
+        intent.putExtra("refreshSource", refreshSource);
+        if (cacheImages) {
+            intent.putExtra("getImages", "DOWNLOAD_ONLY");
+        }
+
+        ma.startService(intent);
+        Log.d("MainActivity", "Refresh intent sent to ArticleDownloaderService");
+
+        ma.displayView(0);
+        MainActivity.getsDrawerLayout().closeDrawers();
+    }
+
+    public static void refreshActionBar(Activity a) {
+        a.invalidateOptionsMenu();
+    }
+
+    public static TabPagerFragment getsTabPagerFragment() {
+        return sTabPagerFragment;
+    }
+
+    public static ViewPager getsViewPager() {
+        return sViewPager;
+    }
+
+    public static ArticleDataSource getsScheduleSource() {
+        return sScheduleSource;
+    }
+
+    public static ArticleDataSource getsNewsSource() {
+        return sNewsSource;
+    }
+
+    public static ArticleDataSource getsDailyannSource() {
+        return sDailyannSource;
+    }
+
+    public static ArticleDataSource getsEventsSource() {
+        return sEventsSource;
+    }
+
+    public static ArticleDataSource getsLunchSource() {
+        return sLunchSource;
+    }
+
+    public static HomeFragment getsHomeFragment() {
+        return sHomeFragment;
+    }
+
+    public static DailyAnnListFragment getsDailyAnnFragment() {
+        return sDailyAnnFragment;
+    }
+
+    public static EventsListFragment getsEventsFragment() {
+        return sEventsFragment;
+    }
+
+    public static LunchListFragment getsLunchFragment() {
+        return sLunchFragment;
+    }
+
+    public static NewsRecyclerFragment getsNewsFragment() {
+        return sNewsFragment;
+    }
+
+    public static SchedulesListFragment getsSchedFragment() {
+        return sSchedFragment;
+    }
+
+    public static SocialFragment getsSocialFragment() {
+        return sSocialFragment;
+    }
+
+    private static int getsCurrentNewsItem() {
+        return sCurrentNewsItem;
+    }
+
+    public static void setsCurrentNewsItem(int sCurrentNewsItem) {
+        MainActivity.sCurrentNewsItem = sCurrentNewsItem;
+    }
+
+    public static Boolean getsNewNewsAvailable() {
+        return sNewNewsAvailable;
+    }
+
+    public static void setsNewNewsAvailable(Boolean bool) {
+        MainActivity.sNewNewsAvailable = bool;
+    }
+
+    public static void setsCurrentView(int sCurrentView) {
+        MainActivity.sCurrentView = sCurrentView;
+    }
+
+    private static DrawerLayout getsDrawerLayout() {
+        return sDrawerLayout;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,19 +257,19 @@ public class MainActivity extends FragmentActivity {
         Intent intent = getIntent();
         Boolean notification = intent.getBooleanExtra("fromNotification", false);
         if (notification) {
-            newNewsAvailable = true;
+            sNewNewsAvailable = true;
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancel(0);
         } else {
-            newNewsAvailable = false;
+            sNewNewsAvailable = false;
         }
-        //newNewsAvailable = true;  //for debug
+        //sNewNewsAvailable = true;  //for debug
 
         //set up the menu drawer
         setUpMenuDrawer();
 
         // enabling action bar app icon to behave as toggle button
-        ActionBar bar = getActionBar();
+        ActionBar bar = (ActionBar) getSupportActionBar();
         if (bar != null) {
             bar.setDisplayHomeAsUpEnabled(true);
             bar.setHomeButtonEnabled(true);
@@ -158,12 +278,13 @@ public class MainActivity extends FragmentActivity {
 
         //set up datasources and category fragments
         defineDataSources();
-        mHomeFragment = new HomeFragment();
-        mDailyAnnFragment = new DailyAnnListFragment();
-        mEventsFragment = new EventsListFragment();
-        mLunchFragment = new LunchListFragment();
-        mNewsFragment = new NewsRecyclerFragment();
-        mSchedFragment = new SchedulesListFragment();
+        sHomeFragment = new HomeFragment();
+        sDailyAnnFragment = new DailyAnnListFragment();
+        sEventsFragment = new EventsListFragment();
+        sLunchFragment = new LunchListFragment();
+        sNewsFragment = new NewsRecyclerFragment();
+        sSchedFragment = new SchedulesListFragment();
+        sSocialFragment = new SocialFragment();
 
         //set up the main category pager
         startPager();
@@ -192,36 +313,36 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("currentView", currentView);
+        outState.putInt("sCurrentView", sCurrentView);
         getSupportFragmentManager()
-                .putFragment(outState, HomeFragment.class.getName(), mHomeFragment);
+                .putFragment(outState, HomeFragment.class.getName(), sHomeFragment);
         getSupportFragmentManager()
-                .putFragment(outState, SchedulesListFragment.class.getName(), mSchedFragment);
+                .putFragment(outState, SchedulesListFragment.class.getName(), sSchedFragment);
         getSupportFragmentManager()
-                .putFragment(outState, NewsRecyclerFragment.class.getName(), mNewsFragment);
+                .putFragment(outState, NewsRecyclerFragment.class.getName(), sNewsFragment);
         getSupportFragmentManager()
-                .putFragment(outState, DailyAnnListFragment.class.getName(), mDailyAnnFragment);
+                .putFragment(outState, DailyAnnListFragment.class.getName(), sDailyAnnFragment);
         getSupportFragmentManager()
-                .putFragment(outState, EventsListFragment.class.getName(), mEventsFragment);
+                .putFragment(outState, EventsListFragment.class.getName(), sEventsFragment);
         getSupportFragmentManager()
-                .putFragment(outState, LunchListFragment.class.getName(), mLunchFragment);
+                .putFragment(outState, LunchListFragment.class.getName(), sLunchFragment);
     }
 
     @Override
     public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
 
-        currentView = savedInstanceState.getInt("currentView");
-        mHomeFragment = (HomeFragment) getSupportFragmentManager()
+        sCurrentView = savedInstanceState.getInt("sCurrentView");
+        sHomeFragment = (HomeFragment) getSupportFragmentManager()
                 .getFragment(savedInstanceState, HomeFragment.class.getName());
-        mSchedFragment = (SchedulesListFragment) getSupportFragmentManager()
+        sSchedFragment = (SchedulesListFragment) getSupportFragmentManager()
                 .getFragment(savedInstanceState, SchedulesListFragment.class.getName());
-        mNewsFragment = (NewsRecyclerFragment) getSupportFragmentManager()
+        sNewsFragment = (NewsRecyclerFragment) getSupportFragmentManager()
                 .getFragment(savedInstanceState, NewsRecyclerFragment.class.getName());
-        mDailyAnnFragment = (DailyAnnListFragment) getSupportFragmentManager().getFragment(
+        sDailyAnnFragment = (DailyAnnListFragment) getSupportFragmentManager().getFragment(
                 savedInstanceState, DailyAnnListFragment.class.getName());
-        mEventsFragment = (EventsListFragment) getSupportFragmentManager().getFragment(
+        sEventsFragment = (EventsListFragment) getSupportFragmentManager().getFragment(
                 savedInstanceState, EventsListFragment.class.getName());
-        mLunchFragment = (LunchListFragment) getSupportFragmentManager().getFragment(
+        sLunchFragment = (LunchListFragment) getSupportFragmentManager().getFragment(
                 savedInstanceState, LunchListFragment.class.getName());
 
         super.onRestoreInstanceState(savedInstanceState);
@@ -233,17 +354,17 @@ public class MainActivity extends FragmentActivity {
      */
     private void startPager() {
         //create main pager and attach adapter
-        tabPagerFragment = new TabPagerFragment();
-        tabPagerAdapter = new TabPagerAdapter(this, getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.frame_pager);
-        mViewPager.setOnPageChangeListener(tabPagerFragment);
-        mViewPager.setAdapter(tabPagerAdapter);
-        mViewPager.setOffscreenPageLimit(5);
+        sTabPagerFragment = new TabPagerFragment();
+        TabPagerAdapter sTabPagerAdapter = new TabPagerAdapter(this, getSupportFragmentManager());
+        sViewPager = (ViewPager) findViewById(R.id.frame_pager);
+        sViewPager.setOnPageChangeListener(sTabPagerFragment);
+        sViewPager.setAdapter(sTabPagerAdapter);
+        sViewPager.setOffscreenPageLimit(6);
 
         //set up one-pane or two-pane layouts
         if (findViewById(R.id.frame_container) != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame_container, tabPagerFragment);
+            transaction.replace(R.id.frame_container, sTabPagerFragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else {
@@ -252,7 +373,7 @@ public class MainActivity extends FragmentActivity {
             bundle.putInt("position", 0);  //shows first news article
             newsPager.setArguments(bundle);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame_list_container, tabPagerFragment);
+            transaction.replace(R.id.frame_list_container, sTabPagerFragment);
             transaction.replace(R.id.frame_detail_container, newsPager);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -268,16 +389,16 @@ public class MainActivity extends FragmentActivity {
             position = 0;
         }
 
-        // if option 6 (HHS Webpage)
-        if (position == 6) {
+        // if option 7 (HHS Webpage)
+        if (position == 7) {
             Uri uriUrl = Uri.parse(getResources().getString(R.string.hhs_home_page));
             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
             startActivity(launchBrowser);
             return;
         }
-        // if option 7 (refresh data)
-        else if (position == 7) {
-            refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, true);
+        // if option 8 (refresh data)
+        else if (position == 8) {
+            refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, true, this);
             return;
         }
 
@@ -285,15 +406,15 @@ public class MainActivity extends FragmentActivity {
         if (findViewById(R.id.detail_pager) != null) {
             if (findViewById(R.id.frame_container) != null) {
                 getSupportFragmentManager().popBackStack();
-                tabPagerFragment.setPage(position);
-                currentView = position;
+                sTabPagerFragment.setPage(position);
+                sCurrentView = position;
             } else {
-                tabPagerFragment.setPage(position);
-                currentView = position;
+                sTabPagerFragment.setPage(position);
+                sCurrentView = position;
             }
         } else {
-            tabPagerFragment.setPage(position);
-            currentView = position;
+            sTabPagerFragment.setPage(position);
+            sCurrentView = position;
         }
 
         //if the drawer is open, close it.
@@ -316,44 +437,20 @@ public class MainActivity extends FragmentActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    public void refreshData(ArticleParser.SourceMode refreshSource, Boolean cacheImages) {
-
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setRefreshing(true);
-        }
-
-        Toast.makeText(MainActivity.this, "Loading data", Toast.LENGTH_LONG).show();
-
-        Intent intent = new Intent(getApplicationContext(), ArticleDownloaderService.class);
-        if (refreshSource == null) {
-            refreshSource = ArticleParser.SourceMode.PREFER_DOWNLOAD;
-        }
-
-        intent.putExtra("refreshSource", refreshSource);
-        if (cacheImages) {
-            intent.putExtra("getImages", "DOWNLOAD_ONLY");
-        }
-
-        startService(intent);
-        Log.d("MainActivity", "Refresh intent sent to ArticleDownloaderService");
-
-        displayView(0);
-        mDrawerLayout.closeDrawers();
-    }
-
     @Override
     public void onBackPressed() {
         if ((findViewById(R.id.frame_detail_container) != null) //landscape mode
                 || (findViewById(R.id.detail_pager) == null)) { //not showing detail portrait
             if (findViewById(R.id.settings_layout) != null) {
                 super.onBackPressed();
-            } else if (currentView != 0) {
-                tabPagerFragment.setPage(0);
+            } else if (sCurrentView != 0) {
+                sTabPagerFragment.setPage(0);
             }
         } else {
             super.onBackPressed(); // This will pop the Activity from the stack.
         }
+        sCurrentNewsItem = -1;
+        refreshActionBar(this);
     }
 
     /*
@@ -370,7 +467,7 @@ public class MainActivity extends FragmentActivity {
                 ArticleParser.HtmlTags.KEEP_HTML_TAGS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
                 "1");
-        newsSource = new ArticleDataSource(getApplicationContext(), options);
+        sNewsSource = new ArticleDataSource(getApplicationContext(), options);
 
         options = new ArticleDataSource.ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_SCHEDULES,
@@ -380,7 +477,7 @@ public class MainActivity extends FragmentActivity {
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "2");
-        scheduleSource = new ArticleDataSource(getApplicationContext(), options);
+        sScheduleSource = new ArticleDataSource(getApplicationContext(), options);
 
         options = new ArticleDataSource.ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_LUNCH,
@@ -390,7 +487,7 @@ public class MainActivity extends FragmentActivity {
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "5");
-        lunchSource = new ArticleDataSource(getApplicationContext(), options);
+        sLunchSource = new ArticleDataSource(getApplicationContext(), options);
 
         options = new ArticleDataSource.ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_DAILYANN,
@@ -400,7 +497,7 @@ public class MainActivity extends FragmentActivity {
                 ArticleParser.HtmlTags.CONVERT_LINE_BREAKS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
                 "1");
-        dailyannSource = new ArticleDataSource(getApplicationContext(), options);
+        sDailyannSource = new ArticleDataSource(getApplicationContext(), options);
 
         options = new ArticleDataSource.ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_EVENTS,
@@ -410,7 +507,7 @@ public class MainActivity extends FragmentActivity {
                 ArticleParser.HtmlTags.CONVERT_LINE_BREAKS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "20");
-        eventsSource = new ArticleDataSource(getApplicationContext(), options);
+        sEventsSource = new ArticleDataSource(getApplicationContext(), options);
     }
 
     /*
@@ -421,7 +518,7 @@ public class MainActivity extends FragmentActivity {
         Boolean firstTime = prefs.getBoolean("firstTime", true);
 
         if (firstTime) {
-            refreshData(ArticleParser.SourceMode.DOWNLOAD_ONLY, true);
+            refreshData(ArticleParser.SourceMode.DOWNLOAD_ONLY, true, this);
         }
     }
 
@@ -436,7 +533,7 @@ public class MainActivity extends FragmentActivity {
         ArrayList<NavDrawerItem> navDrawerItems;
 
         //get drawer elements
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        sDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLinLayout = (LinearLayout) findViewById(R.id.drawer_lin_layout);
         ListView mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
 
@@ -448,8 +545,9 @@ public class MainActivity extends FragmentActivity {
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1))); //DailyAnn
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1))); //Events
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1))); //Lunch
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(6, -1))); //Website
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[7], navMenuIcons.getResourceId(7, -1))); //Refresh
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(6, -1))); //Social Media
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[7], navMenuIcons.getResourceId(7, -1))); //Website
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[8], navMenuIcons.getResourceId(8, -1))); //Refresh
 
         // Recycle the typed array
         navMenuIcons.recycle();
@@ -461,21 +559,30 @@ public class MainActivity extends FragmentActivity {
         adapter = new NavDrawerListAdapter(getApplicationContext(), navDrawerItems);
         mDrawerList.setAdapter(adapter);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.app_name, R.string.app_name) {
+        mDrawerToggle = new ActionBarDrawerToggle(this, sDrawerLayout, R.string.app_name, R.string.app_name) {
             public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
                 invalidateOptionsMenu();
             }
 
-            public void onDrawerOpened(View drawerView) {
+            public void onDrawerOpened(View view) {
+                super.onDrawerOpened(view);
                 invalidateOptionsMenu();
             }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        sDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        setsShareIntent();
+
         return true;
     }
 
@@ -488,7 +595,7 @@ public class MainActivity extends FragmentActivity {
         // Handle action bar actions click
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, true);
+                refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, true, this);
                 return true;
             case R.id.action_settings:
                 SettingsFragment settingsFragment = new SettingsFragment();
@@ -502,6 +609,10 @@ public class MainActivity extends FragmentActivity {
                 }
                 transaction.commit();
                 return false;
+            case R.id.menu_item_share:
+                if ((mShareActionProvider != null) && (sShareIntent != null)) {
+                    mShareActionProvider.setShareIntent(sShareIntent);
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -513,10 +624,31 @@ public class MainActivity extends FragmentActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // if nav drawer is opened, hide the action items
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerLinLayout);
+        boolean drawerOpen = sDrawerLayout.isDrawerOpen(mDrawerLinLayout);
+        boolean showingNewsDetail = sCurrentNewsItem >= 0;
+        menu.findItem(R.id.menu_item_share).setVisible(!drawerOpen && showingNewsDetail);
         menu.findItem(R.id.action_refresh).setVisible(!drawerOpen);
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    void setsShareIntent() {
+        String shareText;
+        if (getsCurrentNewsItem() >= 0) {
+            Article article = getsNewsSource().getAllArticles().get(getsCurrentNewsItem());
+            String url = article.url.toString();
+            url = url.replace("https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/", "http://hhs.holliston.k12.ma.us/");
+            shareText = article.title + " " + url;
+        } else {
+            shareText = "http://hhs.holliston.k12.ma.us";
+        }
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+        shareIntent.setType("text/plain");
+        sShareIntent = shareIntent;
+        mShareActionProvider.setShareIntent(shareIntent);
     }
 
     /**
@@ -531,6 +663,4 @@ public class MainActivity extends FragmentActivity {
             displayView(position);
         }
     }
-
-
 }

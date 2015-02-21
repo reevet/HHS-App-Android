@@ -19,11 +19,11 @@ import java.net.URL;
  * Adds image async to a holder, downloading if necessary
  */
 public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
-    final String DEBUG_NAME = "ImageAsyncLoader";
-    int newWidth;
-    int newHeight;
-    Context context;
-    String key;
+    private final String DEBUG_NAME = "ImageAsyncLoader";
+    private final int newWidth;
+    private final int newHeight;
+    private final Context context;
+    private final String key;
     private int mPosition;
     private ViewHolder mHolder;
     private FitMode fitMode;
@@ -43,7 +43,7 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
     }
 
     // get a scaling factor, to save memory
-    public static int calculateInSampleSize(
+    private static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -175,7 +175,7 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
     }
 
     //get the dimensions of the cached image, if it exists
-    protected BitmapFactory.Options getCachedImageExists(ImageLoadingObject ilo) {
+    BitmapFactory.Options getCachedImageExists(ImageLoadingObject ilo) {
         try {
             ilo.filein = new File(context.getCacheDir(), key);
             ilo.fis = new FileInputStream(ilo.filein);
@@ -194,7 +194,7 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
     }
 
     // get the image dimensions from the web image, if available
-    protected BitmapFactory.Options getWebImageExists(ImageLoadingObject ilo, String urldisplay) {
+    BitmapFactory.Options getWebImageExists(ImageLoadingObject ilo, String urldisplay) {
         try {
             ilo.in = new URL(urldisplay).openStream();
             ilo.options = new BitmapFactory.Options();

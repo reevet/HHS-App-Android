@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<TableRow
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="fill_parent">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -12,53 +11,55 @@
         android:background="@color/cardview_light_background">
 
         <ImageView
+            android:id="@+id/row_icon"
             android:layout_width="@dimen/news_thumbnail_width"
             android:layout_height="@dimen/news_thumbnail_height"
-            android:id="@+id/row_icon"
             android:layout_alignParentEnd="false"
-            android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:contentDescription="@string/news_highlight_image" />
+            android:contentDescription="@string/news_highlight_image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_hhs" />
 
         <ProgressBar
+            android:id="@+id/row_progress"
             android:layout_width="@dimen/news_pbar"
             android:layout_height="@dimen/news_pbar"
-            android:id="@+id/row_progress"
-            android:padding="15dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp" />
+            android:padding="15dp" />
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/row_icon"
-            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp">
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@+id/row_icon"
+            android:orientation="vertical">
 
             <TextView
-                android:layout_width="fill_parent"
                 android:id="@+id/row_title"
-                android:textSize="@dimen/row_normal_text_size"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
                 android:textAlignment="gravity"
                 android:textColor="@android:color/black"
-                android:gravity="start"
-                android:layout_height="wrap_content" />
+                android:textSize="@dimen/row_normal_text_size" />
 
             <TextView
-                android:layout_height="20dp"
                 android:id="@+id/row_date"
-                android:textSize="@dimen/row_smaller_text_size"
-                android:textColor="@android:color/darker_gray"
+                android:layout_width="fill_parent"
+                android:layout_height="20dp"
                 android:gravity="start|bottom"
                 android:textAlignment="gravity"
-                android:layout_width="fill_parent" />
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/row_smaller_text_size" />
         </LinearLayout>
 
     </RelativeLayout>

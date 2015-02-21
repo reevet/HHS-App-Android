@@ -7,13 +7,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import info.holliston.high.app.MainActivity;
 
 public class TabPagerAdapter extends FragmentPagerAdapter {
-MainActivity ma;
+    private final MainActivity ma;
 
 
-   public TabPagerAdapter(MainActivity ma, FragmentManager fm) {
-       super(fm);
-       this.ma = ma;
-   }
+    public TabPagerAdapter(MainActivity ma, FragmentManager fm) {
+        super(fm);
+        this.ma = ma;
+    }
 
     @Override
     public Fragment getItem(int i) {
@@ -21,32 +21,36 @@ MainActivity ma;
         Fragment fragment = null;
         switch (i) {
             case 0:
-                fragment = ma.mHomeFragment;
+                fragment = MainActivity.getsHomeFragment();
                 break;
             case 1:
-                fragment = ma.mSchedFragment;
+                fragment = MainActivity.getsSchedFragment();
                 break;
             case 2:
-                fragment = ma.mNewsFragment;
+                fragment = MainActivity.getsNewsFragment();
                 break;
             case 3:
-                fragment = ma.mDailyAnnFragment;
+                fragment = MainActivity.getsDailyAnnFragment();
                 break;
             case 4:
-                fragment = ma.mEventsFragment;
+                fragment = MainActivity.getsEventsFragment();
                 break;
             case 5:
-                fragment = ma.mLunchFragment;
+                fragment = MainActivity.getsLunchFragment();
+                break;
+            case 6:
+                fragment = MainActivity.getsSocialFragment();
                 break;
             default:
                 break;
         }
+
         return fragment;
     }
 
     @Override
     public int getCount() {
-        return 6;
+        return 7;
     }
 
     @Override
@@ -55,7 +59,7 @@ MainActivity ma;
     }
 
     @Override
-    public int getItemPosition(Object object){
+    public int getItemPosition(Object object) {
         return POSITION_NONE;
     }
 

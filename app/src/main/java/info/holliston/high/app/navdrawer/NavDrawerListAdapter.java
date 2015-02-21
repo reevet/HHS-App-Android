@@ -14,45 +14,45 @@ import java.util.ArrayList;
 import info.holliston.high.app.R;
 
 public class NavDrawerListAdapter extends BaseAdapter {
-	
-	private Context context;
-	private ArrayList<NavDrawerItem> navDrawerItems;
-	
-	public NavDrawerListAdapter(Context context, ArrayList<NavDrawerItem> navDrawerItems){
-		this.context = context;
-		this.navDrawerItems = navDrawerItems;
-	}
 
-	@Override
-	public int getCount() {
-		return navDrawerItems.size();
-	}
+    private final Context context;
+    private final ArrayList<NavDrawerItem> navDrawerItems;
 
-	@Override
-	public Object getItem(int position) {		
-		return navDrawerItems.get(position);
-	}
+    public NavDrawerListAdapter(Context context, ArrayList<NavDrawerItem> navDrawerItems) {
+        this.context = context;
+        this.navDrawerItems = navDrawerItems;
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return position;
-	}
+    @Override
+    public int getCount() {
+        return navDrawerItems.size();
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		if (convertView == null) {
+    @Override
+    public Object getItem(int position) {
+        return navDrawerItems.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater)
                     context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             convertView = mInflater.inflate(R.layout.drawer_list_item, parent, false);
         }
-         
+
         ImageView imgIcon = (ImageView) convertView.findViewById(R.id.icon);
         TextView txtTitle = (TextView) convertView.findViewById(R.id.title);
         //ImageView imgNewNews = (ImageView) convertView.findViewById(R.id.drawer_new_available_icon);
 
         //TextView txtCount = (TextView) convertView.findViewById(R.id.counter);
-         
-        imgIcon.setImageResource(navDrawerItems.get(position).getIcon());        
+
+        imgIcon.setImageResource(navDrawerItems.get(position).getIcon());
         txtTitle.setText(navDrawerItems.get(position).getTitle());
 
         // displaying count
@@ -63,8 +63,8 @@ public class NavDrawerListAdapter extends BaseAdapter {
         //	// hide the counter view
         //	txtCount.setVisibility(View.GONE);
         //}
-        
+
         return convertView;
-	}
+    }
 
 }

@@ -7,11 +7,13 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.List;
 
-import info.holliston.high.app.detail.NewsDetailFragment;
 import info.holliston.high.app.datamodel.Article;
+import info.holliston.high.app.detail.NewsDetailFragment;
 
 public class NewsPagerAdapter extends FragmentStatePagerAdapter {
     private List<Article> articles;
+    private int currentItem = 0;
+
     public NewsPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -20,11 +22,11 @@ public class NewsPagerAdapter extends FragmentStatePagerAdapter {
         this.articles = list;
         notifyDataSetChanged();
     }
+
     @Override
     public Fragment getItem(int i) {
 
         Article article = articles.get(i);
-
         NewsDetailFragment newFragment = new NewsDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("detail_article", article);
@@ -34,8 +36,8 @@ public class NewsPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        int count=0;
-        if (articles!=null) {
+        int count = 0;
+        if (articles != null) {
             count = articles.size();
         }
         return count;

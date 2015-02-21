@@ -23,11 +23,11 @@ import info.holliston.high.app.pager.SchedulePagerFragment;
 
 public class SchedulesListFragment extends Fragment {
 
-    List<String> headers = new ArrayList<>();
-    HashMap<String, List<Article>> schedules = new HashMap<>();
-    View v;
-    ExpandableListView lv;
-    SchedulesArrayAdapter adapter;
+    private final List<String> headers = new ArrayList<>();
+    private final HashMap<String, List<Article>> schedules = new HashMap<>();
+    private View v;
+    private ExpandableListView lv;
+    private SchedulesArrayAdapter adapter;
     private int currentArticle;
 
     public SchedulesListFragment() {
@@ -98,8 +98,7 @@ public class SchedulesListFragment extends Fragment {
 
     public void updateUI() {
         final List<Article> articles;
-        MainActivity ma = (MainActivity) getActivity();
-        articles = ma.scheduleSource.getAllArticles();
+        articles = MainActivity.getsScheduleSource().getAllArticles();
         this.headers.clear();
         this.schedules.clear();
 

@@ -20,7 +20,7 @@ import java.util.List;
 
 import info.holliston.high.app.datamodel.Article;
 
-public class EventJsonParser {
+class EventJsonParser {
     private String[] parserNames;
 
     private String entryName;

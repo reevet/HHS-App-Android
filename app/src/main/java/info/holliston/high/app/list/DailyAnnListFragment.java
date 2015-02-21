@@ -47,8 +47,7 @@ public class DailyAnnListFragment extends Fragment {
     }
 
     public void updateUI() {
-        MainActivity ma = (MainActivity) getActivity();
-        articles = ma.dailyannSource.getAllArticles();
+        articles = MainActivity.getsDailyannSource().getAllArticles();
 
         DailyAnnArrayAdapter adapter = new DailyAnnArrayAdapter(getActivity(), articles);
         ListView lv = (ListView) getActivity().findViewById(R.id.dailyann_list);

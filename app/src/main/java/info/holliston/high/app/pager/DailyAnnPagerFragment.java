@@ -16,16 +16,16 @@ import info.holliston.high.app.datamodel.Article;
 import info.holliston.high.app.pager.adapter.DailyAnnPagerAdapter;
 
 public class DailyAnnPagerFragment extends Fragment {
-    DailyAnnPagerAdapter mDetailPagerAdapter;
-    ViewPager mViewPager;
-    List<Article> articles;
-    int position;
+    private DailyAnnPagerAdapter mDetailPagerAdapter;
+    private ViewPager mViewPager;
+    private List<Article> articles;
+    private int position;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        if (savedInstanceState!=null){
+        if (savedInstanceState != null) {
             position = savedInstanceState.getInt("currentArticle", 0);
         }
 
@@ -33,10 +33,9 @@ public class DailyAnnPagerFragment extends Fragment {
                 container, false);
 
         Bundle bundle = this.getArguments();
-        position = bundle.getInt("position" ,0);
+        position = bundle.getInt("position", 0);
 
-        MainActivity ma = (MainActivity) getActivity();
-        articles = ma.dailyannSource.getAllArticles();
+        articles = MainActivity.getsDailyannSource().getAllArticles();
 
         mDetailPagerAdapter =
                 new DailyAnnPagerAdapter(
@@ -48,6 +47,7 @@ public class DailyAnnPagerFragment extends Fragment {
 
         return v;
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

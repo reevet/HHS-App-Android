@@ -26,12 +26,9 @@ import info.holliston.high.app.datamodel.Article;
  */
 public class ArticleDataSource {
 
-    public String name;
-    Context context;
-    // Database fields
-    private SQLiteDatabase database;
-    private ArticleSQLiteHelper dbHelper;
-    private String[] allColumns = {
+    private final Context context;
+    private final ArticleSQLiteHelper dbHelper;
+    private final String[] allColumns = {
             ArticleSQLiteHelper.COLUMN_ID,
             ArticleSQLiteHelper.COLUMN_TITLE,
             ArticleSQLiteHelper.COLUMN_URL,
@@ -39,7 +36,10 @@ public class ArticleDataSource {
             ArticleSQLiteHelper.COLUMN_KEY,
             ArticleSQLiteHelper.COLUMN_DETAILS,
             ArticleSQLiteHelper.COLUMN_IMGSRC};
-    private ArticleDataSourceOptions options;
+    private final ArticleDataSourceOptions options;
+    public String name;
+    // Database fields
+    private SQLiteDatabase database;
 
     public ArticleDataSource(Context context, ArticleDataSourceOptions options) {
         this.options = options;
@@ -64,7 +64,7 @@ public class ArticleDataSource {
      * Creates an Article object with the given information
      * and places it in the SQL database
      */
-    public Article createArticle(String title, String key, URL url, Date date, String details, String imgsrc) {
+    Article createArticle(String title, String key, URL url, Date date, String details, String imgsrc) {
         Article newArticle;
         // is the article already exists, get it
         newArticle = articleFromKey(key);
@@ -130,7 +130,7 @@ public class ArticleDataSource {
     /*
      * batch method for adding a set of articles
      */
-    public void createArticles(List<Article> articleList) {
+    void createArticles(List<Article> articleList) {
         for (Article art : articleList) {
             this.createArticle(art.title, art.key, art.url, art.date, art.details, art.imgSrc);
         }
@@ -150,7 +150,7 @@ public class ArticleDataSource {
     /*
      * Finds an article with a given key
      */
-    public Article articleFromKey(String key) {
+    Article articleFromKey(String key) {
         Cursor cursor;
         Article article;
         try {
@@ -285,7 +285,7 @@ public class ArticleDataSource {
     /*
      * Prep to download XML feed
      */
-    public String downloadXmlFromNetwork(ArticleParser.SourceMode refreshSource) {
+    String downloadXmlFromNetwork(ArticleParser.SourceMode refreshSource) {
         String result;
 
         int articlesCount = this.getAllArticles().size();
@@ -326,7 +326,7 @@ public class ArticleDataSource {
     /*
      * Prep to download JSON feed
      */
-    public String downloadJsonFromNetwork(ArticleParser.SourceMode refreshSource) {
+    String downloadJsonFromNetwork(ArticleParser.SourceMode refreshSource) {
         String result;
 
         int articlesCount = this.getAllArticles().size();
@@ -395,7 +395,7 @@ public class ArticleDataSource {
         if ((al != null) && (al.size() > 0)) {
 
             ImageAsyncCacher ial = new ImageAsyncCacher(
-                    200, 200, context, al);
+                    200, context, al);
             ial.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }

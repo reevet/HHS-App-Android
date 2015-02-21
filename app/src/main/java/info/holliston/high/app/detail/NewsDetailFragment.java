@@ -20,6 +20,12 @@ public class NewsDetailFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = this.getArguments();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -46,6 +52,7 @@ public class NewsDetailFragment extends Fragment {
         details = details.replace("<img","<img style='max-width: 100%;' ");
         if ((getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) &&
         (getResources().getConfiguration().screenWidthDp <=480)) {
+            details = details.replace("<img", "<img style='width: 100%;' ");
             details = details.replace("float: left", "");
             details = details.replace("float:left", "");
             details = details.replace("float: right", "");
@@ -71,5 +78,4 @@ public class NewsDetailFragment extends Fragment {
 
         return rootView;
     }
-
 }

@@ -48,19 +48,19 @@ public class NewsCardAdapter extends RecyclerView.Adapter<NewsCardAdapter.NewsVi
         holder.thumbnail = newsViewHolder.vImage;
         holder.thumbnail.setVisibility(View.INVISIBLE);
 
-        holder.loading  = newsViewHolder.vProgress;
+        holder.loading = newsViewHolder.vProgress;
         holder.loading.setVisibility(View.VISIBLE);
 
         String imgSrc = articleList.get(position).imgSrc;
-        if ((imgSrc != null) && (imgSrc.length() >0)) {
+        if ((imgSrc != null) && (imgSrc.length() > 0)) {
             //imageDownloader.setMode(ImageDownloader.Mode.NO_DOWNLOADED_DRAWABLE);
             //imageDownloader.download(articleList.get(position).imgSrc, (ImageView) rowView.findViewById(R.id.row_icon));
 
-            int newHeight = (int)context.getResources().getDimension(R.dimen.news_thumbnail_height);
-            int newWidth = (int)context.getResources().getDimension(R.dimen.news_thumbnail_width);
+            int newHeight = (int) context.getResources().getDimension(R.dimen.news_thumbnail_height);
+            int newWidth = (int) context.getResources().getDimension(R.dimen.news_thumbnail_width);
 
             String key = articleList.get(position).key;
-            ImageAsyncLoader ial = new ImageAsyncLoader (position, holder,
+            ImageAsyncLoader ial = new ImageAsyncLoader(position, holder,
                     newWidth, newHeight,
                     ImageAsyncLoader.FitMode.FILL,
                     ImageAsyncLoader.SourceMode.ALLOW_BOTH,
@@ -84,26 +84,24 @@ public class NewsCardAdapter extends RecyclerView.Adapter<NewsCardAdapter.NewsVi
     }
 
 
+    public class NewsViewHolder extends RecyclerView.ViewHolder {
 
-  public class NewsViewHolder extends RecyclerView.ViewHolder {
-
-      protected TextView vTitle;
-      protected TextView vDate;
-      protected ImageView vImage;
-      protected ProgressBar vProgress;
-
-
-      public NewsViewHolder(View v) {
-          super(v);
-          vTitle = (TextView) v.findViewById(R.id.row_title);
-          vDate =  (TextView) v.findViewById(R.id.row_date);
-          vImage = (ImageView) v.findViewById(R.id.row_icon);
-          vProgress = (ProgressBar) v.findViewById(R.id.row_progress);
-      }
+        final TextView vTitle;
+        final TextView vDate;
+        final ImageView vImage;
+        final ProgressBar vProgress;
 
 
+        public NewsViewHolder(View v) {
+            super(v);
+            vTitle = (TextView) v.findViewById(R.id.row_title);
+            vDate = (TextView) v.findViewById(R.id.row_date);
+            vImage = (ImageView) v.findViewById(R.id.row_icon);
+            vProgress = (ProgressBar) v.findViewById(R.id.row_progress);
+        }
 
-  }
+
+    }
 
 }
 

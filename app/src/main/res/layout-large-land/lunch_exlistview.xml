@@ -1,72 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lunch_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/lunch_frame"
     android:background="#ffffffff">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/shadow_right"
+        android:orientation="vertical"
+        android:paddingBottom="0dp"
         android:paddingLeft="0dp"
-        android:paddingTop="0dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="0dp">
+        android:paddingRight="0dp"
+        android:paddingTop="0dp">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#ffffffff">
+            android:background="#ffffffff"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
                 android:background="@drawable/shadow_down"
+                android:paddingBottom="10dp"
                 android:paddingLeft="0dp"
-                android:paddingTop="0dp"
-                android:paddingRight="0dp">
+                android:paddingRight="0dp"
+                android:paddingTop="0dp">
 
                 <ImageView
+                    android:id="@+id/imageView7"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imageView7"
-                    android:src="@drawable/tray"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/event_title_plural"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/tray" />
 
                 <TextView
+                    android:id="@+id/textView9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="@string/lunch_title_plural"
-                    android:id="@+id/textView9"
-                    android:layout_alignStart="@+id/imageView7"
                     android:layout_alignBottom="@+id/imageView7"
+                    android:layout_alignStart="@+id/imageView7"
                     android:layout_marginStart="10dp"
+                    android:text="@string/lunch_title_plural"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#ffffffff"
                     android:textSize="@dimen/section_header_text_size" />
             </RelativeLayout>
 
             <ExpandableListView
+                android:id="@+id/lunch_exlistview"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:id="@+id/lunch_exlistview"
-                android:groupIndicator="@null"
-                android:background="#ffffffff" />
+                android:background="#ffffffff"
+                android:groupIndicator="@null" />
 
-            <TextView android:id="@id/android:empty"
+            <TextView
+                android:id="@id/android:empty"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/please_refresh"
                 android:gravity="center_vertical|center_horizontal"
+                android:padding="30dp"
+                android:text="@string/please_refresh"
                 android:textAlignment="gravity"
-                android:textSize="@dimen/row_normal_text_size"
-                android:padding="30dp" />
+                android:textSize="@dimen/row_normal_text_size" />
         </LinearLayout>
 
     </LinearLayout>

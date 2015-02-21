@@ -15,7 +15,7 @@ import info.holliston.high.app.datamodel.Article;
 
 public class ScheduleDetailFragment extends Fragment {
 
-    Article article;
+    private Article article;
 
     public ScheduleDetailFragment() {
     }
@@ -46,19 +46,19 @@ public class ScheduleDetailFragment extends Fragment {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.detail_icon);
 
         switch (initial) {
-            case 'A' :
+            case 'A':
                 imageView.setImageResource(R.drawable.a_lg);
                 break;
-            case 'B' :
+            case 'B':
                 imageView.setImageResource(R.drawable.b_lg);
                 break;
-            case 'C' :
+            case 'C':
                 imageView.setImageResource(R.drawable.c_lg);
                 break;
-            case 'D' :
+            case 'D':
                 imageView.setImageResource(R.drawable.d_lg);
                 break;
-            default :
+            default:
                 imageView.setImageResource(R.drawable.star_lg);
                 break;
         }

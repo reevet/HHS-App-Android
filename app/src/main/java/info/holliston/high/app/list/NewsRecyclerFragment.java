@@ -22,7 +22,7 @@ import info.holliston.high.app.pager.NewsPagerFragment;
 
 public class NewsRecyclerFragment extends Fragment {
 
-    NewsCardAdapter adapter;
+    private NewsCardAdapter adapter;
     private List<Article> articles;
     private int currentArticle;
 
@@ -49,8 +49,7 @@ public class NewsRecyclerFragment extends Fragment {
     }
 
     public void updateUI() {
-        MainActivity ma = (MainActivity) getActivity();
-        articles = ma.newsSource.getAllArticles();
+        articles = MainActivity.getsNewsSource().getAllArticles();
 
         adapter = new NewsCardAdapter(getActivity(), articles);
         RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardlist);
@@ -67,9 +66,9 @@ public class NewsRecyclerFragment extends Fragment {
                 })
         );
 
-        if ((currentArticle >= 0) || ma.newNewsAvailable) {
+        if ((currentArticle >= 0) || MainActivity.getsNewNewsAvailable()) {
             sendToDetailFragment(currentArticle);
-            ma.newNewsAvailable = false;
+            MainActivity.setsNewNewsAvailable(false);
         }
     }
 

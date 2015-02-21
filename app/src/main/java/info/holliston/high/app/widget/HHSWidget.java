@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
 import java.text.SimpleDateFormat;
@@ -13,12 +12,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import info.holliston.high.app.datamodel.download.ArticleDataSource;
-import info.holliston.high.app.datamodel.download.ArticleSQLiteHelper;
 import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
+import info.holliston.high.app.datamodel.download.ArticleDataSource;
 import info.holliston.high.app.datamodel.download.ArticleParser;
+import info.holliston.high.app.datamodel.download.ArticleSQLiteHelper;
 
 /**
  * Implementation of App Widget functionality.
@@ -26,38 +25,8 @@ import info.holliston.high.app.datamodel.download.ArticleParser;
 public class HHSWidget extends AppWidgetProvider {
     public static final String NOTIFICATION = "info.holliston.high.widget";
 
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        //ComponentName thisWidget = new ComponentName(context, HHSWidget.class);
-        //int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-
-        //final int N = appWidgetIds.length;
-        //for (int i=0; i<N; i++) {
-        for (int appWidgetId :appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
-
-        //appWidgetManager.updateAppWidget(appWidgetIds, view);
-
-        //Intent intent2 = new Intent(context, ArticleDownloaderService.class);
-        //intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, allWidgetIds );
-        //context.startService(intent2);
-    }
-
-    @Override
-    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
-
-        super.onReceive(context, intent);
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
-    }
-
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-            int appWidgetId) {
+    private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                        int appWidgetId) {
 
         ArticleDataSource datasource;
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
@@ -70,16 +39,15 @@ public class HHSWidget extends AppWidgetProvider {
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "2");
-        datasource = new ArticleDataSource(context,options);
+        datasource = new ArticleDataSource(context, options);
 
         List<Article> articles;
         articles = datasource.getAllArticles();
 
-        if (articles.size() >0)
-        {
+        if (articles.size() > 0) {
             Article article = articles.get(0);
 
-            if(articles.size() >=2) {
+            if (articles.size() >= 2) {
                 Date todayDate = new Date();
                 Calendar todayCal = Calendar.getInstance();
                 todayCal.setTime(todayDate);
@@ -87,7 +55,7 @@ public class HHSWidget extends AppWidgetProvider {
                 int todayDay = todayCal.get(Calendar.DATE);
                 int todayHour = todayCal.get(Calendar.HOUR_OF_DAY);
 
-                if (todayHour >=14) {
+                if (todayHour >= 14) {
                     Date firstDate = articles.get(0).date;
                     Calendar firstCal = Calendar.getInstance();
                     firstCal.setTime(firstDate);
@@ -110,20 +78,20 @@ public class HHSWidget extends AppWidgetProvider {
             char initial = article.title.charAt(0);
 
             switch (initial) {
-                case 'A' :
-                    views.setImageViewResource(R.id.widget_sched_icon, R.drawable.a_50);
+                case 'A':
+                    views.setImageViewResource(R.id.widget_sched_icon, R.drawable.a_lg);
                     break;
-                case 'B' :
-                    views.setImageViewResource(R.id.widget_sched_icon, R.drawable.b_50);
+                case 'B':
+                    views.setImageViewResource(R.id.widget_sched_icon, R.drawable.b_lg);
                     break;
-                case 'C' :
-                    views.setImageViewResource(R.id.widget_sched_icon, R.drawable.c_50);
+                case 'C':
+                    views.setImageViewResource(R.id.widget_sched_icon, R.drawable.c_lg);
                     break;
-                case 'D' :
-                    views.setImageViewResource(R.id.widget_sched_icon, R.drawable.d_50);
+                case 'D':
+                    views.setImageViewResource(R.id.widget_sched_icon, R.drawable.d_lg);
                     break;
-                default :
-                    views.setImageViewResource(R.id.widget_sched_icon, R.drawable.star_50);
+                default:
+                    views.setImageViewResource(R.id.widget_sched_icon, R.drawable.star_lg);
                     break;
             }
 
@@ -140,6 +108,30 @@ public class HHSWidget extends AppWidgetProvider {
 
         }
 
+    }
+
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        // There may be multiple widgets active, so update all of them
+        //ComponentName thisWidget = new ComponentName(context, HHSWidget.class);
+        //int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+
+        //final int N = appWidgetIds.length;
+        //for (int i=0; i<N; i++) {
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId);
+        }
+
+        //appWidgetManager.updateAppWidget(appWidgetIds, view);
+
+        //Intent intent2 = new Intent(context, ArticleDownloaderService.class);
+        //intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, allWidgetIds );
+        //context.startService(intent2);
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        // Enter relevant functionality for when the last widget is disabled
     }
 }
 
