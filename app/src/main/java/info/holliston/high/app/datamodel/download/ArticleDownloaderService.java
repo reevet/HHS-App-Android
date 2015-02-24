@@ -45,6 +45,7 @@ public class ArticleDownloaderService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        //Toast.makeText(this, "ArticleDownloaderService started", Toast.LENGTH_LONG).show();
 
         // alarmReset says to reset alarms without refreshing data
         String alarmReset;
@@ -57,7 +58,7 @@ public class ArticleDownloaderService extends Service {
         // getImages says whether to re-cache all images
         String gi;
         gi = intent.getStringExtra("getImages");
-        if (gi.equals("DOWNLOAD_ONLY")) {
+        if (gi!=null && gi.equals("DOWNLOAD_ONLY")) {
             this.cacheImages = true;
         }
 
@@ -81,10 +82,16 @@ public class ArticleDownloaderService extends Service {
         return Service.START_NOT_STICKY;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //Toast.makeText(this, "ArticleDownloaderService KILLED", Toast.LENGTH_LONG).show();
+    }
+
     /*
-     * Each refresh method defines the datasources and options, and
-     * then calls an asyncTask to download the feed
-     */
+         * Each refresh method defines the datasources and options, and
+         * then calls an asyncTask to download the feed
+         */
     private void refreshSchedules() {
         ArticleDataSource.ArticleDataSourceOptions sdso = new ArticleDataSource.ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_SCHEDULES,
@@ -347,11 +354,11 @@ public class ArticleDownloaderService extends Service {
     }
 
     //Debugging method only
-    /*private void setTestAlarm() {
+    private void setTestAlarm() {
         Date now = new Date();
         Calendar nowCal = Calendar.getInstance();
         nowCal.setTime(now);
-        nowCal.set(Calendar.SECOND, nowCal.get(Calendar.SECOND) + 30);
+        nowCal.set(Calendar.SECOND, nowCal.get(Calendar.SECOND) + 120);
 
         AlarmManager alarmMgr;
         alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
@@ -368,7 +375,7 @@ public class ArticleDownloaderService extends Service {
         Date setFor = nowCal.getTime();
         String setString = sdf.format(setFor);
         Log.d("ArticleDownloaderService", "TestAlarm(10) set for "+setString);
-    }*/
+    }
 
     /*
      * Custom asyncTask to download data for a single datasource

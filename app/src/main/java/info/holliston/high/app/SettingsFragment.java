@@ -2,7 +2,6 @@ package info.holliston.high.app;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -20,8 +19,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import info.holliston.high.app.datamodel.download.ArticleDownloaderService;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -83,9 +80,8 @@ public class SettingsFragment extends PreferenceFragment {
                 // simple string representation.
                 preference.setSummary(stringValue);
             }
-            Intent intent = new Intent(getActivity().getApplicationContext(), ArticleDownloaderService.class);
-            intent.putExtra("alarmReset", "reset");
-            getActivity().startService(intent);
+            MainActivity ma = (MainActivity) getActivity();
+            ma.setDownloadAlarms();
             return true;
         }
     };

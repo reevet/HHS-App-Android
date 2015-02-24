@@ -26,11 +26,14 @@
 
         <service
             android:name=".datamodel.download.ArticleDownloaderService"
-            android:permission="false">
+            android:enabled="true">
+        </service>
+
+        <receiver android:name=".datamodel.download.AutoStart">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-        </service>
+        </receiver>
 
         <receiver android:name=".widget.HHSWidget">
             <intent-filter>

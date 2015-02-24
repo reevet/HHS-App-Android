@@ -163,6 +163,12 @@ public class MainActivity extends ActionBarActivity {
         MainActivity.getsDrawerLayout().closeDrawers();
     }
 
+    public void setDownloadAlarms() {
+        Intent intent = new Intent(getApplicationContext(), ArticleDownloaderService.class);
+        intent.putExtra("alarmReset", "reset");
+        startService(intent);
+    }
+
     public static void refreshActionBar(Activity a) {
         a.invalidateOptionsMenu();
     }
@@ -291,6 +297,9 @@ public class MainActivity extends ActionBarActivity {
 
         //suggest rating this app
         AppRater.app_launched(this);
+
+        //set alarms to download data
+        setDownloadAlarms();
     }
 
     @Override
