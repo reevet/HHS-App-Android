@@ -49,14 +49,13 @@ public class NewsDetailFragment extends Fragment {
         dateTextView.setText(dateString);
 
         String details = article.details;
-        details = details.replace("<img","<img style='max-width: 100%;' ");
+        details = details.replace("<img","<img style='max-width: 100%; display:block' ");
         if ((getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) &&
         (getResources().getConfiguration().screenWidthDp <=480)) {
-            details = details.replace("<img", "<img style='width: 100%;' ");
-            details = details.replace("float: left", "");
-            details = details.replace("float:left", "");
-            details = details.replace("float: right", "");
-            details = details.replace("float:right", "");
+            details = details.replace("float: left", "float:none");
+            details = details.replace("float:left", "float:none");
+            details = details.replace("float: right", "float:none");
+            details = details.replace("float:right", "float:none");
             details = details.replace("display: inline", "display: block");
             details = details.replace("display:inline", "display:block");
         }
