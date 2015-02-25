@@ -6,3 +6,4 @@
 /app/.gitignore
 /app/proguard-rules.pro
 gradle.properties
+/app/build.gradle
