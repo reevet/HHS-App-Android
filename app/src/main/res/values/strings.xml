@@ -50,11 +50,10 @@
     <string name="events_url">https://www.googleapis.com/calendar/v3/calendars/holliston.k12.ma.us_gsfpbqnefkm59ul6gbofte1s2k%40group.calendar.google.com/events?key=AIzaSyAQa5V8a141kmmGrcb2LgpmyTvocrVPiDI&amp;maxResults=30&amp;orderBy=startTime&amp;singleEvents=true</string>
     <string name="dailyann_url">https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/general-info/daily-announcements/posts.xml</string>
     <string name="lunch_url">https://www.googleapis.com/calendar/v3/calendars/holliston.k12.ma.us_c2d4uic3gbsg7r9vv9qo8a949g@group.calendar.google.com/events?key=AIzaSyAQa5V8a141kmmGrcb2LgpmyTvocrVPiDI&amp;maxResults=30&amp;orderBy=startTime&amp;singleEvents=true</string>
-
     <string name="client_id">175331434418-fuam67euqr6eegii9ho3t229kso2gir9.apps.googleusercontent.com</string>
     <string name="api_key">AIzaSyDXY9OA9csrexFK1WFCeTd4jNIjCgyO_Nw</string>
 
-    <!-- Layout Strings   -->
+    <!-- Layout Strings -->
     <string name="schedule_title_single">Schedule</string>
     <string name="schedule_title_plural">Schedules</string>
     <string name="schedule_next">Next Schedule</string>
@@ -64,11 +63,10 @@
     <string name="lunch_title_single">Lunch Menu</string>
     <string name="lunch_title_plural">Lunch Menus</string>
     <string name="social_title">Social Media</string>
-
     <string name="please_refresh">Please connect to a network and choose Refresh from the menu.</string>
     <string name="events_no_details">No additional details posted for this event.</string>
 
-    <!-- Link Labels  -->
+    <!-- Link Labels -->
     <string name="hhs_facebook_label">on Facebook</string>
     <string name="hhs_twitter_label">on Twitter</string>
     <string name="hhs_googleplus_label">on Google+</string>
@@ -83,23 +81,22 @@
     <string name="hhs_instagram_id">hollistonhigh</string>
     <string name="hhs_youtube_id">UCnDicx0qt2xP1t7O7NpbNOg</string>
 
-
     <!-- Parser element names -->
     <string-array name="schedules_parser_names">
-        <item />
+        <item/>
         <item>summary</item>
         <item>htmlLink</item>
         <item>start</item>
-        <item />
+        <item/>
         <item>description</item>
         <item>id</item>
     </string-array>
     <string-array name="events_parser_names">
-        <item />
+        <item/>
         <item>summary</item>
         <item>htmlLink</item>
         <item>start</item>
-        <item />
+        <item/>
         <item>description</item>
         <item>id</item>
     </string-array>
@@ -108,7 +105,7 @@
         <item>title</item>
         <item>link</item>
         <item>updated</item>
-        <item />
+        <item/>
         <item>content</item>
         <item>id</item>
     </string-array>
@@ -117,18 +114,20 @@
         <item>title</item>
         <item>link</item>
         <item>published</item>
-        <item />
+        <item/>
         <item>content</item>
         <item>id</item>
     </string-array>
     <string-array name="lunch_parser_names">
-        <item />
+        <item/>
         <item>summary</item>
         <item>htmlLink</item>
         <item>start</item>
-        <item />
+        <item/>
         <item>description</item>
         <item>id</item>
     </string-array>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
