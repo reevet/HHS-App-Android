@@ -188,10 +188,13 @@ public class EventsListFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("currentArticle", currentArticle);
+    }
+
+    public void setCurrentArticle(int currentArticle) {
+        this.currentArticle = currentArticle;
     }
 }

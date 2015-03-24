@@ -201,4 +201,8 @@ public class LunchListFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putInt("currentArticle", currentArticle);
     }
+
+    public void setCurrentArticle(int currentArticle) {
+        this.currentArticle = currentArticle;
+    }
 }

@@ -6,11 +6,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import info.holliston.high.app.MainActivity;
 
-public class TabPagerAdapter extends FragmentPagerAdapter {
+public class MainPagerAdapter extends FragmentPagerAdapter {
     private final MainActivity ma;
 
 
-    public TabPagerAdapter(MainActivity ma, FragmentManager fm) {
+    public MainPagerAdapter(MainActivity ma, FragmentManager fm) {
         super(fm);
         this.ma = ma;
     }

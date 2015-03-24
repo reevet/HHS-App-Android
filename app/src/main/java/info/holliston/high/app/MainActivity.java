@@ -45,14 +45,14 @@ import info.holliston.high.app.list.SchedulesListFragment;
 import info.holliston.high.app.navdrawer.NavDrawerItem;
 import info.holliston.high.app.navdrawer.NavDrawerListAdapter;
 import info.holliston.high.app.pager.NewsPagerFragment;
-import info.holliston.high.app.pager.TabPagerFragment;
-import info.holliston.high.app.pager.adapter.TabPagerAdapter;
+import info.holliston.high.app.pager.MainPagerFragment;
+import info.holliston.high.app.pager.adapter.MainPagerAdapter;
 import info.holliston.high.app.widget.HHSWidget;
 
 public class MainActivity extends ActionBarActivity {
 
     //Paging and Adapters
-    private static TabPagerFragment sTabPagerFragment;
+    private static MainPagerFragment sMainPagerFragment;
     private static ViewPager sViewPager;
 
     //datasources
@@ -78,180 +78,11 @@ public class MainActivity extends ActionBarActivity {
     //Menu drawer and action bar
     private static DrawerLayout sDrawerLayout;
     private static int sIsRefreshing = 0;
-    /*
-     * receive messages for data refresh completion or notification
-     */
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                String result = bundle.getString("result");
-                String name = bundle.getString("datasource");
-
-                //update sections of UI based on which feeds report updated
-                if ((result != null) && (name != null)) {
-                    switch (name) {
-                        case ArticleSQLiteHelper.TABLE_SCHEDULES:
-                            sSchedFragment.updateUI();
-                            sHomeFragment.updateSchedulesUI();
-                            break;
-                        case ArticleSQLiteHelper.TABLE_DAILYANN:
-                            sDailyAnnFragment.updateUI();
-                            sHomeFragment.updateDailyAnnUI();
-                            break;
-                        case ArticleSQLiteHelper.TABLE_NEWS:
-                            sNewsFragment.updateUI();
-                            sHomeFragment.updateNewsUI();
-                            break;
-                        case ArticleSQLiteHelper.TABLE_EVENTS:
-                            sEventsFragment.updateUI();
-                            sHomeFragment.updateEventsUI();
-                            break;
-                        case ArticleSQLiteHelper.TABLE_LUNCH:
-                            sLunchFragment.updateUI();
-                            sHomeFragment.updateLunchUI();
-                            break;
-                    }
-                    sIsRefreshing++;
-
-                    //when all 5 report in, turn off SwipeRefresh animation
-                    if (sIsRefreshing == 5) {
-                        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
-                        if (swipeRefreshLayout != null) {
-                            swipeRefreshLayout.setRefreshing(false);
-                            sIsRefreshing = 0;
-                            SharedPreferences prefs = getSharedPreferences("hhsapp", 0);
-                            SharedPreferences.Editor editor = prefs.edit();
-                            editor.putBoolean("firstTime", false);
-                            editor.apply();
-                        }
-                    }
-                }
-            }
-        }
-    };
     private static Intent sShareIntent;
     private LinearLayout mDrawerLinLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ShareActionProvider mShareActionProvider;
-
-    public static void refreshData(ArticleParser.SourceMode refreshSource, Boolean cacheImages, MainActivity ma) {
-
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) ma.findViewById(R.id.swipe_container);
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setRefreshing(true);
-        }
-
-        Toast.makeText(ma, "Loading data", Toast.LENGTH_LONG).show();
-
-        Intent intent = new Intent(ma.getApplicationContext(), ArticleDownloaderService.class);
-        if (refreshSource == null) {
-            refreshSource = ArticleParser.SourceMode.PREFER_DOWNLOAD;
-        }
-
-        intent.putExtra("refreshSource", refreshSource);
-        if (cacheImages) {
-            intent.putExtra("getImages", "DOWNLOAD_ONLY");
-        }
-
-        ma.startService(intent);
-        Log.d("MainActivity", "Refresh intent sent to ArticleDownloaderService");
-
-        ma.displayView(0);
-        MainActivity.getsDrawerLayout().closeDrawers();
-    }
-
-    public void setDownloadAlarms() {
-        Intent intent = new Intent(getApplicationContext(), ArticleDownloaderService.class);
-        intent.putExtra("alarmReset", "reset");
-        startService(intent);
-    }
-
-    public static void refreshActionBar(Activity a) {
-        a.invalidateOptionsMenu();
-    }
-
-    public static TabPagerFragment getsTabPagerFragment() {
-        return sTabPagerFragment;
-    }
-
-    public static ViewPager getsViewPager() {
-        return sViewPager;
-    }
-
-    public static ArticleDataSource getsScheduleSource() {
-        return sScheduleSource;
-    }
-
-    public static ArticleDataSource getsNewsSource() {
-        return sNewsSource;
-    }
-
-    public static ArticleDataSource getsDailyannSource() {
-        return sDailyannSource;
-    }
-
-    public static ArticleDataSource getsEventsSource() {
-        return sEventsSource;
-    }
-
-    public static ArticleDataSource getsLunchSource() {
-        return sLunchSource;
-    }
-
-    public static HomeFragment getsHomeFragment() {
-        return sHomeFragment;
-    }
-
-    public static DailyAnnListFragment getsDailyAnnFragment() {
-        return sDailyAnnFragment;
-    }
-
-    public static EventsListFragment getsEventsFragment() {
-        return sEventsFragment;
-    }
-
-    public static LunchListFragment getsLunchFragment() {
-        return sLunchFragment;
-    }
-
-    public static NewsRecyclerFragment getsNewsFragment() {
-        return sNewsFragment;
-    }
-
-    public static SchedulesListFragment getsSchedFragment() {
-        return sSchedFragment;
-    }
-
-    public static SocialFragment getsSocialFragment() {
-        return sSocialFragment;
-    }
-
-    private static int getsCurrentNewsItem() {
-        return sCurrentNewsItem;
-    }
-
-    public static void setsCurrentNewsItem(int sCurrentNewsItem) {
-        MainActivity.sCurrentNewsItem = sCurrentNewsItem;
-    }
-
-    public static Boolean getsNewNewsAvailable() {
-        return sNewNewsAvailable;
-    }
-
-    public static void setsNewNewsAvailable(Boolean bool) {
-        MainActivity.sNewNewsAvailable = bool;
-    }
-
-    public static void setsCurrentView(int sCurrentView) {
-        MainActivity.sCurrentView = sCurrentView;
-    }
-
-    private static DrawerLayout getsDrawerLayout() {
-        return sDrawerLayout;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -359,21 +190,112 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /*
+         * receive messages for data refresh completion or notification
+         */
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                String result = bundle.getString("result");
+                String name = bundle.getString("datasource");
+
+                //update sections of UI based on which feeds report updated
+                if ((result != null) && (name != null)) {
+                    switch (name) {
+                        case ArticleSQLiteHelper.TABLE_SCHEDULES:
+                            sSchedFragment.setCurrentArticle(-1);
+                            sSchedFragment.updateUI();
+                            sHomeFragment.updateSchedulesUI();
+                            break;
+                        case ArticleSQLiteHelper.TABLE_DAILYANN:
+                            sDailyAnnFragment.setCurrentArticle(-1);
+                            sDailyAnnFragment.updateUI();
+                            sHomeFragment.updateDailyAnnUI();
+                            break;
+                        case ArticleSQLiteHelper.TABLE_NEWS:
+                            sNewsFragment.setCurrentArticle(-1);
+                            sNewsFragment.updateUI();
+                            sHomeFragment.updateNewsUI();
+                            break;
+                        case ArticleSQLiteHelper.TABLE_EVENTS:
+                            sEventsFragment.setCurrentArticle(-1);
+                            sEventsFragment.updateUI();
+                            sHomeFragment.updateEventsUI();
+                            break;
+                        case ArticleSQLiteHelper.TABLE_LUNCH:
+                            sLunchFragment.setCurrentArticle(-1);
+                            sLunchFragment.updateUI();
+                            sHomeFragment.updateLunchUI();
+                            break;
+                    }
+                    sIsRefreshing++;
+
+                    //when all 5 report in, turn off SwipeRefresh animation
+                    if (sIsRefreshing == 5) {
+                        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+                        if (swipeRefreshLayout != null) {
+                            swipeRefreshLayout.setRefreshing(false);
+                            sIsRefreshing = 0;
+                            SharedPreferences prefs = getSharedPreferences("hhsapp", 0);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putBoolean("firstTime", false);
+                            editor.apply();
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    public static void refreshData(ArticleParser.SourceMode refreshSource, Boolean cacheImages, MainActivity ma) {
+
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) ma.findViewById(R.id.swipe_container);
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+
+        Toast.makeText(ma, "Loading data", Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(ma.getApplicationContext(), ArticleDownloaderService.class);
+        if (refreshSource == null) {
+            refreshSource = ArticleParser.SourceMode.PREFER_DOWNLOAD;
+        }
+
+        intent.putExtra("refreshSource", refreshSource);
+        if (cacheImages) {
+            intent.putExtra("getImages", "DOWNLOAD_ONLY");
+        }
+
+        ma.startService(intent);
+        Log.d("MainActivity", "Refresh intent sent to ArticleDownloaderService");
+
+        ma.displayView(0);
+        MainActivity.getsDrawerLayout().closeDrawers();
+    }
+
+    public void setDownloadAlarms() {
+        Intent intent = new Intent(getApplicationContext(), ArticleDownloaderService.class);
+        intent.putExtra("alarmReset", "reset");
+        startService(intent);
+    }
+
+    /*
      * Prepares the main category pager
      */
     private void startPager() {
         //create main pager and attach adapter
-        sTabPagerFragment = new TabPagerFragment();
-        TabPagerAdapter sTabPagerAdapter = new TabPagerAdapter(this, getSupportFragmentManager());
+        sMainPagerFragment = new MainPagerFragment();
+        MainPagerAdapter sMainPagerAdapter = new MainPagerAdapter(this, getSupportFragmentManager());
         sViewPager = (ViewPager) findViewById(R.id.frame_pager);
-        sViewPager.setOnPageChangeListener(sTabPagerFragment);
-        sViewPager.setAdapter(sTabPagerAdapter);
+        sViewPager.setOnPageChangeListener(sMainPagerFragment);
+        sViewPager.setAdapter(sMainPagerAdapter);
         sViewPager.setOffscreenPageLimit(6);
 
         //set up one-pane or two-pane layouts
         if (findViewById(R.id.frame_container) != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame_container, sTabPagerFragment);
+            transaction.replace(R.id.frame_container, sMainPagerFragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else {
@@ -382,7 +304,7 @@ public class MainActivity extends ActionBarActivity {
             bundle.putInt("position", 0);  //shows first news article
             newsPager.setArguments(bundle);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame_list_container, sTabPagerFragment);
+            transaction.replace(R.id.frame_list_container, sMainPagerFragment);
             transaction.replace(R.id.frame_detail_container, newsPager);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -415,14 +337,14 @@ public class MainActivity extends ActionBarActivity {
         if (findViewById(R.id.detail_pager) != null) {
             if (findViewById(R.id.frame_container) != null) {
                 getSupportFragmentManager().popBackStack();
-                sTabPagerFragment.setPage(position);
+                sMainPagerFragment.setPage(position);
                 sCurrentView = position;
             } else {
-                sTabPagerFragment.setPage(position);
+                sMainPagerFragment.setPage(position);
                 sCurrentView = position;
             }
         } else {
-            sTabPagerFragment.setPage(position);
+            sMainPagerFragment.setPage(position);
             sCurrentView = position;
         }
 
@@ -453,7 +375,7 @@ public class MainActivity extends ActionBarActivity {
             if (findViewById(R.id.settings_layout) != null) {
                 super.onBackPressed();
             } else if (sCurrentView != 0) {
-                sTabPagerFragment.setPage(0);
+                sMainPagerFragment.setPage(0);
             }
         } else {
             super.onBackPressed(); // This will pop the Activity from the stack.
@@ -672,4 +594,89 @@ public class MainActivity extends ActionBarActivity {
             displayView(position);
         }
     }
+
+    public static void refreshActionBar(Activity a) {
+        a.invalidateOptionsMenu();
+    }
+
+    public static MainPagerFragment getsMainPagerFragment() {
+        return sMainPagerFragment;
+    }
+
+    public static ViewPager getsViewPager() {
+        return sViewPager;
+    }
+
+    public static ArticleDataSource getsScheduleSource() {
+        return sScheduleSource;
+    }
+
+    public static ArticleDataSource getsNewsSource() {
+        return sNewsSource;
+    }
+
+    public static ArticleDataSource getsDailyannSource() {
+        return sDailyannSource;
+    }
+
+    public static ArticleDataSource getsEventsSource() {
+        return sEventsSource;
+    }
+
+    public static ArticleDataSource getsLunchSource() {
+        return sLunchSource;
+    }
+
+    public static HomeFragment getsHomeFragment() {
+        return sHomeFragment;
+    }
+
+    public static DailyAnnListFragment getsDailyAnnFragment() {
+        return sDailyAnnFragment;
+    }
+
+    public static EventsListFragment getsEventsFragment() {
+        return sEventsFragment;
+    }
+
+    public static LunchListFragment getsLunchFragment() {
+        return sLunchFragment;
+    }
+
+    public static NewsRecyclerFragment getsNewsFragment() {
+        return sNewsFragment;
+    }
+
+    public static SchedulesListFragment getsSchedFragment() {
+        return sSchedFragment;
+    }
+
+    public static SocialFragment getsSocialFragment() {
+        return sSocialFragment;
+    }
+
+    private static int getsCurrentNewsItem() {
+        return sCurrentNewsItem;
+    }
+
+    public static void setsCurrentNewsItem(int sCurrentNewsItem) {
+        MainActivity.sCurrentNewsItem = sCurrentNewsItem;
+    }
+
+    public static Boolean getsNewNewsAvailable() {
+        return sNewNewsAvailable;
+    }
+
+    public static void setsNewNewsAvailable(Boolean bool) {
+        MainActivity.sNewNewsAvailable = bool;
+    }
+
+    public static void setsCurrentView(int sCurrentView) {
+        MainActivity.sCurrentView = sCurrentView;
+    }
+
+    private static DrawerLayout getsDrawerLayout() {
+        return sDrawerLayout;
+    }
+
 }

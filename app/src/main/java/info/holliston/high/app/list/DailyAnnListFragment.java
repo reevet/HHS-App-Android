@@ -110,4 +110,7 @@ public class DailyAnnListFragment extends Fragment {
         outState.putInt("currentArticle", currentArticle);
     }
 
+    public void setCurrentArticle(int currentArticle) {
+        this.currentArticle = currentArticle;
+    }
 }

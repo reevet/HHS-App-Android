@@ -442,7 +442,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             transaction.replace(R.id.frame_detail_container, newFragment);
             //transaction.addToBackStack(null);
             transaction.commit();
-            MainActivity.getsTabPagerFragment().setPage(tabPagerPosition);
+            MainActivity.getsMainPagerFragment().setPage(tabPagerPosition);
         }
     }
 

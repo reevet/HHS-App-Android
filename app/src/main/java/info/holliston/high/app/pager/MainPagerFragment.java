@@ -18,7 +18,7 @@ import info.holliston.high.app.list.LunchListFragment;
 import info.holliston.high.app.list.NewsRecyclerFragment;
 import info.holliston.high.app.list.SchedulesListFragment;
 
-public class TabPagerFragment extends Fragment implements ViewPager.OnPageChangeListener {
+public class MainPagerFragment extends Fragment implements ViewPager.OnPageChangeListener {
     private int currentTab;
 
     @Override
