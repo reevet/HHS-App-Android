@@ -10,7 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.Ringtone;
+import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -334,9 +334,9 @@ public class ArticleDownloaderService extends Service {
 
             if (!notifications_new_message_ringtone.equals("silent")) {
                 try {
-                    Uri ringtoneUri = Uri.parse(notifications_new_message_ringtone);
-                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), ringtoneUri);
-                    r.play();
+                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(), notification);
+                    mp.start();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

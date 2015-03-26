@@ -7,3 +7,4 @@
 /app/proguard-rules.pro
 gradle.properties
 /app/build.gradle
+/app/src/main/res/values/strings_keys.xml
