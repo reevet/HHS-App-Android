@@ -55,12 +55,13 @@ public class ArticleDownloaderService extends Service {
             return Service.START_NOT_STICKY;
         }
 
-        // getImages says whether to re-cache all images
+        /*// getImages says whether to re-cache all images
         String gi;
         gi = intent.getStringExtra("getImages");
         if (gi!=null && gi.equals("DOWNLOAD_ONLY")) {
             this.cacheImages = true;
-        }
+        }*/
+        this.cacheImages = false;
 
         // alarmSource says which alarm triggered this service
         alarmSource = intent.getStringExtra("alarm");
@@ -438,7 +439,8 @@ public class ArticleDownloaderService extends Service {
             publishResults(this.dataSource.getName(), result);
             // if requested, re-download and cache all images
             if (this.cacheImages) {
-                dataSource.downloadAndCacheImages();
+                //dataSource.downloadAndCacheImages();
+                //this might be a data killer
             }
         }
     }

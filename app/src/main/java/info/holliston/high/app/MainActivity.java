@@ -30,6 +30,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import java.util.ArrayList;
 
 import info.holliston.high.app.datamodel.Article;
@@ -44,8 +47,8 @@ import info.holliston.high.app.list.NewsRecyclerFragment;
 import info.holliston.high.app.list.SchedulesListFragment;
 import info.holliston.high.app.navdrawer.NavDrawerItem;
 import info.holliston.high.app.navdrawer.NavDrawerListAdapter;
-import info.holliston.high.app.pager.NewsPagerFragment;
 import info.holliston.high.app.pager.MainPagerFragment;
+import info.holliston.high.app.pager.NewsPagerFragment;
 import info.holliston.high.app.pager.adapter.MainPagerAdapter;
 import info.holliston.high.app.widget.HHSWidget;
 
@@ -142,6 +145,17 @@ public class MainActivity extends ActionBarActivity {
         //prepare to listen for notifications
         registerReceiver(receiver, new IntentFilter(ArticleDownloaderService.APP_RECEIVER));
         registerReceiver(receiver, new IntentFilter(HHSWidget.NOTIFICATION));
+
+        // Get tracker.
+        Tracker t = ((AppApplication) getApplication()).getTracker(
+                AppApplication.TrackerName.APP_TRACKER);
+
+        // Set screen name.
+        t.setScreenName("MainActivity");
+
+        // Send a screen view.
+        t.send(new HitBuilders.ScreenViewBuilder().build());
+        Log.i("MainActivity", "Analytics tracker sent");
     }
 
     @Override

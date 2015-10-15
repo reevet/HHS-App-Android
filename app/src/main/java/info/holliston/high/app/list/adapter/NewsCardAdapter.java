@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import info.holliston.high.app.ImageAsyncLoader;
+import info.holliston.high.app.datamodel.download.ImageAsyncLoader;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
 

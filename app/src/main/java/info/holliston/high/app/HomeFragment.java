@@ -28,6 +28,7 @@ import java.util.List;
 import info.holliston.high.app.datamodel.Article;
 import info.holliston.high.app.datamodel.download.ArticleDataSource;
 import info.holliston.high.app.datamodel.download.ArticleParser;
+import info.holliston.high.app.datamodel.download.ImageAsyncLoader;
 import info.holliston.high.app.pager.DailyAnnPagerFragment;
 import info.holliston.high.app.pager.EventPagerFragment;
 import info.holliston.high.app.pager.LunchPagerFragment;

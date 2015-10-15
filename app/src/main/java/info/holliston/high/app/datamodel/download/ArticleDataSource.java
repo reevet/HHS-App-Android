@@ -18,7 +18,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import info.holliston.high.app.ImageAsyncCacher;
 import info.holliston.high.app.datamodel.Article;
 
 /*

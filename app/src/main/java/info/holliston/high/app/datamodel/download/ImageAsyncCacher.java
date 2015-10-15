@@ -1,4 +1,4 @@
-package info.holliston.high.app;
+package info.holliston.high.app.datamodel.download;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -76,6 +76,7 @@ public class ImageAsyncCacher extends AsyncTask<Void, Void, Void> {
 
                     // Decode bitmap with inSampleSize set
                     ilo.options.inJustDecodeBounds = false;
+                    Log.d("IACacher", "Downloading image:" + urldisplay);
                     ilo.in = new URL(urldisplay).openStream();
                     ilo.fullImage = BitmapFactory.decodeStream(ilo.in, null, ilo.options);
                     File outfile = new File(this.context.getCacheDir(), ilo.article.key);

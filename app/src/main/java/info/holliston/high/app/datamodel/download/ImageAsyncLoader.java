@@ -1,4 +1,4 @@
-package info.holliston.high.app;
+package info.holliston.high.app.datamodel.download;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -117,6 +117,7 @@ public class ImageAsyncLoader extends AsyncTask<String, Void, Bitmap> {
                 if (webImageOptions != null) {
                     ilo.in = new URL(urldisplay).openStream();
                     ilo.fullImage = BitmapFactory.decodeStream(ilo.in, null, ilo.options);
+                    Log.d("IALoader", "Downloading image:" + urldisplay);
                     try {
                         ilo.in.close();
                     } catch (Throwable ignore) {
