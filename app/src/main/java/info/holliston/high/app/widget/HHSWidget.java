@@ -18,6 +18,7 @@ import info.holliston.high.app.datamodel.Article;
 import info.holliston.high.app.datamodel.download.ArticleDataSource;
 import info.holliston.high.app.datamodel.download.ArticleParser;
 import info.holliston.high.app.datamodel.download.ArticleSQLiteHelper;
+import info.holliston.high.app.datamodel.download.JsonArticleDataSource;
 
 /**
  * Implementation of App Widget functionality.
@@ -39,7 +40,7 @@ public class HHSWidget extends AppWidgetProvider {
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "2");
-        datasource = new ArticleDataSource(context, options);
+        datasource = new JsonArticleDataSource(context, options);
 
         List<Article> articles;
         articles = datasource.getAllArticles();

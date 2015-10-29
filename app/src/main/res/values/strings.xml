@@ -97,8 +97,8 @@
     <string-array name="news_parser_names">
         <item>entry</item>
         <item>title</item>
-        <item>link</item>
-        <item>updated</item>
+        <item>selfLink</item>
+        <item>published</item>
         <item/>
         <item>content</item>
         <item>id</item>

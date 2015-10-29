@@ -105,12 +105,14 @@ class EventJsonParser {
         String link;
         String date;
         String id;
+        String imgSrc;
 
         title = readTitle(event);
         details = readSummary(event);
         link = readLink(event);
         date = readDate(event);
         id = readId(event);
+        imgSrc = readImgSrc(event);
 
         URL url = null;
         try {
@@ -150,7 +152,7 @@ class EventJsonParser {
         }
 
         //the "null" below represents the Key, which we don't bother with for events
-        Article tempArticle = new Article(title, id, url, dateDate, details, null);
+        Article tempArticle = new Article(title, id, url, dateDate, details, imgSrc);
         this.articleList.add(tempArticle);
     }
 
@@ -192,7 +194,11 @@ class EventJsonParser {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            try {
+                date = event.getString(this.dateName);
+            } catch (Exception ex) {
+                Log.e("EventJsonParser","date not found in Json");
+            }
         }
         return date;
     }
@@ -202,7 +208,7 @@ class EventJsonParser {
         try {
             id = event.getString(this.idName);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return id;
     }
@@ -217,5 +223,18 @@ class EventJsonParser {
         }
         return summary;
 
+    }
+
+    // Processes link tags in the feed.
+    private String readImgSrc(JSONObject event) {
+        String src = null;
+        try {
+            JSONArray images = event.getJSONArray("images");
+            JSONObject image = images.getJSONObject(0);
+            src = image.getString("url");
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+        return src;
     }
 }

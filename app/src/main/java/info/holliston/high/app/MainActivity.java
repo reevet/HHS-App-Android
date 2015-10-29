@@ -40,6 +40,9 @@ import info.holliston.high.app.datamodel.download.ArticleDataSource;
 import info.holliston.high.app.datamodel.download.ArticleDownloaderService;
 import info.holliston.high.app.datamodel.download.ArticleParser;
 import info.holliston.high.app.datamodel.download.ArticleSQLiteHelper;
+import info.holliston.high.app.datamodel.download.CalArticleDataSource;
+import info.holliston.high.app.datamodel.download.JsonArticleDataSource;
+import info.holliston.high.app.datamodel.download.XmlArticleDataSource;
 import info.holliston.high.app.list.DailyAnnListFragment;
 import info.holliston.high.app.list.EventsListFragment;
 import info.holliston.high.app.list.LunchListFragment;
@@ -141,6 +144,8 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
         //check if this is the first time the app is launched
         checkIfFirstTime();
+
+        refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, true, this);
 
         //prepare to listen for notifications
         registerReceiver(receiver, new IntentFilter(ArticleDownloaderService.APP_RECEIVER));
@@ -276,6 +281,8 @@ public class MainActivity extends ActionBarActivity {
             refreshSource = ArticleParser.SourceMode.PREFER_DOWNLOAD;
         }
 
+        intent.putExtra("datasources", "all");
+
         intent.putExtra("refreshSource", refreshSource);
         if (cacheImages) {
             intent.putExtra("getImages", "DOWNLOAD_ONLY");
@@ -406,13 +413,13 @@ public class MainActivity extends ActionBarActivity {
 
         options = new ArticleDataSource.ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_NEWS,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.XML,
+                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
                 getString(R.string.news_url),
                 getResources().getStringArray(R.array.news_parser_names),
                 ArticleParser.HtmlTags.KEEP_HTML_TAGS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
                 "1");
-        sNewsSource = new ArticleDataSource(getApplicationContext(), options);
+        sNewsSource = new JsonArticleDataSource(getApplicationContext(), options);
 
         options = new ArticleDataSource.ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_SCHEDULES,
@@ -422,7 +429,7 @@ public class MainActivity extends ActionBarActivity {
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "2");
-        sScheduleSource = new ArticleDataSource(getApplicationContext(), options);
+        sScheduleSource = new CalArticleDataSource(getApplicationContext(), options);
 
         options = new ArticleDataSource.ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_LUNCH,
@@ -432,7 +439,7 @@ public class MainActivity extends ActionBarActivity {
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "5");
-        sLunchSource = new ArticleDataSource(getApplicationContext(), options);
+        sLunchSource = new CalArticleDataSource(getApplicationContext(), options);
 
         options = new ArticleDataSource.ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_DAILYANN,
@@ -442,7 +449,7 @@ public class MainActivity extends ActionBarActivity {
                 ArticleParser.HtmlTags.CONVERT_LINE_BREAKS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
                 "1");
-        sDailyannSource = new ArticleDataSource(getApplicationContext(), options);
+        sDailyannSource = new XmlArticleDataSource(getApplicationContext(), options);
 
         options = new ArticleDataSource.ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_EVENTS,
@@ -452,7 +459,7 @@ public class MainActivity extends ActionBarActivity {
                 ArticleParser.HtmlTags.CONVERT_LINE_BREAKS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "20");
-        sEventsSource = new ArticleDataSource(getApplicationContext(), options);
+        sEventsSource = new CalArticleDataSource(getApplicationContext(), options);
     }
 
     /*
