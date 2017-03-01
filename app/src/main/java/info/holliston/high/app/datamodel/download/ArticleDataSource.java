@@ -2,6 +2,7 @@ package info.holliston.high.app.datamodel.download;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,11 +24,11 @@ import info.holliston.high.app.datamodel.Article;
 /*
  * The storage and retrieval vessel for feed articles
  */
-public class ArticleDataSource {
+public abstract class ArticleDataSource {
 
-    private final Context context;
-    private final ArticleSQLiteHelper dbHelper;
-    private final String[] allColumns = {
+    protected Context context;
+    private ArticleSQLiteHelper dbHelper;
+    protected String[] allColumns = {
             ArticleSQLiteHelper.COLUMN_ID,
             ArticleSQLiteHelper.COLUMN_TITLE,
             ArticleSQLiteHelper.COLUMN_URL,
@@ -35,12 +36,12 @@ public class ArticleDataSource {
             ArticleSQLiteHelper.COLUMN_KEY,
             ArticleSQLiteHelper.COLUMN_DETAILS,
             ArticleSQLiteHelper.COLUMN_IMGSRC};
-    private final ArticleDataSourceOptions options;
+    protected ArticleDataSourceOptions options;
     public String name;
     // Database fields
     private SQLiteDatabase database;
 
-    public ArticleDataSource(Context context, ArticleDataSourceOptions options) {
+    public void setup(Context context, ArticleDataSourceOptions options){
         this.options = options;
         this.context = context;
         String databaseName = options.getDatabaseName();
@@ -182,6 +183,21 @@ public class ArticleDataSource {
     }*/
 
     /*
+     * Gets the most first Article in the list.
+     * News = most recent; Events = next upcoming
+     */
+    public Article getLatestArticle() {
+        Article returnArticle = new Article();
+        List<Article> articles = getAllArticles();
+        if (articles.size()>0) {
+            returnArticle = articles.get(0);
+        } else {
+            returnArticle = null;
+        }
+        return returnArticle;
+    }
+
+    /*
      * Obtains all relevant articles in this datasource
      */
     public List<Article> getAllArticles() {
@@ -265,116 +281,34 @@ public class ArticleDataSource {
         return article;
     }
 
+
     /*
-     * Starts the download/parsing process for this database.
-     * First, it chooses which type (XML or JSON) to download
-     */
+         * Starts the download/parsing process for this database.
+         * First, it chooses which type (XML or JSON) to download
+         */
     public String downloadArticles(ArticleParser.SourceMode refreshSource) {
         String result;
-        if (options.sourceType == ArticleDataSourceOptions.SourceType.JSON) {
-            result = downloadJsonFromNetwork(refreshSource);
-        } else if (options.sourceType == ArticleDataSourceOptions.SourceType.XML) {
-            result = downloadXmlFromNetwork(refreshSource);
+        List<Article> articles;
+        articles = downloadArticlesFromNetwork(refreshSource);
+        if (articles.size() > 0) {
+            this.createArticles(articles);
+            result = name+": "+ articles.size()+" downloaded";
         } else {
-            result = "Error: not clear if XML or JSON";
+            result = name+": "+ "no articles found";
         }
         return result;
     }
 
     /*
-     * Prep to download XML feed
+     * each subclass Json or Xml has its own method for downloading and parsing
      */
-    String downloadXmlFromNetwork(ArticleParser.SourceMode refreshSource) {
-        String result;
+    abstract List<Article> downloadArticlesFromNetwork(ArticleParser.SourceMode refreshSource);
 
-        int articlesCount = this.getAllArticles().size();
-        // if datasource is empty or downloading is OK...
-        if ((refreshSource == ArticleParser.SourceMode.DOWNLOAD_ONLY)
-                || (refreshSource == ArticleParser.SourceMode.PREFER_DOWNLOAD)
-                || (articlesCount <= 0)) {
-            InputStream stream = null;
-            try {
-                // Instantiate the parser
-                ArticleParser xmlParser = new ArticleParser(options.parserNames, options.conversionType, Integer.parseInt(options.limit));
-                stream = downloadUrl(options.urlString);
-                // download and parse
-                String parseResult = xmlParser.parse(stream);
-                result = "Downloaded: " + parseResult;
-
-                // add the parser's articles to the database
-                if (xmlParser.getAllArticles().size() > 0) {
-                    this.createArticles(xmlParser.getAllArticles());
-                }
-            } catch (Exception e) {
-                result = "Downloading error: " + e.toString() + ". Using cache instead.";
-            } finally {
-                try {
-                    if (stream != null) {
-                        stream.close();
-                    }
-                } catch (Exception e) {
-                    //ignore
-                }
-            }
-        } else {
-            result = "Download skipped: " + articlesCount + " articles in cache (good enough)";
-        }
-        return result;
-    }
-
-    /*
-     * Prep to download JSON feed
-     */
-    String downloadJsonFromNetwork(ArticleParser.SourceMode refreshSource) {
-        String result;
-
-        int articlesCount = this.getAllArticles().size();
-        // if datasource is empty or downloading is OK...
-        if ((refreshSource == ArticleParser.SourceMode.DOWNLOAD_ONLY)
-                || (refreshSource == ArticleParser.SourceMode.PREFER_DOWNLOAD)
-                || (articlesCount <= 0)) {
-            InputStream stream = null;
-            try {
-                // Instantiate the parser
-                EventJsonParser jsonParser = new EventJsonParser(options.parserNames);
-
-                // these JSON feeds require the addition of dates added to the feed URL
-                Date now = new Date();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'00'%3A'00'%3A'00-05'%3A'00");
-                String nowString = sdf.format(now);
-
-                String urlString = options.getUrlString();
-                urlString = urlString + "&timeMin=" + nowString;
-                stream = downloadUrl(urlString);
-
-                //download and parse
-                String parseResult = jsonParser.parse(stream);
-                result = "Downloaded: " + parseResult;
-
-                if (jsonParser.getAllArticles().size() > 0) {
-                    this.createArticles(jsonParser.getAllArticles());
-                }
-            } catch (Exception e) {
-                result = "Downloading error: " + e.toString() + ". Using cache instead.";
-            } finally {
-                try {
-                    if (stream != null) {
-                        stream.close();
-                    }
-                } catch (Exception e) {
-                    //ignore
-                }
-            }
-        } else {
-            result = "Download skipped: " + articlesCount + " events in cache (good enough)";
-        }
-        return result;
-    }
 
     /*
      * Create the HTTP connection to the feed
      */
-    private InputStream downloadUrl(String urlString) throws IOException {
+    protected InputStream downloadUrl(String urlString) throws IOException {
         java.net.URL url = new java.net.URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000 /* milliseconds */);
@@ -435,27 +369,33 @@ public class ArticleDataSource {
         public String getUrlString() {
             return this.urlString;
         }
-
         public void setUrlString(String url) {
             this.urlString = url;
+        }
+
+        public String[] getParserNames() {
+            return this.parserNames;
+        }
+        public void setParserNames(String[] names) {
+            this.parserNames = names;
         }
 
         public void setSourceType(SourceType type) {
             this.sourceType = type;
         }
 
-        public void setParserNames(String[] names) {
-            this.parserNames = names;
-        }
-
         public void setConversionType(ArticleParser.HtmlTags type) {
             this.conversionType = type;
         }
+        public ArticleParser.HtmlTags getConversionType() {return this.conversionType;}
 
         public void setSortOrder(SortOrder order) {
             this.sortOrder = order;
         }
 
+        public String getLimit() {
+            return this.limit;
+        }
         public void setLimit(String limit) {
             this.limit = limit;
         }
@@ -463,6 +403,8 @@ public class ArticleDataSource {
         public enum SortOrder {GET_FUTURE, GET_PAST}
 
         public enum SourceType {XML, JSON}
+
+
     }
 }
 

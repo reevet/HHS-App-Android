@@ -73,13 +73,22 @@ public class ArticleDownloaderService extends Service {
             this.refreshSource = sentMode;
         }
 
-        refreshNews();
-        refreshDailyAnn();
-        refreshSchedules();
-        refreshEvents();
-        refreshLunch();
-        scheduleDownloads();
+        String sourcesToRefresh;
+        sourcesToRefresh = intent.getStringExtra("datasources");
+        if (sourcesToRefresh.isEmpty()) {
+            sourcesToRefresh = "all";
+        }
 
+        if (sourcesToRefresh.equals("news")) {
+            refreshNews();
+        } else {
+            refreshNews();
+            refreshDailyAnn();
+            refreshSchedules();
+            refreshEvents();
+            refreshLunch();
+            scheduleDownloads();
+        }
         return Service.START_NOT_STICKY;
     }
 
@@ -102,7 +111,7 @@ public class ArticleDownloaderService extends Service {
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "25");
-        schedulesDataSource = new ArticleDataSource(getApplicationContext(), sdso);
+        schedulesDataSource = new CalArticleDataSource(getApplicationContext(), sdso);
 
         new refreshDataSource(schedulesDataSource, false, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -110,13 +119,13 @@ public class ArticleDownloaderService extends Service {
     private void refreshNews() {
         ArticleDataSource.ArticleDataSourceOptions ndso = new ArticleDataSource.ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_NEWS,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.XML,
-                getString(R.string.news_url),
+                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
+                getString(R.string.news_url) + "?key=" + getString(R.string.api_key),
                 getResources().getStringArray(R.array.news_parser_names),
                 ArticleParser.HtmlTags.KEEP_HTML_TAGS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
                 "25");
-        newsDataSource = new ArticleDataSource(getApplicationContext(), ndso);
+        newsDataSource = new JsonArticleDataSource(getApplicationContext(), ndso);
         new refreshDataSource(newsDataSource, true, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -129,7 +138,7 @@ public class ArticleDownloaderService extends Service {
                 ArticleParser.HtmlTags.CONVERT_LINE_BREAKS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
                 "10");
-        dailyAnnDataSource = new ArticleDataSource(getApplicationContext(), dadso);
+        dailyAnnDataSource = new XmlArticleDataSource(getApplicationContext(), dadso);
         new refreshDataSource(dailyAnnDataSource, true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -142,7 +151,7 @@ public class ArticleDownloaderService extends Service {
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "40");
-        eventsDataSource = new ArticleDataSource(getApplicationContext(), edso);
+        eventsDataSource = new CalArticleDataSource(getApplicationContext(), edso);
         new refreshDataSource(eventsDataSource, true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -155,7 +164,7 @@ public class ArticleDownloaderService extends Service {
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
                 ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "40");
-        lunchDataSource = new ArticleDataSource(getApplicationContext(), ldso);
+        lunchDataSource = new CalArticleDataSource(getApplicationContext(), ldso);
         new refreshDataSource(lunchDataSource, true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -278,6 +287,7 @@ public class ArticleDownloaderService extends Service {
         intent.putExtra("refreshSource", ArticleParser.SourceMode.PREFER_DOWNLOAD);
         intent.putExtra("alarm", "alarm-" + alarm);
         intent.putExtra("getImages", "ALLOW_BOTH");
+        intent.putExtra("dataSources", "news");
 
         PendingIntent alarmIntent = PendingIntent.getService(getApplicationContext(), alarm, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmMgr.setRepeating(AlarmManager.RTC, nowCal.getTimeInMillis(),
@@ -411,7 +421,7 @@ public class ArticleDownloaderService extends Service {
                 }
 
                 // request data download, retrieve string indicating success or not
-                result = dataSource.downloadArticles(refreshSource);
+                result = dataSource.downloadArticles(ArticleParser.SourceMode.PREFER_DOWNLOAD);
                 Log.i("ArticleDownloaderService", dataSource.getName() + ": " + result);
 
                 // if this datasource can trigger a notification,
@@ -436,6 +446,12 @@ public class ArticleDownloaderService extends Service {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            SharedPreferences prefs = getSharedPreferences("hhsapp", 0);
+            SharedPreferences.Editor editor = prefs.edit();
+
+            editor.putLong(this.dataSource.getName(), new Date().hashCode());
+            editor.apply();
+
             publishResults(this.dataSource.getName(), result);
             // if requested, re-download and cache all images
             if (this.cacheImages) {

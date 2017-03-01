@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources><!-- Feed URLs -->
     <string name="schedules_url">https://www.googleapis.com/calendar/v3/calendars/sulsp2f8e4npqtmdp469o8tmro%40group.calendar.google.com/events?key=AIzaSyAQa5V8a141kmmGrcb2LgpmyTvocrVPiDI&amp;maxResults=30&amp;orderBy=startTime&amp;singleEvents=true</string>
-    <string name="news_url">https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/general-info/news/posts.xml</string>
+    <string name="news_url">https://www.googleapis.com/blogger/v3/blogs/759965524579693453/posts</string>
+    <string name="old_news_url">https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/general-info/news/posts.xml</string>
     <string name="events_url">https://www.googleapis.com/calendar/v3/calendars/holliston.k12.ma.us_gsfpbqnefkm59ul6gbofte1s2k%40group.calendar.google.com/events?key=AIzaSyAQa5V8a141kmmGrcb2LgpmyTvocrVPiDI&amp;maxResults=30&amp;orderBy=startTime&amp;singleEvents=true</string>
     <string name="dailyann_url">https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/general-info/daily-announcements/posts.xml</string>
     <string name="lunch_url">https://www.googleapis.com/calendar/v3/calendars/holliston.k12.ma.us_c2d4uic3gbsg7r9vv9qo8a949g@group.calendar.google.com/events?key=AIzaSyAQa5V8a141kmmGrcb2LgpmyTvocrVPiDI&amp;maxResults=30&amp;orderBy=startTime&amp;singleEvents=true</string>
     <string name="client_id">175331434418-fuam67euqr6eegii9ho3t229kso2gir9.apps.googleusercontent.com</string>
     <string name="api_key">AIzaSyDXY9OA9csrexFK1WFCeTd4jNIjCgyO_Nw</string>
     <string name="google_analytics_id">UA-61105823-3</string>
-
+    <string name="sched_cal_id">sulsp2f8e4npqtmdp469o8tmro%40group.calendar.google.com</string>
+    <string name="events_cal_id">holliston.k12.ma.us_gsfpbqnefkm59ul6gbofte1s2k%40group.calendar.google.com</string>
+    <string name="lunch_cal_id">holliston.k12.ma.us_c2d4uic3gbsg7r9vv9qo8a949g@group.calendar.google.com</string>
+    <string name="service_email">175331434418-cde1qcr8ogh3rbf1v8ctn0tvbkn4jc1d@developer.gserviceaccount.com</string>
 </resources>
