@@ -10,10 +10,10 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("../../ReeveHHS.jks")
-            storePassword "fenway1"
-            keyAlias "ReeveHHSApp"
-            keyPassword "fenway1"
+            storeFile file(*****)
+            storePassword *****
+            keyAlias *****
+            keyPassword *****
         }
     }
     buildTypes {
