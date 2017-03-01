@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sched_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/header"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="4"
+            android:background="@drawable/shadow_right"
+            android:paddingBottom="0dp"
+            android:paddingEnd="5dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="10dp"
+            android:paddingTop="0dp">
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/schedule_title_plural"
+                android:scaleType="centerCrop"
+                android:src="@drawable/books" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageView5"
+                android:layout_alignStart="@+id/imageView5"
+                android:layout_marginStart="10dp"
+                android:text="@string/schedule_title_plural"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#ffffffff"
+                android:textSize="@dimen/section_header_text_size" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <ExpandableListView
+                android:id="@+id/schedules_exlistview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:groupIndicator="@null" />
+
+            <TextView
+                android:id="@id/android:empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:padding="30dp"
+                android:text="@string/please_refresh"
+                android:textAlignment="gravity"
+                android:textSize="@dimen/row_normal_text_size" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout><!-- From: file:/C:/Users/Tom/Documents/GitHub/HollistonHighApp/app/src/main/res/layout-land/schedules_exlistview.xml -->

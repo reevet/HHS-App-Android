@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/C:/Users/Tom/Documents/GitHub/HollistonHighApp/app/build/intermediates/exploded-aar/com.android.support/preferencefragment/1.0.0/res/values-sw320dp-v13/values.xml -->
+    <eat-comment/>
+    <dimen name="preference_fragment_padding_bottom">0dp</dimen>
+    <dimen name="preference_fragment_padding_side">16dp</dimen>
+</resources>

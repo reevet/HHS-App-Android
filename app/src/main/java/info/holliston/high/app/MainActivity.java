@@ -341,15 +341,23 @@ public class MainActivity extends ActionBarActivity {
             position = 0;
         }
 
-        // if option 7 (HHS Webpage)
-        if (position == 7) {
+        // if option 6 (Sports)
+        if (position == 6) {
+            Uri uriUrl = Uri.parse(getResources().getString(R.string.hhs_sports_page));
+            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+            startActivity(launchBrowser);
+            return;
+        }
+
+        // if option 8 (HHS Webpage)
+        if (position == 8) {
             Uri uriUrl = Uri.parse(getResources().getString(R.string.hhs_home_page));
             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
             startActivity(launchBrowser);
             return;
         }
-        // if option 8 (refresh data)
-        else if (position == 8) {
+        // if option 9 (refresh data)
+        else if (position == 9) {
             refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, true, this);
             return;
         }
@@ -497,9 +505,10 @@ public class MainActivity extends ActionBarActivity {
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1))); //DailyAnn
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1))); //Events
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1))); //Lunch
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(6, -1))); //Social Media
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[7], navMenuIcons.getResourceId(7, -1))); //Website
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[8], navMenuIcons.getResourceId(8, -1))); //Refresh
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(6, -1))); //Sports
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[7], navMenuIcons.getResourceId(7, -1))); //Social Media
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[8], navMenuIcons.getResourceId(8, -1))); //Website
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[9], navMenuIcons.getResourceId(9, -1))); //Refresh
 
         // Recycle the typed array
         navMenuIcons.recycle();

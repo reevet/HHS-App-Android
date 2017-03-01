@@ -14,6 +14,7 @@
         <item>Daily Announcements</item>
         <item>Events</item>
         <item>Lunch Menus</item>
+        <item>Sports Schedules</item>
         <item>Social Media</item>
         <item>HHS Website</item>
         <item>Refresh</item>
@@ -28,6 +29,7 @@
         <item>@drawable/ic_announcements</item>
         <item>@drawable/ic_events</item>
         <item>@drawable/ic_lunch</item>
+        <item>@drawable/ic_sports</item>
         <item>@drawable/ic_like</item>
         <item>@drawable/panther</item>
         <item>@drawable/ic_refresh</item>
@@ -67,6 +69,7 @@
     <string name="hhs_instagram">on Instagram</string>
     <string name="hhs_youtube">on YouTube</string>
     <string name="hhs_home_page">http://hhs.holliston.k12.ma.us</string>
+    <string name="hhs_sports_page">http://hhsathletics.holliston.k12.ma.us/schedules</string>
 
     <!-- Link strings -->
     <string name="hhs_facebook_id">HollistonHigh</string>

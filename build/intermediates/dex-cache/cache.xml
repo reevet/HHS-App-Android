@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\libs\internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-27535d3ee2c35cb43eabc9049ab577585bbe1fae.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\.gradle\caches\modules-2\files-2.1\com.google.api-client\google-api-client\1.20.0\d3e66209ae9e749b2d6833761e7885f60f285564\google-api-client-1.20.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="d3e66209ae9e749b2d6833761e7885f60f285564">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\google-api-client-1.20.0-ad9095d0f20013615b21d128a278a5caefb73f7c.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\.gradle\caches\modules-2\files-2.1\com.google.http-client\google-http-client-android\1.20.0\313dc99a7963523871495897ca11aa8472b3c6fd\google-http-client-android-1.20.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="313dc99a7963523871495897ca11aa8472b3c6fd">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\google-http-client-android-1.20.0-50b3327bd97b2d83a72ab9a19efabcc63f3c83c3.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="00b0b7233e1ec64acebfac40d4983d32d4712426">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\classes-fc119903f8a4c84928c5954109c87a4f14578314.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\classes-91071fa09e1a6124dc72e34a4ff2df430e8dc85d.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\.gradle\caches\modules-2\files-2.1\com.google.code.findbugs\jsr305\1.3.9\40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf\jsr305-1.3.9.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\jsr305-1.3.9-02e50f19c1dc3a80abb6797b5a6dcfead5e08b4c.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.3\support-annotations-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-ef90e99ccd5b3891f6f980ed76c9e76ed0f54d1e.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\classes-4360890688d2e29af5c090c203f9375375973da7.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\.gradle\caches\modules-2\files-2.1\com.google.guava\guava-jdk5\13.0\381ae6c8add7c98e9bcddb1e0b898400cd6fc3f7\guava-jdk5-13.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="381ae6c8add7c98e9bcddb1e0b898400cd6fc3f7">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\guava-jdk5-13.0-d81a7e2809136bf74f445bf6611889f869999bf8.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\exploded-aar\com.android.support\preferencefragment\1.0.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="9344359abfacf131ec9b88aaef74dd9f2459d277">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\classes-4d7dcbfa75175032d155061edbee6f4171650e15.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-core\2.1.3\f6c3aed1cdfa21b5c1737c915186ea93a95a58bd\jackson-core-2.1.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f6c3aed1cdfa21b5c1737c915186ea93a95a58bd">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\jackson-core-2.1.3-8892383c3b256c9c189bd8bba6995dc83b355a2f.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b8945fc23a7461c6fdde15753456d64b0a9358b">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\classes-5c0e0d0f860378c7d1245423be802da9a2f2a4c7.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\.gradle\caches\modules-2\files-2.1\com.google.http-client\google-http-client\1.20.0\93d82db2bca534960253f43424b2ba9d7638b4d2\google-http-client-1.20.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="93d82db2bca534960253f43424b2ba9d7638b4d2">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\google-http-client-1.20.0-6210bf899b4cfc89b411503387a5c24d81cf03b5.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\.gradle\caches\modules-2\files-2.1\com.google.api-client\google-api-client-android\1.20.0\5673179575c32b69a474334255c3044adf18d40\google-api-client-android-1.20.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="05673179575c32b69a474334255c3044adf18d40">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\google-api-client-android-1.20.0-aa436d5f78c06fd9429bc4d44903cea75269196f.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\.gradle\caches\modules-2\files-2.1\com.google.http-client\google-http-client-jackson2\1.20.0\2408070b2abec043624d35b35e30450f1b663858\google-http-client-jackson2-1.20.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2408070b2abec043624d35b35e30450f1b663858">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\google-http-client-jackson2-1.20.0-ee4cf539707e3c078be074d50a4d29a19950330b.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.5.87\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="dd9247ea0fabe8ee479638c4b4a23e93752be256">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\classes-994671e56e42f3accb5a1b4d5c0b8b66b8f9c5c4.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\.gradle\caches\modules-2\files-2.1\com.google.apis\google-api-services-calendar\v3-rev125-1.20.0\fef496f895ad5be86416863153d4efbf7b601f8a\google-api-services-calendar-v3-rev125-1.20.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="fef496f895ad5be86416863153d4efbf7b601f8a">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\google-api-services-calendar-v3-rev125-1.20.0-c66c527664a87ce861c737efa523312e0f789ed6.jar" />
+    </item>
+    <item
+        jar="C:\Users\Tom\.gradle\caches\modules-2\files-2.1\com.google.oauth-client\google-oauth-client\1.20.0\1d086ac5756475ddf451af2e2df6e288d18608ca\google-oauth-client-1.20.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1d086ac5756475ddf451af2e2df6e288d18608ca">
+        <dex dex="C:\Users\Tom\Documents\GitHub\HollistonHighApp\app\build\intermediates\pre-dexed\debug\google-oauth-client-1.20.0-6ed84db10451e6bc288072163d91795c3cfad251.jar" />
+    </item>
+
+</items>
