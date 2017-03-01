@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient android:startColor="#ffb51e12" android:endColor="#88b51e12"
+        android:angle="270"/>
+</shape> <!-- From: file:/C:/Users/Tom/Documents/GitHub/HollistonHighApp/app/src/main/res/drawable/red_grad_shape.xml -->

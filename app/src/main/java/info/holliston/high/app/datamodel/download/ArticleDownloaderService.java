@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -75,9 +76,7 @@ public class ArticleDownloaderService extends Service {
 
         String sourcesToRefresh;
         sourcesToRefresh = intent.getStringExtra("datasources");
-        if (sourcesToRefresh.isEmpty()) {
-            sourcesToRefresh = "all";
-        }
+        if (sourcesToRefresh == null) {sourcesToRefresh = "all";}
 
         if (sourcesToRefresh.equals("news")) {
             refreshNews();
@@ -316,6 +315,7 @@ public class ArticleDownloaderService extends Service {
 
         Context context = getApplicationContext();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String nottest = prefs.getString("notifications_new_message_ringtone","not found");
         String notifications_new_message_ringtone = prefs.getString("notifications_new_message_ringtone", "content://settings/system/notification_sound");
         Boolean notifications_new_message_vibrate = prefs.getBoolean("notifications_new_message_vibrate", true);
 
@@ -346,8 +346,8 @@ public class ArticleDownloaderService extends Service {
             if (!notifications_new_message_ringtone.equals("silent")) {
                 try {
                     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(), notification);
-                    mp.start();
+                    Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                    ringtone.play();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -369,7 +369,7 @@ public class ArticleDownloaderService extends Service {
         Date now = new Date();
         Calendar nowCal = Calendar.getInstance();
         nowCal.setTime(now);
-        nowCal.set(Calendar.SECOND, nowCal.get(Calendar.SECOND) + 120);
+        nowCal.set(Calendar.SECOND, nowCal.get(Calendar.SECOND)+30);
 
         AlarmManager alarmMgr;
         alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
@@ -382,7 +382,7 @@ public class ArticleDownloaderService extends Service {
         alarmMgr.setRepeating(AlarmManager.RTC, nowCal.getTimeInMillis(),
                 1000*30, alarmIntent);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d, hh:mm a");
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d, hh:mm:ss a");
         Date setFor = nowCal.getTime();
         String setString = sdf.format(setFor);
         Log.d("ArticleDownloaderService", "TestAlarm(10) set for "+setString);
@@ -436,6 +436,8 @@ public class ArticleDownloaderService extends Service {
                             sendNotification();
                         }
                     }
+                    //comment out the next line (it forces a notification)
+                    //sendNotification();
                 }
             } catch (Exception e) {
                 result = getResources().getString(R.string.xml_error);
