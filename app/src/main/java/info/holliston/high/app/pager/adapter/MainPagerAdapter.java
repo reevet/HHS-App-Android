@@ -17,29 +17,28 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-
         Fragment fragment = null;
         switch (i) {
             case 0:
-                fragment = MainActivity.getsHomeFragment();
+                fragment = ma.getsHomeFragment();
                 break;
             case 1:
-                fragment = MainActivity.getsSchedFragment();
+                fragment = ma.getsSchedFragment();
                 break;
             case 2:
-                fragment = MainActivity.getsNewsFragment();
+                fragment = ma.getsNewsFragment();
                 break;
             case 3:
-                fragment = MainActivity.getsDailyAnnFragment();
+                fragment = ma.getsDailyAnnFragment();
                 break;
             case 4:
-                fragment = MainActivity.getsEventsFragment();
+                fragment = ma.getsEventsFragment();
                 break;
             case 5:
-                fragment = MainActivity.getsLunchFragment();
+                fragment = ma.getsLunchFragment();
                 break;
             case 6:
-                fragment = MainActivity.getsSocialFragment();
+                fragment = ma.getsSocialFragment();
                 break;
             default:
                 break;

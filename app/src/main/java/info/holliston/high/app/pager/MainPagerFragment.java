@@ -48,7 +48,8 @@ public class MainPagerFragment extends Fragment implements ViewPager.OnPageChang
     }
 
     public void setPage(int i) {
-        MainActivity.getsViewPager().setCurrentItem(i);
+        MainActivity activity = (MainActivity) getActivity();
+        activity.getsViewPager().setCurrentItem(i);
         currentTab = i;
         //onPageSelected(i);
     }
@@ -59,42 +60,43 @@ public class MainPagerFragment extends Fragment implements ViewPager.OnPageChang
 
     @Override
     public void onPageSelected(int position) {
+        MainActivity activity = (MainActivity) getActivity();
         switch (position) {
             case 0:
-                HomeFragment fragment0 = MainActivity.getsHomeFragment();
+                HomeFragment fragment0 = activity.getsHomeFragment();
                 fragment0.showFirstNews();
 
                 break;
             case 1:
-                SchedulesListFragment fragment1 = MainActivity.getsSchedFragment();
+                SchedulesListFragment fragment1 = activity.getsSchedFragment();
                 fragment1.showFirst();
                 break;
             case 2:
-                NewsRecyclerFragment fragment2 = MainActivity.getsNewsFragment();
+                NewsRecyclerFragment fragment2 = activity.getsNewsFragment();
                 fragment2.showFirst();
                 break;
             case 3:
-                DailyAnnListFragment fragment3 = MainActivity.getsDailyAnnFragment();
+                DailyAnnListFragment fragment3 = activity.getsDailyAnnFragment();
                 fragment3.showFirst();
                 break;
             case 4:
-                EventsListFragment fragment4 = MainActivity.getsEventsFragment();
+                EventsListFragment fragment4 = activity.getsEventsFragment();
                 fragment4.showFirst();
                 break;
             case 5:
-                LunchListFragment fragment5 = MainActivity.getsLunchFragment();
+                LunchListFragment fragment5 = activity.getsLunchFragment();
                 fragment5.showFirst();
                 break;
             case 6:
-                SocialFragment fragment6 = MainActivity.getsSocialFragment();
+                SocialFragment fragment6 = activity.getsSocialFragment();
                 break;
             default:
                 break;
         }
         currentTab = position;
-        MainActivity.setsCurrentView(position);
-        MainActivity.setsCurrentNewsItem(-1);
-        MainActivity.refreshActionBar(getActivity());
+        activity.setsCurrentView(position);
+        activity.setsCurrentNewsItem(-1);
+        activity.refreshActionBar(getActivity());
         //this gets overridden only in NewsFragment
     }
 

@@ -15,6 +15,7 @@ import java.util.List;
 import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
+import info.holliston.high.app.datamodel.ArticleWarehouse;
 import info.holliston.high.app.list.adapter.DailyAnnArrayAdapter;
 import info.holliston.high.app.pager.DailyAnnPagerFragment;
 
@@ -47,25 +48,29 @@ public class DailyAnnListFragment extends Fragment {
     }
 
     public void updateUI() {
-        articles = MainActivity.getsDailyannSource().getAllArticles();
+        MainActivity activity = (MainActivity) getActivity();
+        articles = activity.getWarehouse().getAllArticles(ArticleWarehouse.StoreType.DAILYANN);
 
-        DailyAnnArrayAdapter adapter = new DailyAnnArrayAdapter(getActivity(), articles);
-        ListView lv = (ListView) getActivity().findViewById(R.id.dailyann_list);
-        lv.setAdapter(adapter);
+        if (getActivity() != null) {
+            DailyAnnArrayAdapter adapter = new DailyAnnArrayAdapter(getActivity(), articles);
+            ListView lv = getActivity().findViewById(R.id.dailyann_list);
+            lv.setAdapter(adapter);
 
-        // Listview on child click listener
-        lv.setOnItemClickListener(new ListView.OnItemClickListener() {
+            // Listview on child click listener
+            lv.setOnItemClickListener(new ListView.OnItemClickListener() {
 
-                                      @Override
-                                      public void onItemClick(AdapterView<?> parent, View view,
-                                                              int position, long id) {
-                                          sendToDetailFragment(position);
+                                          @Override
+                                          public void onItemClick(AdapterView<?> parent, View view,
+                                                                  int position, long id) {
+                                              sendToDetailFragment(position);
+                                          }
                                       }
-                                  }
-        );
+            );
 
-        if (currentArticle >= 0) {
-            sendToDetailFragment(currentArticle);
+            if (currentArticle >= 0) {
+                sendToDetailFragment(currentArticle);
+            }
+
         }
     }
 

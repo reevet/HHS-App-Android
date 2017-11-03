@@ -18,6 +18,7 @@ import java.util.List;
 import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
+import info.holliston.high.app.datamodel.ArticleWarehouse;
 import info.holliston.high.app.list.adapter.EventsArrayAdapter;
 import info.holliston.high.app.pager.EventPagerFragment;
 
@@ -52,7 +53,7 @@ public class EventsListFragment extends Fragment {
 
         updateUI();
 
-        this.lv = (ExpandableListView) v.findViewById(R.id.events_exlistview);
+        this.lv = v.findViewById(R.id.events_exlistview);
 
         this.adapter = new EventsArrayAdapter(getActivity(), this.headers, this.events);
         this.lv.setAdapter(adapter);
@@ -99,7 +100,8 @@ public class EventsListFragment extends Fragment {
 
     public void updateUI() {
         List<Article> articles;
-        articles = MainActivity.getsEventsSource().getAllArticles();
+        MainActivity activity = (MainActivity) getActivity();
+        articles = activity.getWarehouse().getAllArticles(ArticleWarehouse.StoreType.EVENTS);
         headers.clear();
         events.clear();
 

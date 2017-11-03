@@ -16,6 +16,7 @@ import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
 import info.holliston.high.app.datamodel.download.ArticleDataSource;
+import info.holliston.high.app.datamodel.download.ArticleDataSourceOptions;
 import info.holliston.high.app.datamodel.download.ArticleParser;
 import info.holliston.high.app.datamodel.download.ArticleSQLiteHelper;
 import info.holliston.high.app.datamodel.download.JsonArticleDataSource;
@@ -32,13 +33,13 @@ public class HHSWidget extends AppWidgetProvider {
         ArticleDataSource datasource;
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-        ArticleDataSource.ArticleDataSourceOptions options = new ArticleDataSource.ArticleDataSourceOptions(
+        ArticleDataSourceOptions options = new ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_SCHEDULES,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
+                ArticleDataSourceOptions.SourceType.JSON,
                 context.getString(R.string.schedules_url),
                 context.getResources().getStringArray(R.array.schedules_parser_names),
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
-                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
+                ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "2");
         datasource = new JsonArticleDataSource(context, options);
 

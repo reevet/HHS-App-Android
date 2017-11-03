@@ -10,7 +10,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -66,7 +65,7 @@ public class ArticleDownloaderService extends Service {
 
         // alarmSource says which alarm triggered this service
         alarmSource = intent.getStringExtra("alarm");
-        Log.d("ArticleDownloaderService", "Service started due to " + alarmSource);
+        Log.d("ArticleDownloadService", "Service started due to " + alarmSource);
 
         // refreshSource says how to refresh (download, cache, or allow both)
         ArticleParser.SourceMode sentMode = (ArticleParser.SourceMode) intent.getSerializableExtra("refreshSource");
@@ -102,13 +101,13 @@ public class ArticleDownloaderService extends Service {
          * then calls an asyncTask to download the feed
          */
     private void refreshSchedules() {
-        ArticleDataSource.ArticleDataSourceOptions sdso = new ArticleDataSource.ArticleDataSourceOptions(
+        ArticleDataSourceOptions sdso = new ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_SCHEDULES,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
+                ArticleDataSourceOptions.SourceType.JSON,
                 getString(R.string.schedules_url),
                 getResources().getStringArray(R.array.schedules_parser_names),
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
-                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
+                ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "25");
         schedulesDataSource = new CalArticleDataSource(getApplicationContext(), sdso);
 
@@ -116,52 +115,52 @@ public class ArticleDownloaderService extends Service {
     }
 
     private void refreshNews() {
-        ArticleDataSource.ArticleDataSourceOptions ndso = new ArticleDataSource.ArticleDataSourceOptions(
+        ArticleDataSourceOptions ndso = new ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_NEWS,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
+                ArticleDataSourceOptions.SourceType.JSON,
                 getString(R.string.news_url) + "?key=" + getString(R.string.api_key),
                 getResources().getStringArray(R.array.news_parser_names),
                 ArticleParser.HtmlTags.KEEP_HTML_TAGS,
-                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
+                ArticleDataSourceOptions.SortOrder.GET_PAST,
                 "25");
         newsDataSource = new JsonArticleDataSource(getApplicationContext(), ndso);
         new refreshDataSource(newsDataSource, true, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void refreshDailyAnn() {
-        ArticleDataSource.ArticleDataSourceOptions dadso = new ArticleDataSource.ArticleDataSourceOptions(
+        ArticleDataSourceOptions dadso = new ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_DAILYANN,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.XML,
+                ArticleDataSourceOptions.SourceType.XML,
                 getString(R.string.dailyann_url),
                 getResources().getStringArray(R.array.dailyann_parser_names),
                 ArticleParser.HtmlTags.CONVERT_LINE_BREAKS,
-                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
+                ArticleDataSourceOptions.SortOrder.GET_PAST,
                 "10");
         dailyAnnDataSource = new XmlArticleDataSource(getApplicationContext(), dadso);
         new refreshDataSource(dailyAnnDataSource, true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void refreshEvents() {
-        ArticleDataSource.ArticleDataSourceOptions edso = new ArticleDataSource.ArticleDataSourceOptions(
+        ArticleDataSourceOptions edso = new ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_EVENTS,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
+                ArticleDataSourceOptions.SourceType.JSON,
                 getString(R.string.events_url),
                 getResources().getStringArray(R.array.events_parser_names),
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
-                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
+                ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "40");
         eventsDataSource = new CalArticleDataSource(getApplicationContext(), edso);
         new refreshDataSource(eventsDataSource, true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void refreshLunch() {
-        ArticleDataSource.ArticleDataSourceOptions ldso = new ArticleDataSource.ArticleDataSourceOptions(
+        ArticleDataSourceOptions ldso = new ArticleDataSourceOptions(
                 ArticleSQLiteHelper.TABLE_LUNCH,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
+                ArticleDataSourceOptions.SourceType.JSON,
                 getString(R.string.lunch_url),
                 getResources().getStringArray(R.array.lunch_parser_names),
                 ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
-                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
+                ArticleDataSourceOptions.SortOrder.GET_FUTURE,
                 "40");
         lunchDataSource = new CalArticleDataSource(getApplicationContext(), ldso);
         new refreshDataSource(lunchDataSource, true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -296,7 +295,7 @@ public class ArticleDownloaderService extends Service {
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d, hh:mm a");
         Date setFor = nowCal.getTime();
         String setString = sdf.format(setFor);
-        Log.d("ArticleDownloaderService", "Alarm " + alarm + " set for " + setString);
+        Log.d("ArticleDownloadService", "Alarm " + alarm + " set for " + setString);
     }
 
     // clear alarms before setting (just in case)
@@ -385,7 +384,7 @@ public class ArticleDownloaderService extends Service {
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d, hh:mm:ss a");
         Date setFor = nowCal.getTime();
         String setString = sdf.format(setFor);
-        Log.d("ArticleDownloaderService", "TestAlarm(10) set for "+setString);
+        Log.d("ArticleDownloadService", "TestAlarm(10) set for "+setString);
     }
 
     /*
@@ -397,7 +396,7 @@ public class ArticleDownloaderService extends Service {
         final Boolean triggersNotification;
         final Boolean cacheImages;
 
-        public refreshDataSource(ArticleDataSource dataSource, Boolean cacheImages, Boolean triggersNotification) {
+        private refreshDataSource(ArticleDataSource dataSource, Boolean cacheImages, Boolean triggersNotification) {
             this.dataSource = dataSource;
             this.cacheImages = cacheImages;
             this.triggersNotification = triggersNotification;
@@ -422,7 +421,7 @@ public class ArticleDownloaderService extends Service {
 
                 // request data download, retrieve string indicating success or not
                 result = dataSource.downloadArticles(ArticleParser.SourceMode.PREFER_DOWNLOAD);
-                Log.i("ArticleDownloaderService", dataSource.getName() + ": " + result);
+                Log.i("ArticleDownloadService", dataSource.getName() + ": " + result);
 
                 // if this datasource can trigger a notification,
                 // compare new article(0) with the mostRecent article.
@@ -455,11 +454,6 @@ public class ArticleDownloaderService extends Service {
             editor.apply();
 
             publishResults(this.dataSource.getName(), result);
-            // if requested, re-download and cache all images
-            if (this.cacheImages) {
-                //dataSource.downloadAndCacheImages();
-                //this might be a data killer
-            }
         }
     }
 }

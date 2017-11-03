@@ -2,7 +2,6 @@ package info.holliston.high.app.datamodel.download;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,8 +25,8 @@ import info.holliston.high.app.datamodel.Article;
  */
 public abstract class ArticleDataSource {
 
+    public String name;
     protected Context context;
-    private ArticleSQLiteHelper dbHelper;
     protected String[] allColumns = {
             ArticleSQLiteHelper.COLUMN_ID,
             ArticleSQLiteHelper.COLUMN_TITLE,
@@ -37,7 +36,7 @@ public abstract class ArticleDataSource {
             ArticleSQLiteHelper.COLUMN_DETAILS,
             ArticleSQLiteHelper.COLUMN_IMGSRC};
     protected ArticleDataSourceOptions options;
-    public String name;
+    private ArticleSQLiteHelper dbHelper;
     // Database fields
     private SQLiteDatabase database;
 
@@ -60,11 +59,77 @@ public abstract class ArticleDataSource {
         return this.options.getDatabaseName();
     }
 
+    public Article addArticle(Article passedArticle) {
+
+        Date date = passedArticle.date;
+
+        // prep the info for a SQL query
+        ContentValues values = new ContentValues();
+
+        values.put(ArticleSQLiteHelper.COLUMN_TITLE, passedArticle.title);
+
+        SimpleDateFormat dateSdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat timeSdf = new SimpleDateFormat("kk:mm");
+        String dateString = dateSdf.format(date);
+        String timeString = timeSdf.format(date);
+        int tsio = timeString.indexOf("24");
+        if (tsio == 0) {
+            timeString = timeString.replace("24", "00");
+        }
+        String fullDateString = dateString + " " + timeString;
+
+        values.put(ArticleSQLiteHelper.COLUMN_URL, passedArticle.url.toString());
+        values.put(ArticleSQLiteHelper.COLUMN_DATE, fullDateString);
+        values.put(ArticleSQLiteHelper.COLUMN_DETAILS, passedArticle.details);
+        values.put(ArticleSQLiteHelper.COLUMN_IMGSRC, passedArticle.imgSrc);
+        values.put(ArticleSQLiteHelper.COLUMN_KEY, passedArticle.key);
+
+        // if the article already exists, get it
+        Article newArticle = articleFromKey(passedArticle.key);
+
+        if (newArticle == null) {
+            // if the article does not exist, create/insert it.
+            // if it does exist, update it
+
+            this.open();
+            //insert the article
+            long insertId = database.insert(dbHelper.getName(), null,
+                    values);
+            //get it back
+            Cursor cursor = database.query(dbHelper.getName(),
+                    allColumns, ArticleSQLiteHelper.COLUMN_ID + " = " + insertId, null,
+                    null, null, null);
+            cursor.moveToFirst();
+
+            //new article = the newly inserted article
+            newArticle = cursorToArticle(cursor);
+            cursor.close();
+            this.close();
+        } else {
+            values.put(ArticleSQLiteHelper.COLUMN_KEY, newArticle.key);
+            this.open();
+            //update the article with the new info
+            //int update =
+            database.update(dbHelper.getName(),
+                    values, ArticleSQLiteHelper.COLUMN_URL + "='" + passedArticle.url.toString() + "'", null);
+            //Log.d("ArticleDataSource", update+" records updated");
+            Cursor cursor = database.query(dbHelper.getName(),
+                    allColumns, ArticleSQLiteHelper.COLUMN_URL + "='" + passedArticle.url.toString() + "'", null,
+                    null, null, null);
+            cursor.moveToFirst();
+            //new article = recently updated article
+            newArticle = cursorToArticle(cursor);
+            cursor.close();
+            this.close();
+        }
+        return newArticle;
+    }
+
     /*
      * Creates an Article object with the given information
      * and places it in the SQL database
      */
-    Article createArticle(String title, String key, URL url, Date date, String details, String imgsrc) {
+    Article createArticleOLD(String title, String key, URL url, Date date, String details, String imgsrc) {
         Article newArticle;
         // is the article already exists, get it
         newArticle = articleFromKey(key);
@@ -132,20 +197,9 @@ public abstract class ArticleDataSource {
      */
     void createArticles(List<Article> articleList) {
         for (Article art : articleList) {
-            this.createArticle(art.title, art.key, art.url, art.date, art.details, art.imgSrc);
+            this.addArticle(art);
         }
     }
-
-    /*
-     * Deletes a single article. No need for it now, bu you never know
-     */
-    /*public void deleteArticle(Article article) {
-        long id = article.id;
-        System.out.println("Comment deleted with id: " + id);
-        database.delete(ArticleSQLiteHelper.TABLE_SCHEDULES,
-                ArticleSQLiteHelper.COLUMN_ID
-                + " = " + id, null);
-    }*/
 
     /*
      * Finds an article with a given key
@@ -175,19 +229,12 @@ public abstract class ArticleDataSource {
         return article;
     }
 
-    /*Just in case
-    public void nukeAllRecords() {
-        this.open();
-        database.execSQL("delete from " + dbHelper.getName());
-        this.close();
-    }*/
-
     /*
      * Gets the most first Article in the list.
      * News = most recent; Events = next upcoming
      */
     public Article getLatestArticle() {
-        Article returnArticle = new Article();
+        Article returnArticle;
         List<Article> articles = getAllArticles();
         if (articles.size()>0) {
             returnArticle = articles.get(0);
@@ -331,80 +378,6 @@ public abstract class ArticleDataSource {
                     200, context, al);
             ial.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
-    }
-
-    /*
-     * A custom object for holding all of the datasource options
-     */
-    public static class ArticleDataSourceOptions {
-        private String databaseName;
-        private SourceType sourceType;
-        private String urlString;
-        private String[] parserNames;
-        private ArticleParser.HtmlTags conversionType;
-        private SortOrder sortOrder;
-        private String limit;
-
-        public ArticleDataSourceOptions(String databaseName, SourceType sourceType,
-                                        String urlString, String[] parserNames,
-                                        ArticleParser.HtmlTags conversionType,
-                                        SortOrder sortOrder, String limit) {
-            this.setDatabaseName(databaseName);
-            this.setSourceType(sourceType);
-            this.setUrlString(urlString);
-            this.setParserNames(parserNames);
-            this.setConversionType(conversionType);
-            this.setSortOrder(sortOrder);
-            this.setLimit(limit);
-        }
-
-        public String getDatabaseName() {
-            return this.databaseName;
-        }
-
-        public void setDatabaseName(String name) {
-            this.databaseName = name;
-        }
-
-        public String getUrlString() {
-            return this.urlString;
-        }
-        public void setUrlString(String url) {
-            this.urlString = url;
-        }
-
-        public String[] getParserNames() {
-            return this.parserNames;
-        }
-        public void setParserNames(String[] names) {
-            this.parserNames = names;
-        }
-
-        public void setSourceType(SourceType type) {
-            this.sourceType = type;
-        }
-
-        public void setConversionType(ArticleParser.HtmlTags type) {
-            this.conversionType = type;
-        }
-        public ArticleParser.HtmlTags getConversionType() {return this.conversionType;}
-
-        public void setSortOrder(SortOrder order) {
-            this.sortOrder = order;
-        }
-
-        public String getLimit() {
-            return this.limit;
-        }
-        public void setLimit(String limit) {
-            this.limit = limit;
-        }
-
-        public enum SortOrder {GET_FUTURE, GET_PAST}
-
-        public enum SourceType {XML, JSON}
-
-
     }
 }
 

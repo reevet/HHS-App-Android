@@ -18,6 +18,7 @@ import java.util.List;
 import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
+import info.holliston.high.app.datamodel.ArticleWarehouse;
 import info.holliston.high.app.list.adapter.SchedulesArrayAdapter;
 import info.holliston.high.app.pager.SchedulePagerFragment;
 
@@ -50,7 +51,7 @@ public class SchedulesListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        this.lv = (ExpandableListView) v.findViewById(R.id.schedules_exlistview);
+        this.lv = v.findViewById(R.id.schedules_exlistview);
 
         updateUI();
 
@@ -98,7 +99,8 @@ public class SchedulesListFragment extends Fragment {
 
     public void updateUI() {
         final List<Article> articles;
-        articles = MainActivity.getsScheduleSource().getAllArticles();
+        MainActivity activity = (MainActivity) getActivity();
+        articles = activity.getWarehouse().getAllArticles(ArticleWarehouse.StoreType.SCHEDULES);
         this.headers.clear();
         this.schedules.clear();
 

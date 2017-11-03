@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- From: file:/C:/Users/Tom/Documents/GitHub/HollistonHighApp/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values-w720dp/values.xml -->
-    <eat-comment/>
-    <bool name="abc_action_bar_expanded_action_views_exclusive">false</bool>
-    <!-- From: file:/C:/Users/Tom/Documents/GitHub/HollistonHighApp/app/build/intermediates/exploded-aar/com.android.support/preferencefragment/1.0.0/res/values-w720dp-v13/values.xml -->
-    <eat-comment/>
-    <dimen name="preference_fragment_padding_side">32dp</dimen>
-</resources>

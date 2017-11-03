@@ -16,6 +16,7 @@ import java.util.List;
 import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
+import info.holliston.high.app.datamodel.ArticleWarehouse;
 import info.holliston.high.app.list.adapter.NewsCardAdapter;
 import info.holliston.high.app.list.adapter.RecyclerItemClickListener;
 import info.holliston.high.app.pager.NewsPagerFragment;
@@ -49,26 +50,29 @@ public class NewsRecyclerFragment extends Fragment {
     }
 
     public void updateUI() {
-        articles = MainActivity.getsNewsSource().getAllArticles();
+        MainActivity activity = (MainActivity) getActivity();
+        articles = activity.getWarehouse().getAllArticles(ArticleWarehouse.StoreType.NEWS);
 
         adapter = new NewsCardAdapter(getActivity(), articles);
-        RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardlist);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        sendToDetailFragment(position);
-                    }
-                })
-        );
+        if (getActivity() != null) {
+            RecyclerView recyclerView = getActivity().findViewById(R.id.cardlist);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.addOnItemTouchListener(
+                    new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            sendToDetailFragment(position);
+                        }
+                    })
+            );
 
-        if ((currentArticle >= 0) || MainActivity.getsNewNewsAvailable()) {
-            sendToDetailFragment(currentArticle);
-            MainActivity.setsNewNewsAvailable(false);
+            if ((currentArticle >= 0) || activity.getsNewNewsAvailable()) {
+                sendToDetailFragment(currentArticle);
+                activity.setsNewNewsAvailable(false);
+            }
         }
     }
 

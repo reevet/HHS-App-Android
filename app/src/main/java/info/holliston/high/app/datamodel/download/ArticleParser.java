@@ -34,6 +34,7 @@ public class ArticleParser {
     private String startTimeName;
     private String detailsName;
     private String idName;
+    private String imgName;
     //holder for the image source
     private String currentImgSrc;
     private int counter = 0;
@@ -65,6 +66,7 @@ public class ArticleParser {
         this.startTimeName = parserNames[4];
         this.detailsName = parserNames[5];
         this.idName = parserNames[6];
+        this.imgName = "gd:image";
 
         try {
             XmlPullParser parser = Xml.newPullParser();
@@ -133,6 +135,7 @@ public class ArticleParser {
                 continue;
             }
             String name = parser.getName();
+            //Log.d("parser", "checking: "+name);
             if (name.equals(titleName)) {
                 title = readTitle(parser);
             } else if (name.equals(detailsName)) {
@@ -143,7 +146,11 @@ public class ArticleParser {
                 date = readDate(parser);
             } else if (name.equals(idName)) {
                 id = readId(parser);
-            } else {
+            } else if (name.equals(imgName)) {
+                if (this.currentImgSrc == null) {
+                    this.currentImgSrc = readImgSrc(parser);
+                }
+            }else {
                 skip(parser);
             }
         }
@@ -154,7 +161,7 @@ public class ArticleParser {
             url = new URL(link);
         } catch (Exception e) {
             url = new URL("http://www.google.com");
-            Log.d("parser", "Error making URL");
+            Log.d("parser", "Error making URL to "+link);
         }
 
         //parse possible date formats
@@ -293,6 +300,15 @@ public class ArticleParser {
         String id = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, idName);
         return id;
+    }
+
+    private String readImgSrc(XmlPullParser parser) throws IOException, XmlPullParserException {
+        String src = null;
+        parser.require(XmlPullParser.START_TAG, ns, imgName);
+
+        src = parser.getAttributeValue(null, "url");
+
+        return src;
     }
 
     // skips any other tags, but manages the end tag so the article doesn't end yet.

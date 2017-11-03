@@ -18,6 +18,7 @@ import java.util.List;
 import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
+import info.holliston.high.app.datamodel.ArticleWarehouse;
 import info.holliston.high.app.list.adapter.LunchArrayAdapter;
 import info.holliston.high.app.pager.LunchPagerFragment;
 
@@ -52,7 +53,7 @@ public class LunchListFragment extends Fragment {
 
         updateUI();
 
-        this.lv = (ExpandableListView) v.findViewById(R.id.lunch_exlistview);
+        this.lv = v.findViewById(R.id.lunch_exlistview);
 
         adapter = new LunchArrayAdapter(getActivity(), this.headers, this.lunches);
         this.lv.setAdapter(adapter);
@@ -86,7 +87,8 @@ public class LunchListFragment extends Fragment {
 
     public void updateUI() {
         List<Article> articles;
-        articles = MainActivity.getsLunchSource().getAllArticles();
+        MainActivity activity = (MainActivity) getActivity();
+        articles = activity.getWarehouse().getAllArticles(ArticleWarehouse.StoreType.LUNCH);
 
         if (headers.size() == 0) {
             int weekOfYear = -1;

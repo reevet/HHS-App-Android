@@ -13,6 +13,7 @@ import java.util.List;
 import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
+import info.holliston.high.app.datamodel.ArticleWarehouse;
 import info.holliston.high.app.pager.adapter.LunchPagerAdapter;
 
 public class LunchPagerFragment extends Fragment {
@@ -34,12 +35,13 @@ public class LunchPagerFragment extends Fragment {
         position = bundle.getInt("position", 0);
 
         List<Article> articles;
-        articles = MainActivity.getsLunchSource().getAllArticles();
+        MainActivity activity = (MainActivity) getActivity();
+        articles = activity.getWarehouse().getAllArticles(ArticleWarehouse.StoreType.LUNCH);
 
         mDetailPagerAdapter =
                 new LunchPagerAdapter(
                         getActivity().getSupportFragmentManager());
-        mViewPager = (ViewPager) v.findViewById(R.id.detail_pager);
+        mViewPager = v.findViewById(R.id.detail_pager);
         mViewPager.setAdapter(mDetailPagerAdapter);
         mDetailPagerAdapter.setArticles(articles);
         mViewPager.setCurrentItem(position);

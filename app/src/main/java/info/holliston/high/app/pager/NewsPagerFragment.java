@@ -13,6 +13,7 @@ import java.util.List;
 import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
+import info.holliston.high.app.datamodel.ArticleWarehouse;
 import info.holliston.high.app.pager.adapter.NewsPagerAdapter;
 
 public class NewsPagerFragment extends Fragment implements ViewPager.OnPageChangeListener {
@@ -33,12 +34,13 @@ public class NewsPagerFragment extends Fragment implements ViewPager.OnPageChang
         Bundle bundle = this.getArguments();
         position = bundle.getInt("position", 0);
 
-        List<Article> articles = MainActivity.getsNewsSource().getAllArticles();
+        MainActivity activity = (MainActivity) getActivity();
+        List<Article> articles = activity.getWarehouse().getAllArticles(ArticleWarehouse.StoreType.NEWS);
 
         mDetailPagerAdapter =
                 new NewsPagerAdapter(
                         getActivity().getSupportFragmentManager());
-        mViewPager = (ViewPager) v.findViewById(R.id.detail_pager);
+        mViewPager = v.findViewById(R.id.detail_pager);
         mViewPager.setAdapter(mDetailPagerAdapter);
         mViewPager.setOnPageChangeListener(this);
         mDetailPagerAdapter.setArticles(articles);
@@ -55,8 +57,9 @@ public class NewsPagerFragment extends Fragment implements ViewPager.OnPageChang
 
     @Override
     public void onPageSelected(int position) {
-        MainActivity.setsCurrentNewsItem(position);
-        MainActivity.refreshActionBar(getActivity());
+        MainActivity activity = (MainActivity) getActivity();
+        activity.setsCurrentNewsItem(position);
+        activity.refreshActionBar(getActivity());
     }
 
     @Override

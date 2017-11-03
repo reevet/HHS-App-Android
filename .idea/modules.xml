@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/HollistonHigh2.0.iml" filepath="$PROJECT_DIR$/HollistonHigh2.0.iml" />
-      <module fileurl="file://$PROJECT_DIR$/HollistonHighApp.iml" filepath="$PROJECT_DIR$/HollistonHighApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HHS-App-Android-Nov2017.iml" filepath="$PROJECT_DIR$/HHS-App-Android-Nov2017.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/preferencefragment/preferencefragment.iml" filepath="$PROJECT_DIR$/libs/preferencefragment/preferencefragment.iml" />
     </modules>
   </component>
 </project>
-

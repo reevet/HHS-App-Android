@@ -1,11 +1,8 @@
 package info.holliston.high.app.datamodel.download;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import info.holliston.high.app.datamodel.Article;
@@ -15,7 +12,7 @@ import info.holliston.high.app.datamodel.Article;
  */
 public class XmlArticleDataSource extends ArticleDataSource{
 
-    public XmlArticleDataSource(Context context, ArticleDataSource.ArticleDataSourceOptions options) {
+    public XmlArticleDataSource(Context context, ArticleDataSourceOptions options) {
         this.setup(context, options);
     }
 

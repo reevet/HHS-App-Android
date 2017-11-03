@@ -1,11 +1,9 @@
 package info.holliston.high.app.datamodel.download;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import info.holliston.high.app.datamodel.Article;
@@ -46,6 +44,7 @@ public class JsonArticleDataSource extends ArticleDataSource {
 
             } catch (Exception e) {
                 //result = "Downloading error: " + e.toString() + ". Using cache instead.";
+                Log.e("JsonADS", e.toString());
             } finally {
                 try {
                     if (stream != null) {

@@ -13,6 +13,7 @@ import java.util.List;
 import info.holliston.high.app.MainActivity;
 import info.holliston.high.app.R;
 import info.holliston.high.app.datamodel.Article;
+import info.holliston.high.app.datamodel.ArticleWarehouse;
 import info.holliston.high.app.pager.adapter.DailyAnnPagerAdapter;
 
 public class DailyAnnPagerFragment extends Fragment {
@@ -35,12 +36,13 @@ public class DailyAnnPagerFragment extends Fragment {
         Bundle bundle = this.getArguments();
         position = bundle.getInt("position", 0);
 
-        articles = MainActivity.getsDailyannSource().getAllArticles();
+        MainActivity activity = (MainActivity) getActivity();
+        articles = activity.getWarehouse().getAllArticles(ArticleWarehouse.StoreType.DAILYANN);
 
         mDetailPagerAdapter =
                 new DailyAnnPagerAdapter(
                         getActivity().getSupportFragmentManager());
-        mViewPager = (ViewPager) v.findViewById(R.id.detail_pager);
+        mViewPager = v.findViewById(R.id.detail_pager);
         mViewPager.setAdapter(mDetailPagerAdapter);
         mDetailPagerAdapter.setArticles(articles);
         mViewPager.setCurrentItem(position);

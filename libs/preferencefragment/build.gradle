@@ -5,15 +5,12 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.10.+'
+        classpath 'com.android.tools.build:gradle:3.0.0'
     }
 }
 
 apply plugin: 'android-library'
 apply plugin: 'maven'
-
-version = VERSION
-group = GROUP
 
 dependencies {
     compile 'com.android.support:support-v4:19.0.+'
@@ -21,7 +18,7 @@ dependencies {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '20.0.0'
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         minSdkVersion 7
@@ -44,9 +41,5 @@ android {
 uploadArchives {
     repositories.mavenDeployer {
         repository(url: "file:maven-repository/")
-
-        pom.groupId = GROUP
-        pom.artifactId = ARTIFACT_ID
-        pom.version = VERSION
     }
 }

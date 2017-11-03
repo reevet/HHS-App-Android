@@ -11,15 +11,14 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.Menu;
@@ -36,13 +35,10 @@ import com.google.android.gms.analytics.Tracker;
 import java.util.ArrayList;
 
 import info.holliston.high.app.datamodel.Article;
-import info.holliston.high.app.datamodel.download.ArticleDataSource;
+import info.holliston.high.app.datamodel.ArticleWarehouse;
 import info.holliston.high.app.datamodel.download.ArticleDownloaderService;
 import info.holliston.high.app.datamodel.download.ArticleParser;
 import info.holliston.high.app.datamodel.download.ArticleSQLiteHelper;
-import info.holliston.high.app.datamodel.download.CalArticleDataSource;
-import info.holliston.high.app.datamodel.download.JsonArticleDataSource;
-import info.holliston.high.app.datamodel.download.XmlArticleDataSource;
 import info.holliston.high.app.list.DailyAnnListFragment;
 import info.holliston.high.app.list.EventsListFragment;
 import info.holliston.high.app.list.LunchListFragment;
@@ -55,162 +51,32 @@ import info.holliston.high.app.pager.NewsPagerFragment;
 import info.holliston.high.app.pager.adapter.MainPagerAdapter;
 import info.holliston.high.app.widget.HHSWidget;
 
-public class MainActivity extends ActionBarActivity {
-
-    //Paging and Adapters
-    private static MainPagerFragment sMainPagerFragment;
-    private static ViewPager sViewPager;
-
-    //datasources
-    private static ArticleDataSource sScheduleSource;
-    private static ArticleDataSource sNewsSource;
-    private static ArticleDataSource sDailyannSource;
-    private static ArticleDataSource sEventsSource;
-    private static ArticleDataSource sLunchSource;
-    //main category fragments
-    private static HomeFragment sHomeFragment;
-    private static DailyAnnListFragment sDailyAnnFragment;
-    private static EventsListFragment sEventsFragment;
-    private static LunchListFragment sLunchFragment;
-    private static NewsRecyclerFragment sNewsFragment;
-    private static SchedulesListFragment sSchedFragment;
-    private static SocialFragment sSocialFragment;
+public class MainActivity extends AppCompatActivity {
 
     private static int sCurrentNewsItem = -1;
+    //datasources
+    public ArticleWarehouse warehouse;
+    //Paging and Adapters
+    private MainPagerFragment sMainPagerFragment;
+    private ViewPager sViewPager;
+    //main category fragments
+    private HomeFragment sHomeFragment;
+    private DailyAnnListFragment sDailyAnnFragment;
+    private EventsListFragment sEventsFragment;
+    private LunchListFragment sLunchFragment;
+    private NewsRecyclerFragment sNewsFragment;
+    private SchedulesListFragment sSchedFragment;
+    private SocialFragment sSocialFragment;
     //variables
-    private static Boolean sNewNewsAvailable = false;
+    private Boolean sNewNewsAvailable = false;
 
-    private static int sCurrentView = -1;
+    private int sCurrentView = -1;
     //Menu drawer and action bar
-    private static DrawerLayout sDrawerLayout;
-    private static int sIsRefreshing = 0;
-
-    private static Intent sShareIntent;
-    private LinearLayout mDrawerLinLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private ShareActionProvider mShareActionProvider;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //If a notification waa clicked to open this activity, note it here so that
-        //we can redirect to the news page later
-        Intent intent = getIntent();
-        Boolean notification = intent.getBooleanExtra("fromNotification", false);
-        if (notification) {
-            sNewNewsAvailable = true;
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(0);
-        } else {
-            sNewNewsAvailable = false;
-        }
-        //sNewNewsAvailable = true;  //for debug
-
-        //set up the menu drawer
-        setUpMenuDrawer();
-
-        // enabling action bar app icon to behave as toggle button
-        ActionBar bar = (ActionBar) getSupportActionBar();
-        if (bar != null) {
-            bar.setDisplayHomeAsUpEnabled(true);
-            bar.setHomeButtonEnabled(true);
-            bar.setIcon(R.drawable.ic_hhs_hollow);
-        }
-
-        //set up datasources and category fragments
-        defineDataSources();
-        sHomeFragment = new HomeFragment();
-        sDailyAnnFragment = new DailyAnnListFragment();
-        sEventsFragment = new EventsListFragment();
-        sLunchFragment = new LunchListFragment();
-        sNewsFragment = new NewsRecyclerFragment();
-        sSchedFragment = new SchedulesListFragment();
-        sSocialFragment = new SocialFragment();
-
-        //set up the main category pager
-        startPager();
-
-        //suggest rating this app
-        AppRater.app_launched(this);
-
-        //set alarms to download data
-        setDownloadAlarms();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //check if this is the first time the app is launched
-        checkIfFirstTime();
-
-        refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, true, this);
-
-        //prepare to listen for notifications
-        registerReceiver(receiver, new IntentFilter(ArticleDownloaderService.APP_RECEIVER));
-        registerReceiver(receiver, new IntentFilter(HHSWidget.NOTIFICATION));
-
-        // Get tracker.
-        Tracker t = ((AppApplication) getApplication()).getTracker(
-                AppApplication.TrackerName.APP_TRACKER);
-
-        // Set screen name.
-        t.setScreenName("MainActivity");
-
-        // Send a screen view.
-        t.send(new HitBuilders.ScreenViewBuilder().build());
-        Log.i("MainActivity", "Analytics tracker sent");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(receiver);
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("sCurrentView", sCurrentView);
-        getSupportFragmentManager()
-                .putFragment(outState, HomeFragment.class.getName(), sHomeFragment);
-        getSupportFragmentManager()
-                .putFragment(outState, SchedulesListFragment.class.getName(), sSchedFragment);
-        getSupportFragmentManager()
-                .putFragment(outState, NewsRecyclerFragment.class.getName(), sNewsFragment);
-        getSupportFragmentManager()
-                .putFragment(outState, DailyAnnListFragment.class.getName(), sDailyAnnFragment);
-        getSupportFragmentManager()
-                .putFragment(outState, EventsListFragment.class.getName(), sEventsFragment);
-        getSupportFragmentManager()
-                .putFragment(outState, LunchListFragment.class.getName(), sLunchFragment);
-    }
-
-    @Override
-    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-
-        sCurrentView = savedInstanceState.getInt("sCurrentView");
-        sHomeFragment = (HomeFragment) getSupportFragmentManager()
-                .getFragment(savedInstanceState, HomeFragment.class.getName());
-        sSchedFragment = (SchedulesListFragment) getSupportFragmentManager()
-                .getFragment(savedInstanceState, SchedulesListFragment.class.getName());
-        sNewsFragment = (NewsRecyclerFragment) getSupportFragmentManager()
-                .getFragment(savedInstanceState, NewsRecyclerFragment.class.getName());
-        sDailyAnnFragment = (DailyAnnListFragment) getSupportFragmentManager().getFragment(
-                savedInstanceState, DailyAnnListFragment.class.getName());
-        sEventsFragment = (EventsListFragment) getSupportFragmentManager().getFragment(
-                savedInstanceState, EventsListFragment.class.getName());
-        sLunchFragment = (LunchListFragment) getSupportFragmentManager().getFragment(
-                savedInstanceState, LunchListFragment.class.getName());
-
-        super.onRestoreInstanceState(savedInstanceState);
-
-    }
-
+    private DrawerLayout sDrawerLayout;
+    private int sIsRefreshing = 0;
     /*
-         * receive messages for data refresh completion or notification
-         */
+     * receive messages for data refresh completion or notification
+     */
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -252,7 +118,7 @@ public class MainActivity extends ActionBarActivity {
 
                     //when all 5 report in, turn off SwipeRefresh animation
                     if (sIsRefreshing == 5) {
-                        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+                        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_container);
                         if (swipeRefreshLayout != null) {
                             swipeRefreshLayout.setRefreshing(false);
                             sIsRefreshing = 0;
@@ -266,17 +132,140 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     };
+    private Intent sShareIntent;
+    private LinearLayout mDrawerLinLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private ShareActionProvider mShareActionProvider;
 
-    public static void refreshData(ArticleParser.SourceMode refreshSource, Boolean cacheImages, MainActivity ma) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) ma.findViewById(R.id.swipe_container);
+        //If a notification waa clicked to open this activity, note it here so that
+        //we can redirect to the news page later
+        Intent intent = getIntent();
+        Boolean notification = intent.getBooleanExtra("fromNotification", false);
+        if (notification) {
+            sNewNewsAvailable = true;
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                notificationManager.cancel(0);
+            }
+        } else {
+            sNewNewsAvailable = false;
+        }
+        //sNewNewsAvailable = true;  //for debug
+
+        //set up the menu drawer
+        setUpMenuDrawer();
+
+        // enabling action bar app icon to behave as toggle button
+        ActionBar bar = getSupportActionBar();
+        if (bar != null) {
+            bar.setDisplayHomeAsUpEnabled(true);
+            bar.setHomeButtonEnabled(true);
+            bar.setIcon(R.drawable.ic_hhs_hollow);
+        }
+
+        //set up datasources and category fragments
+        warehouse = new ArticleWarehouse(getApplicationContext());
+        sHomeFragment = new HomeFragment();
+        sDailyAnnFragment = new DailyAnnListFragment();
+        sEventsFragment = new EventsListFragment();
+        sLunchFragment = new LunchListFragment();
+        sNewsFragment = new NewsRecyclerFragment();
+        sSchedFragment = new SchedulesListFragment();
+        sSocialFragment = new SocialFragment();
+
+        //set up the main category pager
+        startPager();
+
+        //suggest rating this app
+        AppRater.app_launched(this);
+
+        //set alarms to download data
+        setDownloadAlarms();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //check if this is the first time the app is launched
+        checkIfFirstTime();
+
+        refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD);
+
+        //prepare to listen for notifications
+        registerReceiver(receiver, new IntentFilter(ArticleDownloaderService.APP_RECEIVER));
+        registerReceiver(receiver, new IntentFilter(HHSWidget.NOTIFICATION));
+
+        // Get tracker.
+        Tracker t = ((AppApplication) getApplication()).getTracker(
+                AppApplication.TrackerName.APP_TRACKER);
+
+        // Set screen name.
+        t.setScreenName("MainActivity");
+
+        // Send a screen view.
+        t.send(new HitBuilders.ScreenViewBuilder().build());
+        Log.i("MainActivity", "Analytics tracker sent");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("sCurrentView", sCurrentView);
+        getSupportFragmentManager()
+                .putFragment(outState, HomeFragment.class.getName(), sHomeFragment);
+        getSupportFragmentManager()
+                .putFragment(outState, SchedulesListFragment.class.getName(), sSchedFragment);
+        getSupportFragmentManager()
+                .putFragment(outState, NewsRecyclerFragment.class.getName(), sNewsFragment);
+        getSupportFragmentManager()
+                .putFragment(outState, DailyAnnListFragment.class.getName(), sDailyAnnFragment);
+        getSupportFragmentManager()
+                .putFragment(outState, EventsListFragment.class.getName(), sEventsFragment);
+        getSupportFragmentManager()
+                .putFragment(outState, LunchListFragment.class.getName(), sLunchFragment);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+
+        sCurrentView = savedInstanceState.getInt("sCurrentView");
+        sHomeFragment = (HomeFragment) getSupportFragmentManager()
+                .getFragment(savedInstanceState, HomeFragment.class.getName());
+        sSchedFragment = (SchedulesListFragment) getSupportFragmentManager()
+                .getFragment(savedInstanceState, SchedulesListFragment.class.getName());
+        sNewsFragment = (NewsRecyclerFragment) getSupportFragmentManager()
+                .getFragment(savedInstanceState, NewsRecyclerFragment.class.getName());
+        sDailyAnnFragment = (DailyAnnListFragment) getSupportFragmentManager().getFragment(
+                savedInstanceState, DailyAnnListFragment.class.getName());
+        sEventsFragment = (EventsListFragment) getSupportFragmentManager().getFragment(
+                savedInstanceState, EventsListFragment.class.getName());
+        sLunchFragment = (LunchListFragment) getSupportFragmentManager().getFragment(
+                savedInstanceState, LunchListFragment.class.getName());
+
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    public void refreshData(ArticleParser.SourceMode refreshSource) {
+
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_container);
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setRefreshing(true);
         }
 
-        Toast.makeText(ma, "Loading data", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Loading data", Toast.LENGTH_LONG).show();
 
-        Intent intent = new Intent(ma.getApplicationContext(), ArticleDownloaderService.class);
+        Intent intent = new Intent(this, ArticleDownloaderService.class);
         if (refreshSource == null) {
             refreshSource = ArticleParser.SourceMode.PREFER_DOWNLOAD;
         }
@@ -284,15 +273,13 @@ public class MainActivity extends ActionBarActivity {
         intent.putExtra("datasources", "all");
 
         intent.putExtra("refreshSource", refreshSource);
-        if (cacheImages) {
-            intent.putExtra("getImages", "DOWNLOAD_ONLY");
-        }
+        intent.putExtra("getImages", "DOWNLOAD_ONLY");
 
-        ma.startService(intent);
+        startService(intent);
         Log.d("MainActivity", "Refresh intent sent to ArticleDownloaderService");
 
-        ma.displayView(0);
-        MainActivity.getsDrawerLayout().closeDrawers();
+        displayView(0);
+        getDrawerLayout().closeDrawers();
     }
 
     public void setDownloadAlarms() {
@@ -308,10 +295,12 @@ public class MainActivity extends ActionBarActivity {
         //create main pager and attach adapter
         sMainPagerFragment = new MainPagerFragment();
         MainPagerAdapter sMainPagerAdapter = new MainPagerAdapter(this, getSupportFragmentManager());
-        sViewPager = (ViewPager) findViewById(R.id.frame_pager);
-        sViewPager.setOnPageChangeListener(sMainPagerFragment);
-        sViewPager.setAdapter(sMainPagerAdapter);
-        sViewPager.setOffscreenPageLimit(6);
+        sViewPager = findViewById(R.id.frame_pager);
+        if (sViewPager != null) {
+            sViewPager.addOnPageChangeListener(sMainPagerFragment);
+            sViewPager.setAdapter(sMainPagerAdapter);
+            sViewPager.setOffscreenPageLimit(6);
+        }
 
         //set up one-pane or two-pane layouts
         if (findViewById(R.id.frame_container) != null) {
@@ -358,7 +347,7 @@ public class MainActivity extends ActionBarActivity {
         }
         // if option 9 (refresh data)
         else if (position == 9) {
-            refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, true, this);
+            refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD);
             return;
         }
 
@@ -379,8 +368,10 @@ public class MainActivity extends ActionBarActivity {
 
         //if the drawer is open, close it.
         DrawerLayout mDrawerLayout;
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawers();
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawers();
+        }
     }
 
     @Override
@@ -414,63 +405,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /*
-     * Define the datasources for each feed
-     */
-    private void defineDataSources() {
-        ArticleDataSource.ArticleDataSourceOptions options;
-
-        options = new ArticleDataSource.ArticleDataSourceOptions(
-                ArticleSQLiteHelper.TABLE_NEWS,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
-                getString(R.string.news_url),
-                getResources().getStringArray(R.array.news_parser_names),
-                ArticleParser.HtmlTags.KEEP_HTML_TAGS,
-                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
-                "1");
-        sNewsSource = new JsonArticleDataSource(getApplicationContext(), options);
-
-        options = new ArticleDataSource.ArticleDataSourceOptions(
-                ArticleSQLiteHelper.TABLE_SCHEDULES,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
-                getString(R.string.schedules_url),
-                getResources().getStringArray(R.array.schedules_parser_names),
-                ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
-                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
-                "2");
-        sScheduleSource = new CalArticleDataSource(getApplicationContext(), options);
-
-        options = new ArticleDataSource.ArticleDataSourceOptions(
-                ArticleSQLiteHelper.TABLE_LUNCH,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
-                getString(R.string.lunch_url),
-                getResources().getStringArray(R.array.lunch_parser_names),
-                ArticleParser.HtmlTags.IGNORE_HTML_TAGS,
-                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
-                "5");
-        sLunchSource = new CalArticleDataSource(getApplicationContext(), options);
-
-        options = new ArticleDataSource.ArticleDataSourceOptions(
-                ArticleSQLiteHelper.TABLE_DAILYANN,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.XML,
-                getString(R.string.dailyann_url),
-                getResources().getStringArray(R.array.dailyann_parser_names),
-                ArticleParser.HtmlTags.CONVERT_LINE_BREAKS,
-                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_PAST,
-                "1");
-        sDailyannSource = new XmlArticleDataSource(getApplicationContext(), options);
-
-        options = new ArticleDataSource.ArticleDataSourceOptions(
-                ArticleSQLiteHelper.TABLE_EVENTS,
-                ArticleDataSource.ArticleDataSourceOptions.SourceType.JSON,
-                getString(R.string.events_url),
-                getResources().getStringArray(R.array.events_parser_names),
-                ArticleParser.HtmlTags.CONVERT_LINE_BREAKS,
-                ArticleDataSource.ArticleDataSourceOptions.SortOrder.GET_FUTURE,
-                "20");
-        sEventsSource = new CalArticleDataSource(getApplicationContext(), options);
-    }
-
-    /*
      * Check for first launch, to download all data
      */
     private void checkIfFirstTime() {
@@ -478,7 +412,7 @@ public class MainActivity extends ActionBarActivity {
         Boolean firstTime = prefs.getBoolean("firstTime", true);
 
         if (firstTime) {
-            refreshData(ArticleParser.SourceMode.DOWNLOAD_ONLY, true, this);
+            refreshData(ArticleParser.SourceMode.DOWNLOAD_ONLY);
         }
     }
 
@@ -493,9 +427,9 @@ public class MainActivity extends ActionBarActivity {
         ArrayList<NavDrawerItem> navDrawerItems;
 
         //get drawer elements
-        sDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLinLayout = (LinearLayout) findViewById(R.id.drawer_lin_layout);
-        ListView mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
+        sDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLinLayout = findViewById(R.id.drawer_lin_layout);
+        ListView mDrawerList = findViewById(R.id.list_slidermenu);
 
         // adding nav drawer items to array
         navDrawerItems = new ArrayList<>();
@@ -512,13 +446,15 @@ public class MainActivity extends ActionBarActivity {
 
         // Recycle the typed array
         navMenuIcons.recycle();
-
-        mDrawerList.setOnItemClickListener(new SlideMenuClickListener()); //custom object is defined below
-
         // setting the nav drawer list adapter
+
         NavDrawerListAdapter adapter;
         adapter = new NavDrawerListAdapter(getApplicationContext(), navDrawerItems);
-        mDrawerList.setAdapter(adapter);
+
+        if (mDrawerList != null) {
+            mDrawerList.setAdapter(adapter);
+            mDrawerList.setOnItemClickListener(new SlideMenuClickListener()); //custom object is defined below
+        }
 
         mDrawerToggle = new ActionBarDrawerToggle(this, sDrawerLayout, R.string.app_name, R.string.app_name) {
             public void onDrawerClosed(View view) {
@@ -533,8 +469,8 @@ public class MainActivity extends ActionBarActivity {
         };
         sDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     @Override
@@ -556,7 +492,7 @@ public class MainActivity extends ActionBarActivity {
         // Handle action bar actions click
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD, true, this);
+                refreshData(ArticleParser.SourceMode.PREFER_DOWNLOAD);
                 return true;
             case R.id.action_settings:
                 SettingsFragment settingsFragment = new SettingsFragment();
@@ -597,7 +533,7 @@ public class MainActivity extends ActionBarActivity {
     void setsShareIntent() {
         String shareText;
         if (getsCurrentNewsItem() >= 0) {
-            Article article = getsNewsSource().getAllArticles().get(getsCurrentNewsItem());
+            Article article = warehouse.getAllArticles(ArticleWarehouse.StoreType.NEWS).get(getsCurrentNewsItem());
             String url = article.url.toString();
             url = url.replace("https://sites.google.com/a/holliston.k12.ma.us/holliston-high-school/", "http://hhs.holliston.k12.ma.us/");
             shareText = article.title + " " + url;
@@ -612,6 +548,74 @@ public class MainActivity extends ActionBarActivity {
         mShareActionProvider.setShareIntent(shareIntent);
     }
 
+    public void refreshActionBar(Activity a) {
+        a.invalidateOptionsMenu();
+    }
+
+    public MainPagerFragment getsMainPagerFragment() {
+        return sMainPagerFragment;
+    }
+
+    public ViewPager getsViewPager() {
+        return sViewPager;
+    }
+
+    public ArticleWarehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public HomeFragment getsHomeFragment() {
+        return sHomeFragment;
+    }
+
+    public DailyAnnListFragment getsDailyAnnFragment() {
+        return sDailyAnnFragment;
+    }
+
+    public EventsListFragment getsEventsFragment() {
+        return sEventsFragment;
+    }
+
+    public LunchListFragment getsLunchFragment() {
+        return sLunchFragment;
+    }
+
+    public NewsRecyclerFragment getsNewsFragment() {
+        return sNewsFragment;
+    }
+
+    public SchedulesListFragment getsSchedFragment() {
+        return sSchedFragment;
+    }
+
+    public SocialFragment getsSocialFragment() {
+        return sSocialFragment;
+    }
+
+    private int getsCurrentNewsItem() {
+        return sCurrentNewsItem;
+    }
+
+    public void setsCurrentNewsItem(int sCurrentNewsItem) {
+        MainActivity.sCurrentNewsItem = sCurrentNewsItem;
+    }
+
+    public Boolean getsNewNewsAvailable() {
+        return sNewNewsAvailable;
+    }
+
+    public void setsNewNewsAvailable(Boolean bool) {
+        sNewNewsAvailable = bool;
+    }
+
+    public void setsCurrentView(int sCurrentView) {
+        sCurrentView = sCurrentView;
+    }
+
+    private DrawerLayout getDrawerLayout() {
+        return sDrawerLayout;
+    }
+
     /**
      * Slide menu item click listener
      */
@@ -623,90 +627,6 @@ public class MainActivity extends ActionBarActivity {
             // display view for selected nav drawer item
             displayView(position);
         }
-    }
-
-    public static void refreshActionBar(Activity a) {
-        a.invalidateOptionsMenu();
-    }
-
-    public static MainPagerFragment getsMainPagerFragment() {
-        return sMainPagerFragment;
-    }
-
-    public static ViewPager getsViewPager() {
-        return sViewPager;
-    }
-
-    public static ArticleDataSource getsScheduleSource() {
-        return sScheduleSource;
-    }
-
-    public static ArticleDataSource getsNewsSource() {
-        return sNewsSource;
-    }
-
-    public static ArticleDataSource getsDailyannSource() {
-        return sDailyannSource;
-    }
-
-    public static ArticleDataSource getsEventsSource() {
-        return sEventsSource;
-    }
-
-    public static ArticleDataSource getsLunchSource() {
-        return sLunchSource;
-    }
-
-    public static HomeFragment getsHomeFragment() {
-        return sHomeFragment;
-    }
-
-    public static DailyAnnListFragment getsDailyAnnFragment() {
-        return sDailyAnnFragment;
-    }
-
-    public static EventsListFragment getsEventsFragment() {
-        return sEventsFragment;
-    }
-
-    public static LunchListFragment getsLunchFragment() {
-        return sLunchFragment;
-    }
-
-    public static NewsRecyclerFragment getsNewsFragment() {
-        return sNewsFragment;
-    }
-
-    public static SchedulesListFragment getsSchedFragment() {
-        return sSchedFragment;
-    }
-
-    public static SocialFragment getsSocialFragment() {
-        return sSocialFragment;
-    }
-
-    private static int getsCurrentNewsItem() {
-        return sCurrentNewsItem;
-    }
-
-    public static void setsCurrentNewsItem(int sCurrentNewsItem) {
-        MainActivity.sCurrentNewsItem = sCurrentNewsItem;
-    }
-
-    public static Boolean getsNewNewsAvailable() {
-        return sNewNewsAvailable;
-    }
-
-    public static void setsNewNewsAvailable(Boolean bool) {
-        MainActivity.sNewNewsAvailable = bool;
-    }
-
-    public static void setsCurrentView(int sCurrentView) {
-        MainActivity.sCurrentView = sCurrentView;
-    }
-
-    private static DrawerLayout getsDrawerLayout() {
-        return sDrawerLayout;
     }
 
 }
